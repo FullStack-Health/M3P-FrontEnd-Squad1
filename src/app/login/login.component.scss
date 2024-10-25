@@ -1,0 +1,75 @@
+@import '../../assets/styles/variables';
+
+form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    margin: 20px;
+    height: 100vh;
+}
+
+img{
+    width: 150px;
+    margin-bottom: 30px;
+}
+
+.esqueci-senha{
+    cursor: pointer;
+}
+
+form h1 {
+    font-size: 24px;
+    color: $color-900;
+}
+
+form span {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: $text-sec;
+}
+
+form input {
+    background-color: #eee;
+    border: none;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+}
+
+form a {
+    color: $text-sec;
+    font-size: 13px;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+button {
+    background-color: $main-color;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: $color-900;
+}
+
+
+
+@media screen and (max-width: 760px) {
+    .sign-up {
+        display: block !important;
+    }
+}

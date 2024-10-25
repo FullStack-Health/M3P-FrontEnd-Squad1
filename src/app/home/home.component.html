@@ -1,0 +1,44 @@
+<app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
+<app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
+<div class="container" [ngClass]="{'retracted': isMenuRetracted}" >
+    <div class="container-numbers">
+        <div class="estatisticas">
+            <div class="card pacientes">
+                <div class="icon-box">
+                    <div class="icon"><fa-icon icon="address-book"></fa-icon></div>
+                </div>
+                <div class="text">
+                    <h1 class="destaque">{{ totalPatients }}</h1>
+                    <p>Pacientes</p>
+                </div>
+            </div>
+            <div class="card consultas">
+                <div class="icon-box">
+                    <div class="icon"><fa-icon icon="calendar-alt"></fa-icon></div>
+                </div>
+                <div class="text">
+                    <h1 class="destaque">{{ totalConsultas }}</h1>
+                    <p>Consultas</p>
+                </div>
+            </div>
+            <div class="card exames">
+                <div class="icon-box">
+                    <div class="icon"><fa-icon icon="x-ray"></fa-icon></div>
+                </div>
+                <div class="text">
+                    <h1 class="destaque">{{ totalExams }}</h1>
+                    <p>Exames</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-search">
+        <input type="text" placeholder="Busque por nome, telefone ou e-mail" [(ngModel)]="searchQuery" (input)="filterPatients()">
+        <button>Buscar</button>
+    </div>
+    <div class="container-patients">
+
+        <app-card *ngFor="let patient of filteredPacienteData" [patient]="patient" (editPatient)="editarPaciente($event)"></app-card>
+
+    </div>
+</div>

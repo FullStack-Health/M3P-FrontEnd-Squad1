@@ -1,0 +1,100 @@
+<app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
+<app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
+<div class="container" [ngClass]="{'retracted': isMenuRetracted}">
+    <div class="main">
+        <img src="{{ patient.gender | genderPicture}}" alt="">
+        <h1>{{ patient.name }}</h1>
+    </div>
+
+    <div class="general-info">
+        <h3>Informações Gerais:</h3>
+        <div class="general-det">
+            <p>Convênio: <span>{{ patient.convenio }}</span></p>
+            <p>Contato de emergência: <span>{{ patient.emergencyContact }}</span></p>
+            <p>Alergias: <span>{{ patient.alergies }}</span></p>
+            <p>Cuidados específicos: <span>{{ patient.care }}</span></p>
+        </div>
+    </div>
+
+    <div class="consultas">
+        <h3>Consultas:</h3>
+        <div class="container-consultas">
+            <div class="card-consulta" *ngFor="let consulta of patient.consultas">
+                <div class="information">
+                    <div class="main-info">
+                        <h4>Motivo:</h4>
+                        <p>{{ consulta.motive }}</p>
+                    </div>
+                    <div class="secondary-info">
+                        <div class="id">
+                            <p>Data: <span class="id-number">{{ consulta.date | date: 'dd-MM-yyyy' }}</span></p>
+                        </div>
+                        <div class="id">
+                            <p>Hora: <span class="id-number">{{ consulta.time }}</span></p>
+                        </div>
+                    </div>
+                    <div class="extra-info">
+                        <div class="extra-01">
+                            <p>Descrição:</p>
+                            <p>{{ consulta.description }}</p>
+                        </div>
+                        <div *ngIf="consulta.medication" class="extra-02">
+                            <p>Medicação:</p>
+                            <p>{{ consulta.medication }}</p>
+                        </div>
+                        <div class="extra-03">
+                            <p>Prescriçoes:</p>
+                            <p>{{ consulta.dosage }}</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="btn">
+                    <button (click)="editarConsulta(consulta.id)">Editar consulta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="exames">
+        <h3>Exames:</h3>
+        <div class="container-exames">
+            <div class="card-exames" *ngFor="let exam of patient.exams">
+                <div class="information">
+                    <div class="main-info">
+                        <h4>Nome do exame:</h4>
+                        <p>{{ exam.name }}</p>
+                    </div>
+                    <div class="extra-info">
+                    <div class="secondary-info">
+                        <div class="id">
+                            <p>Data: <span class="id-number">{{ exam.date | date: 'dd-MM-yyyy' }}</span></p>
+                        </div>
+                        <div class="id">
+                            <p>Hora: <span class="id-number">{{ exam.time }}</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="lab">
+                        <p>Laboratório:</p>
+                        <p>{{ exam.lab }}</p>
+                    </div>
+                    <div class="lab">
+                        <p>Tipo:</p>
+                        <p>{{ exam.type }}</p>
+                    </div>
+                    <div class="lab">
+                        <p>Resultado:</p>
+                        <p>{{ exam.results }}</p>
+                    </div>
+                </div>
+
+                </div>
+                <div class="btn">
+                    <button (click)="editarExame(exam.id)">Editar exame</button>
+                    <button>Ver anexo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

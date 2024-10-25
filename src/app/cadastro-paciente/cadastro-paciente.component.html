@@ -1,0 +1,194 @@
+<app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
+<app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
+<div class="container" id="cadastro" [ngClass]="{'retracted': isMenuRetracted}">
+    <h3 class="encontre">Cadastre um paciente:</h3>
+
+    <form [formGroup]="form" class="fieldset" (ngSubmit)="cadastrar()">
+        <div id="name" class="elemento-formulario"
+            [ngClass]="{'erro-formulario': form.get('name')?.invalid && form.get('name')?.touched}">
+            <label for="name">Nome Completo:</label>
+            <input placeholder="Nome completo" type="text" name="name" formControlName="name">
+            <span *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+                Nome é obrigatório e deve ter entre 8 e 64 caracteres.
+            </span>
+        </div>
+        <div class="row">
+            <div id="gender" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('gender')?.invalid && form.get('gender')?.touched}">
+                <label for="gender">Gênero:</label>
+                <select name="gender" formControlName="gender">
+                    <option value="" disabled selected>Selecione o gênero</option>
+                    <option value="Homem cis">Homem cis</option>
+                    <option value="Mulher cis">Mulher cis</option>
+                    <option value="Mulher trans">Mulher trans</option>
+                    <option value="Homem trans">Homem trans</option>
+                    <option value="Não binário">Não binário</option>
+                    <option value="Prefiro não informar">Não informar</option>
+                </select>
+                <span *ngIf="form.get('gender')?.invalid && form.get('gender')?.touched" class="erro-formulario">
+                    Selecione um gênero.
+                </span>
+            </div>
+            <div id="dataNascimento" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched}">
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" name="dataNascimento" formControlName="dataNascimento">
+                <span *ngIf="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched"
+                    class="erro-formulario">
+                    Data de nascimento é obrigatória.
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div id="cpf" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('cpf')?.invalid && form.get('cpf')?.touched}">
+                <label for="cpf">CPF:</label>
+                <input mask="000.000.000-00" placeholder="Ex.: 000.000.000-00" type="text" name="cpf"
+                    formControlName="cpf">
+                <span *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched" class="erro-formulario">
+                    CPF é obrigatório e deve seguir o formato 000.000.000-00.
+                </span>
+            </div>
+            <div id="rg" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('rg')?.invalid && form.get('rg')?.touched}">
+                <label for="rg">RG com Orgão Expedidor:</label>
+                <input placeholder="Ex.: 000000-0 SESP SC" type="text" name="rg" formControlName="rg">
+                <span *ngIf="form.get('rg')?.invalid && form.get('rg')?.touched" class="erro-formulario">
+                    RG é obrigatório e deve conter orgão expedidor.
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div id="civil" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('civil')?.invalid && form.get('civil')?.touched}">
+                <label for="civil">Estado Civil:</label>
+                <select name="civil" formControlName="civil">
+                    <option value="" disabled selected>Selecione o Estado Civil:</option>
+                    <option value="Casado">Casado</option>
+                    <option value="Solteiro">Solteiro</option>
+                </select>
+                <span *ngIf="form.get('civil')?.invalid && form.get('civil')?.touched" class="erro-formulario">
+                    Selecione um estado civil.
+                </span>
+            </div>
+            <div id="natural" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('natural')?.invalid && form.get('natural')?.touched}">
+                <label for="natural">Naturalidade:</label>
+                <input placeholder="Ex.: Brasileiro" type="text" name="natural" formControlName="natural">
+                <span *ngIf="form.get('natural')?.invalid && form.get('natural')?.touched" class="erro-formulario">
+                    Naturalidade é obrigatorio e deve ter entre 8 e 64 caracteres.
+                </span>
+            </div>
+
+        </div>
+        <div class="row">
+            <div id="phone" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('phone')?.invalid && form.get('phone')?.touched}">
+                <label for="phone">Telefone:</label>
+                <input placeholder="Ex.: (00) 00000-0000" mask="(00) 0 0000-0000" type="text" name="phone"
+                    formControlName="phone">
+                <span *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched" class="erro-formulario">
+                    Telefone é obrigatório e deve seguir o formato (99) 9 9999-9999.
+                </span>
+            </div>
+            <div id="email" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('email')?.invalid && form.get('email')?.touched}">
+                <label for="email">Email:</label>
+                <input placeholder="Ex.: email@email.com.br" type="email" name="email" formControlName="email">
+                <span *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="erro-formulario">
+                    Preencha o email.
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div id="emergency-contact" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('emergencyContact')?.invalid && form.get('emergencyContact')?.touched}">
+                <label for="emergency-contact">Nome do contato de emergência:</label>
+                <input placeholder="Ex.: Maria" type="text" name="emergency-contact" formControlName="emergencyContact">
+                <span *ngIf="form.get('emergencyContact')?.invalid && form.get('emergencyContact')?.touched"
+                    class="erro-formulario">
+                    Contato de emergencia é obrigatório.
+                </span>
+            </div>
+            <div id="rg" class="elemento-formulario"
+                [ngClass]="{'erro-formulario': form.get('contactPhone')?.invalid && form.get('contactPhone')?.touched}">
+                <label for="contact-phone">Telefone do contato de emergência:</label>
+                <input placeholder="Ex.: (00) 00000-0000" mask="(00) 0 0000-0000" type="text" name="contact-phone"
+                    formControlName="contactPhone">
+                <span *ngIf="form.get('contactPhone')?.invalid && form.get('contactPhone')?.touched"
+                    class="erro-formulario">
+                    Telefone do contato de emrgência é obrigatório e deve seguir o formato (99) 9 9999-99999.
+                </span>
+            </div>
+        </div>
+        <div id="alergies" class="elemento-formulario">
+            <label for="alergies">Alergias:</label>
+            <input placeholder="Ex.: Tomate, Sol, Aspirina" type="text" name="alergies" formControlName="alergies">
+        </div>
+        <div id="care" class="elemento-formulario">
+            <label for="care">Cuidados Específicos:</label>
+            <input placeholder="Ex.: Paciente diabético(a), usa insulina" type="text" name="care"
+                formControlName="care">
+        </div>
+        <div class="row-3">
+            <div id="convenio" class="elemento-formulario">
+                <label for="convenio">Convênio:</label>
+                <input placeholder="Ex.: UNIMED" type="text" name="convenio" formControlName="convenio">
+            </div>
+            <div id="convenio-num" class="elemento-formulario">
+                <label for="convenio-num">Número do Convênio:</label>
+                <input placeholder="Ex.: 00000000000" type="text" name="convenio-num" formControlName="convenioNum">
+            </div>
+            <div id="convenio-val" class="elemento-formulario">
+                <label for="convenio-val">Validade do Convênio:</label>
+                <input placeholder="Ex.: 00000000000" type="text" name="convenio-val" formControlName="convenioVal">
+            </div>
+        </div>
+        <div class="row-3">
+            <div id="cep" class="elemento-formulario">
+                <label for="cep">CEP:</label>
+                <input placeholder="Ex.: 000000000" type="text" name="cep" formControlName="cep">
+            </div>
+            <div id="state" class="elemento-formulario">
+                <label for="state">Estado:</label>
+                <input placeholder="Ex.: Santa Catarina" type="text" name="state" formControlName="state">
+            </div>
+            <div id="city" class="elemento-formulario">
+                <label for="city">Cidade:</label>
+                <input placeholder="Ex.: Florianopolis" type="text" name="city" formControlName="city">
+            </div>
+        </div>
+        <div class="row-3">
+            <div id="street" class="elemento-formulario">
+                <label for="street">Logradouro:</label>
+                <input placeholder="Ex.: Rua das flores" type="text" name="street" formControlName="street">
+            </div>
+            <div id="street-num" class="elemento-formulario">
+                <label for="street-num">Número:</label>
+                <input placeholder="Ex.: 500" type="text" name="street-num" formControlName="streetNum">
+            </div>
+            <div id="street-extra" class="elemento-formulario">
+                <label for="street-extra">Complemento:</label>
+                <input placeholder="Ex.: Apto 01" type="text" name="street-extra" formControlName="streetExtra">
+            </div>
+        </div>
+        <div class="row">
+            <div id="hood" class="elemento-formulario">
+                <label for="hood">Bairro:</label>
+                <input placeholder="Ex.: Bairro das aves" type="text" name="hood" formControlName="hood">
+            </div>
+            <div id="reference" class="elemento-formulario">
+                <label for="reference">Ponto de referência:</label>
+                <input placeholder="Ex.: Perto da farmacia" type="text" name="reference" formControlName="reference">
+
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="delete" [disabled]="!isEdit" (click)="deletePatient()" [class.disabled]="!isEdit">Deletar</button>
+            <button class="edit" [disabled]="!isEdit" (click)="cadastrar()" [class.disabled]="!isEdit">Editar</button>
+            <button class="save" [disabled]="!form.valid || isEdit"   (click)="cadastrar()"
+            [class.disabled]="!form.valid || isEdit">Cadastrar</button>
+        </div>
+    </form>
+</div>

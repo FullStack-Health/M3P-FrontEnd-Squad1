@@ -1,0 +1,28 @@
+<div class="container" [ngClass]="!isSignDivVisible ? 'active' : ''" *ngIf="!isMobile">
+    <div class="form-container sign-in ">
+        <app-login class="login" *ngIf="isSignDivVisible"></app-login>
+    </div>
+    <div class="form-container sign-up ">
+        <app-sign-up class="login" *ngIf="!isSignDivVisible"></app-sign-up>
+    </div>
+
+    <div class="toggle-container">
+        <div class="toggle">
+            <div class="toggle-panel toggle-left">
+                <h1>Bem-vindo(a)!</h1>
+                <p>Já tem uma conta? Acesse o login clicando no botão abaixo</p>
+                <button class="hidden" id="login" (click)="isSignDivVisible = true">Entrar</button>
+            </div>
+
+            <div class="toggle-panel toggle-right">
+                <h1>Olá, doutor(a)!</h1>
+                <p>Cadastre seus dados para ter acesso a plataforma completa</p>
+                <button class="hidden" id="register" (click)="isSignDivVisible = false">Cadastrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mobile" *ngIf="isMobile">
+    <app-login></app-login>
+
+</div>

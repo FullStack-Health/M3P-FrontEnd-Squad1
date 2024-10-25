@@ -1,0 +1,37 @@
+<app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
+<app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
+<div class="container" id="exame" [ngClass]="{'retracted': isMenuRetracted}">
+    <h3 class="encontre">Encontre o paciente:</h3>
+    <div class="container-search">
+        <input type="text" placeholder="Busque um paciente por nome ou número de registro" [(ngModel)]="searchQuery"
+            (input)="filterPatients()">
+        <button>Buscar</button>
+    </div>
+
+    <div class="container-patients">
+        <div class="card-paciente" *ngFor="let patient of filteredPacienteData">
+            <div class="information">
+                <div class="main-info">
+                    <div class="name">
+                        <h4>{{ patient.name }}</h4>
+                    </div>
+                    <div class="img">
+                        <img src="{{ patient.gender | genderPicture}}" alt="">
+                    </div>
+                </div>
+                <div class="secondary-info">
+                    <div class="id">
+                        <p>REGISTRO: <span class="id-number"> {{ patient.id }}</span></p>
+                    </div>
+                    <div class="plan"><fa-icon icon="id-card"></fa-icon>
+                        <p>{{ patient.convenio }}</p>
+                    </div>
+                </div>
+                <div class="btn">
+                    <button (click)="navigateToProntuario(patient.id)">Acessar prontuário</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

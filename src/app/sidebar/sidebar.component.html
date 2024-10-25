@@ -1,0 +1,37 @@
+<div class="container" [class.retracted]="isMenuRetracted">
+    <div class="logo">
+        <a href="/home"><img class="main-logo" src="../../assets/logos/logo-negative.svg" alt="logo-LABMedical"></a>
+        <a href="/home"><img class="alt-logo" src="../../assets/logos/logo-alt-neg.svg" alt="Logo-LABMedical"></a>
+    </div>
+    <div class="menu-area">
+        <div class="menu">
+        <ul class="menu-list">
+            <li>
+                <a href="/prontuarios"><div class="icon"><fa-icon icon="file-medical"></fa-icon></div>
+                <p>Prontuários</p></a>
+                <div class="icon-end"><fa-icon icon="arrow-right"></fa-icon></div>
+            </li>
+            <li>
+                <a href="/paciente"><div class="icon"><fa-icon icon="address-book"></fa-icon></div>
+                    <p>Paciente</p></a>
+                <div class="icon-end"><fa-icon icon="plus"></fa-icon></div>
+            </li>
+            <li>
+                <a href="/exame"><div class="icon"><fa-icon icon="x-ray"></fa-icon></div>
+                <p>Exame</p></a>
+                <div class="icon-end"><fa-icon icon="plus"></fa-icon></div>
+            </li>
+            <li>
+                <a href="/consulta"><div class="icon"><fa-icon icon="calendar-alt"></fa-icon></div>
+                <p>Consulta</p></a>
+                <div class="icon-end"><fa-icon icon="plus"></fa-icon></div>
+            </li>
+        </ul></div>
+        <div class="retract-menu" (click)="toggleMenuRetraction()">
+            <fa-icon icon="angle-left"></fa-icon>
+        </div>
+        <div class="unretract-menu" (click)="toggleMenuRetraction()">
+            <fa-icon icon="angle-right"></fa-icon>
+        </div>
+    </div>
+</div>
