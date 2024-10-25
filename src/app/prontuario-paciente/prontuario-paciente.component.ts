@@ -1,12 +1,20 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PacienteService } from '../services/paciente.service'; 
+import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { PacienteService } from '../services/paciente.service';
+import { GenderPicturePipe } from '../pipes/gender-picture.pipe';
+import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-prontuario-paciente',
   standalone: true,
+  imports: [RouterOutlet, SidebarComponent, ToolbarComponent, FontAwesomeModule, CommonModule, GenderPicturePipe],
   templateUrl: './prontuario-paciente.component.html',
-  styleUrls: ['./prontuario-paciente.component.scss']
+  styleUrl: './prontuario-paciente.component.scss'
 })
 export class ProntuarioPacienteComponent implements OnInit {
   isMenuRetracted = false;
@@ -24,13 +32,15 @@ export class ProntuarioPacienteComponent implements OnInit {
     this.isMenuRetracted = screenWidth < smallScreenBreakpoint;
   }
 
+  onSidebarRetracted(isRetracted: boolean) {
+    this.isMenuRetracted = isRetracted;
+  }
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const pacienteId = params['id'];
       if (pacienteId) {
-        this.pacienteService.getProntuario(pacienteId).subscribe(patient => {
-          this.patient = patient; 
-        });
+        this.patient = this.patientService.getPatientById(pacienteId); 
       }
     });
   }
@@ -38,7 +48,7 @@ export class ProntuarioPacienteComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private pacienteService: PacienteService,
+    private patientService: PacienteService,
   ){
     this.detectScreenSize();
   }
@@ -50,4 +60,5 @@ export class ProntuarioPacienteComponent implements OnInit {
   editarConsulta(consultaId: string): void {
     this.router.navigate(['/consulta', consultaId]);
   }
+
 }

@@ -1,61 +1,52 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { AuthenticationService } from './authentication.service'; // Importa o novo AuthenticationService
-import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private router: Router, private authenticationService: AuthenticationService) { }
+  constructor(private router: Router) { }
 
-  onLoginSubmit(loginForm: FormGroup) {
+
+  onSubmit(loginForm: FormGroup) {
+    const storedData = JSON.parse(localStorage.getItem('cadastroData') || '[]');
     const email = loginForm.get('email')?.value;
     const password = loginForm.get('password')?.value;
+  
+    const user = storedData.find((userData: any) => userData.email === email && userData.senha === password);
+  
+    if (user != undefined) {
 
-    this.authenticationService.authenticateUser(email, password).subscribe({
-      next: (user) => {
-        localStorage.setItem('loggedUser', JSON.stringify(user));
-        this.router.navigate(['/home']);
-      },
-      error: () => {
-        Swal.fire({
-          text: 'Usuário ou senha inválidos',
-          icon: 'error',
-          confirmButtonColor: '#0A7B73',
-          confirmButtonText: 'OK'
-        });
-      }
-    });
+      localStorage.setItem('loggedUser', JSON.stringify(user))
+      this.router.navigate(['/home']); 
+      
+    } else {
+      alert('Usuário ou senha inválidos');
+    }
   }
 
-  onPasswordResetRequest(loginForm: FormGroup) {
-    const email = loginForm.get('email')?.value;
+  
 
-    this.authenticationService.requestPasswordReset(email).subscribe({
-      next: () => {
-        Swal.fire({
-          text: 'Sua senha foi alterada para a senha padrão: a1b2c4d4. Por favor, prossiga utilizando essa senha.',
-          icon: 'success',
-          confirmButtonColor: '#0A7B73',
-          confirmButtonText: 'OK'
-        });
-      },
-      error: () => {
-        Swal.fire({
-          text: 'Usuário não encontrado',
-          icon: 'error',
-          confirmButtonColor: '#0A7B73',
-          confirmButtonText: 'OK'
-        });
-      }
-    });
+  esqueciSenha(loginForm: FormGroup) {
+    const storedData = JSON.parse(localStorage.getItem('cadastroData') || '[]');
+    const email = loginForm.get('email')?.value;
+  
+    const userIndex = storedData.findIndex((userData: any) => userData.email === email);
+  
+    if (userIndex !== -1) {
+      storedData[userIndex].senha = 'a1b2c4d4';
+      localStorage.setItem('cadastroData', JSON.stringify(storedData));
+      alert('Sua senha foi alterada para a senha padrão: a1b2c4d4. Por favor, prossiga utilizando essa senha.');
+    } else {
+      alert('Usuário não encontrado');
+    }
   }
 
   logout() {
     localStorage.removeItem('loggedUser');
     this.router.navigate(['/login']);
   }
+
 }

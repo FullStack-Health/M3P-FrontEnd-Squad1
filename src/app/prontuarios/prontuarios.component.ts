@@ -1,36 +1,72 @@
-import { Component, OnInit } from '@angular/core';
-import { PacienteService } from '../services/paciente.service'; // Ajuste o caminho conforme necessário
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
+import { PacienteService } from '../services/paciente.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { GenderPicturePipe } from '../pipes/gender-picture.pipe';
 
 @Component({
   selector: 'app-prontuarios',
   standalone: true,
+  imports: [ReactiveFormsModule, CommonModule, SidebarComponent, FormsModule, ToolbarComponent, FontAwesomeModule, GenderPicturePipe],
   templateUrl: './prontuarios.component.html',
-  styleUrls: ['./prontuarios.component.scss']
+  styleUrl: './prontuarios.component.scss'
 })
-export class ProntuariosComponent implements OnInit {
-  searchQuery: string = '';
+export class ProntuariosComponent implements OnInit{
+
+  isMenuRetracted = false;
+  pageTitle: string = 'Prontuários';
   pacienteData: any[] = [];
   filteredPacienteData: any[] = [];
+  searchQuery: string = '';
 
-  constructor(private pacienteService: PacienteService, private router: Router) {
-    this.pacienteService.getAllPatients().subscribe(data => {
-      this.pacienteData = data;
-      this.filteredPacienteData = [...this.pacienteData];
-    });
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.detectScreenSize();
   }
 
-  ngOnInit() {}
+  detectScreenSize() {
+    const screenWidth = window.innerWidth;
+    const smallScreenBreakpoint = 768;
+    this.isMenuRetracted = screenWidth < smallScreenBreakpoint;
+  }
+
+  onSidebarRetracted(isRetracted: boolean) {
+    this.isMenuRetracted = isRetracted;
+  }
+
+  ngOnInit(): void {
+
+  }
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private pacienteService: PacienteService,
+  ){
+    this.pacienteData = this.pacienteService.getAllPatients();
+    this.filteredPacienteData = [...this.pacienteData];
+
+    this.detectScreenSize();
+  }
 
   filterPatients() {
-    const lowerCaseQuery = this.searchQuery.toLowerCase();
+    if (this.searchQuery.trim() === '') {
+      this.filteredPacienteData = [...this.pacienteData];
+      return;
+    }
     this.filteredPacienteData = this.pacienteData.filter(patient =>
-      patient.name.toLowerCase().includes(lowerCaseQuery) ||
-      patient.id.toString().includes(lowerCaseQuery)
+      patient.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      patient.id.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
 
   navigateToProntuario(patientId: string) {
-    this.router.navigate(['/prontuario', patientId]);
+    this.router.navigate(['/prontuarios', patientId]);
+
   }
+
 }

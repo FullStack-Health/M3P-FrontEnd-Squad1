@@ -30,14 +30,6 @@
             Preenchimento obrigatório
         </span>
     </div>
-    <div id="role" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.role.dirty || form.controls.role.touched) && form.controls.role.errors}">
-        <select formControlName="role" placeholder="Selecione o papel">
-            <option value="" disabled>Selecione o perfil</option>
-            <option value="ADMIN">ADMIN</option>
-            <option value="MEDICO">MEDICO</option>
-        </select>
-        <span *ngIf="(form.controls.role.dirty || form.controls.role.touched) && form.controls.role.errors?.required">*Selecione um papel</span>
-    </div>
     <div id="password" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.senha.dirty ||
         form.controls.senha.touched) &&
         form.controls.senha.errors}">

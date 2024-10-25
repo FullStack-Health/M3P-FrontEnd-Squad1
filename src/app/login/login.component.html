@@ -1,15 +1,11 @@
-<form (ngSubmit)="authService.onLoginSubmit(loginForm)" [formGroup]="loginForm">
+<form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
     <img src="../../assets/logos/logo-positive.svg" alt="logo">
     <h1>Entrar</h1>
     <span>Insira seu email e senha</span>
-
     <input id="email" name="email" type="text" formControlName="email" placeholder="Email">
     <input id="password" name="password" type="password" formControlName="password" placeholder="Senha">
-
-    <a class="esqueci-senha" (click)="authService.onPasswordResetRequest(loginForm)">→ Esqueceu sua senha? ←</a>
-    
+    <a class="esqueci-senha" (click)="esqueciSenha()">→ Esqueceu sua senha? ←</a>
     <button type="submit">Entrar</button>
-    
     <div class="sign-up" style="display: none;">
         <a href="cadastro">Cadastro</a>
     </div>
