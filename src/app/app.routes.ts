@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { SinginSignupPageComponent } from "./features/singin-signup-page/singin-signup-page.component";
+import { SinginSignupPageComponent } from "./features/signin-signup-page/signin-signup-page.component";
 import { SignUpComponent } from "./features/sign-up/sign-up.component";
 import { CadastroPacienteComponent } from "./features/cadastro-paciente/cadastro-paciente.component";
 import { ConsultaComponent } from "./features/consulta/consulta.component";

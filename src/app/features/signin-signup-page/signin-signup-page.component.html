@@ -1,0 +1,49 @@
+@if (!isMobile) {
+<div
+  class="container"
+  [class.active]="!isSignDivVisible"
+>
+  @if (isSignDivVisible) {
+  <div class="form-container sign-in">
+    <app-login class="login"></app-login>
+  </div>
+  } @else {
+  <div class="form-container sign-up">
+    <app-sign-up class="login"></app-sign-up>
+  </div>
+  }
+
+  <div class="toggle-container">
+    <div class="toggle">
+      <div class="toggle-panel toggle-left">
+        <h1>Bem-vindo(a)!</h1>
+        <p>Já tem uma conta? Acesse o login clicando no botão abaixo</p>
+        <button
+          class="hidden"
+          id="login"
+          (click)="isSignDivVisible = true"
+        >
+          Entrar
+        </button>
+      </div>
+
+      <div class="toggle-panel toggle-right">
+        <h1>Olá!</h1>
+        <p>Cadastre seus dados para ter acesso a plataforma completa</p>
+        <button
+          class="hidden"
+          id="register"
+          (click)="isSignDivVisible = false"
+        >
+          Cadastrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+} @else {
+<div class="mobile">
+  <app-login></app-login>
+</div>
+}
