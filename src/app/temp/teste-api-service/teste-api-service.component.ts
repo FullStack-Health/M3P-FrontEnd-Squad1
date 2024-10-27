@@ -11,18 +11,34 @@ import { HttpClient } from "@angular/common/http";
 })
 export class TesteApiServiceComponent {
   constructor(private apiService: ApiService, private http: HttpClient) {}
-  email: string = "admin@example.com";
-  password: string = "admin12345";
+  data = {
+    newPassword: "admin12345",
+  };
 
   teste(): void {
-    this.apiService.login(this.email, this.password).subscribe({
-      next: (response: any) => {
-        console.log("Login bem-sucedido!", response);
-        localStorage.setItem("authToken", response.token);
-      },
-      error: (error) => {
-        console.error("Erro no login:", error);
-      },
-    });
+    //
+    // this.apiService.testGetUsuarios;
+    // this.apiService.testPost("").subscribe({
+    //   next(response) {
+    //     console.log(response);
+    //   },
+    //   error(err) {
+    //     console.error(err);
+    //   },
+    // });
+    // this.apiService
+    //   .postData("api/usuarios/pre-registro", {
+    //     email: "ricrvs1@example.com",
+    //     password: "senha123",
+    //     role: "ADMIN",
+    //   })
+    //   .subscribe({
+    //     next(response) {
+    //       console.log(response);
+    //     },
+    //     error(err) {
+    //       console.error(err);
+    //     },
+    //   });
   }
 }

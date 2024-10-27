@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../../core/services/auth.service";
 
 @Component({
   selector: "app-toolbar",

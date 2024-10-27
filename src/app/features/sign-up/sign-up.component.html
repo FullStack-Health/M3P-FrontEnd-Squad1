@@ -1,74 +1,126 @@
-<form [formGroup]="form" class="fieldset">
-    <img src="../../assets/logos/logo-positive.svg" alt="logo">
-    <h1>Criar conta</h1>
-    <span>Cadastre-se para acessar o sistema</span>
-    <div id="name" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.nome.dirty ||
-        form.controls.nome.touched) &&
-        form.controls.nome.errors}">
-        <input placeholder="Nome completo" type="text" name="nome" formControlName="nome">
-        <span *ngIf="(form.controls.nome.dirty ||
-            form.controls.nome.touched) &&
-            form.controls.nome.errors &&
-            form.controls.nome.errors['required']">
-            *Preenchimento obrigatório
-        </span>
-        <span *ngIf="(form.controls.nome.dirty ||
-            form.controls.nome.touched) &&
-            form.controls.nome.errors &&
-            form.controls.nome.errors['validarNomeCompleto']">
-            *Por favor, insira seu nome completo
-        </span>
-    </div>
-    <div id="email" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.email.dirty ||
-        form.controls.email.touched) &&
-        form.controls.email.errors}">
-        <input placeholder="Email" type="email" name="email" formControlName="email">
-        <span *ngIf="(form.controls.email.dirty ||
-            form.controls.email.touched) &&
-            form.controls.email.errors &&
-            form.controls.email.errors['required']">
-            Preenchimento obrigatório
-        </span>
-    </div>
-    <div id="password" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.senha.dirty ||
-        form.controls.senha.touched) &&
-        form.controls.senha.errors}">
-        <input type="password" name="senha" formControlName="senha" placeholder="Senha">
+<form
+  (ngSubmit)="cadastrar()"
+  [formGroup]="userForm"
+  class="fieldset"
+>
+  <img
+    src="../../assets/logos/logo-positive.svg"
+    alt="logo"
+  />
+  <h1>Criar Usuário</h1>
+  <span>Cadastre-se para acessar o sistema</span>
 
-        <span *ngIf="form.controls.senha.dirty &&
-              form.controls.senha.touched &&
-              form.controls.senha.errors &&
-              form.controls.senha.errors['minlength']">
-            A senha deve conter ao menos 8 caracteres
-        </span>
-        <span *ngIf="form.controls.senha.dirty &&
-              form.controls.senha.touched &&
-              form.controls.senha.errors &&
-              form.controls.senha.errors['required']">
-            Preenchimento obrigatório
-        </span>
-    </div>
-    <div id="password-confirm" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.confirmarSenha.dirty ||
-        form.controls.confirmarSenha.touched) &&
-        form.controls.confirmarSenha.errors}">
-        <input type="password" name="confirmarSenha" formControlName="confirmarSenha" placeholder="Confirme sua senha">
+  <div
+    id="email"
+    class="elemento-formulario"
+    [ngClass]="{
+      'erro-formulario':
+        (userForm.get('email')?.dirty || userForm.get('email')?.touched) &&
+        userForm.get('email')?.invalid
+    }"
+  >
+    <input
+      placeholder="Email"
+      type="email"
+      id="email"
+      formControlName="email"
+    />
 
-        <span *ngIf="form.controls.confirmarSenha.dirty &&
-              form.controls.confirmarSenha.touched &&
-              form.controls.confirmarSenha.errors &&
-              form.controls.confirmarSenha.errors['minlength']">
-            A senha deve conter ao menos 8 caracteres
-        </span>
-        <span *ngIf="form.controls.confirmarSenha.dirty &&
-              form.controls.confirmarSenha.touched &&
-              form.controls.confirmarSenha.errors &&
-              form.controls.confirmarSenha.errors['required']">
-            Preenchimento obrigatório
-        </span>
-    </div>
+    @if ((userForm.get('email')?.dirty || userForm.get('email')?.touched) &&
+    userForm.get('email')?.errors?.['required']) {
+    <span>*Preenchimento obrigatório</span>
+    } @if ((userForm.get('email')?.dirty || userForm.get('email')?.touched) &&
+    userForm.get('email')?.errors?.['email']) {
+    <span>*Insira um e-mail válido</span>
+    }
+  </div>
 
-    <button (click)="cadastrar()">Cadastrar</button>
-    <div class="sign-up" style="display: none;">
-        <a href="login">Voltar para login?</a>
-    </div>
+  <div
+    id="perfil"
+    class="elemento-formulario"
+    [ngClass]="{
+      'erro-formulario':
+        userForm.get('perfil')?.touched && userForm.get('perfil')?.invalid
+    }"
+  >
+    <select
+      id="perfil"
+      formControlName="perfil"
+    >
+      <option
+        value=""
+        disabled
+        selected
+      >
+        Perfil
+      </option>
+      <option value="admin">Admin</option>
+      <option value="medico">Médico</option>
+    </select>
+
+    @if (userForm.get('perfil')?.touched &&
+    userForm.get('perfil')?.errors?.['required']) {
+    <span>*Selecione um perfil</span>
+    }
+  </div>
+
+  <div
+    id="senha"
+    class="elemento-formulario"
+    [ngClass]="{
+      'erro-formulario':
+        (userForm.get('senha')?.dirty || userForm.get('senha')?.touched) &&
+        userForm.get('senha')?.invalid
+    }"
+  >
+    <input
+      type="password"
+      id="senha"
+      formControlName="senha"
+      placeholder="Senha"
+    />
+
+    @if ((userForm.get('senha')?.dirty || userForm.get('senha')?.touched) &&
+    userForm.get('senha')?.errors?.['required']) {
+    <span>*Preenchimento obrigatório</span>
+    } @if ((userForm.get('senha')?.dirty || userForm.get('senha')?.touched) &&
+    userForm.get('senha')?.errors?.['minlength']) {
+    <span>*A senha deve conter ao menos 8 caracteres</span>
+    }
+  </div>
+
+  <div
+    id="confirmarSenha"
+    class="elemento-formulario"
+    [ngClass]="{
+        'erro-formulario': 
+          (userForm.get('confirmarSenha')?.dirty || 
+          userForm.get('confirmarSenha')?.touched) &&
+          (userForm.get('confirmarSenha')?.invalid || userForm.errors?.['senhaMismatch'])
+      }"
+  >
+    <input
+      type="password"
+      id="confirmarSenha"
+      formControlName="confirmarSenha"
+      placeholder="Confirme sua senha"
+    />
+
+    @if ((userForm.get('confirmarSenha')?.dirty ||
+    userForm.get('confirmarSenha')?.touched) &&
+    userForm.get('confirmarSenha')?.errors?.['required']) {
+    <span>*Preenchimento obrigatório</span>
+    } @if (userForm.errors?.['senhaMismatch'] &&
+    userForm.get('confirmarSenha')?.touched) {
+    <span>*As senhas não coincidem</span>
+    }
+  </div>
+
+  <button (click)="cadastrar()">Cadastrar</button>
+  <div
+    class="sign-up"
+    style="display: none"
+  >
+    <a href="login">Voltar para login?</a>
+  </div>
 </form>

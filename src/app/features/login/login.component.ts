@@ -1,7 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { Component, inject, OnInit } from "@angular/core";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
-import { AuthService } from "../../shared/services/auth.service";
+import { AuthService } from "../../core/services/auth.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-login",
@@ -11,26 +18,50 @@ import { AuthService } from "../../shared/services/auth.service";
   styleUrl: "./login.component.scss",
 })
 export class LoginComponent implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private formBuilder = inject(FormBuilder);
+
   loginForm!: FormGroup;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor() {}
 
   ngOnInit() {
     this.createForm();
   }
 
   createForm() {
-    this.loginForm = new FormGroup({
-      email: new FormControl(""),
-      password: new FormControl(""),
+    this.loginForm = this.formBuilder.group({
+      email: ["", [Validators.required, Validators.email]],
+      password: ["", [Validators.required]],
     });
   }
 
   onSubmit() {
-    this.authService.onSubmit(this.loginForm);
+    // if (this.loginForm.valid) {
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
+
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
+        console.log("Login bem-sucedido!", response);
+        this.router.navigate(["/testeApi"]);
+      },
+      error: (error: Error) => {
+        Swal.fire({
+          text: error.message,
+          icon: "error",
+          confirmButtonColor: "#0A7B73",
+          confirmButtonText: "OK",
+        });
+        console.error(error.message);
+      },
+    });
+    // }
   }
 
   esqueciSenha() {
-    this.authService.esqueciSenha(this.loginForm);
+    console.error("Não implementado ainda!");
+    // this.authService.esqueciSenha(this.loginForm);
   }
 }

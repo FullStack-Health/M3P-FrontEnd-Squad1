@@ -30,7 +30,8 @@ form span {
   width: 100%;
 }
 
-form input {
+form input,
+form select {
   background-color: #eee;
   border: none;
   margin: 8px 0;
@@ -86,7 +87,7 @@ form button.sign-up-btn:hover {
   }
 }
 
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 768px) {
   .sign-up {
     display: block !important;
 

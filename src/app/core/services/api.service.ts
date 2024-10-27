@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
@@ -8,7 +8,7 @@ import { Observable } from "rxjs";
 export class ApiService {
   http = inject(HttpClient);
 
-  private baseUrl = "http://localhost:8081";
+  private baseUrl = "http://localhost:4200";
 
   constructor() {}
 
@@ -29,8 +29,24 @@ export class ApiService {
     return this.http.delete(`${this.baseUrl}/${endpoint}/${id}`);
   }
 
-  //métodos específicos:
-  login(email: string, password: string): Observable<any> {
-    return this.postData("api/usuarios/login", { email, password });
+  testPost(data: any): Observable<any> {
+    return this.http.put(
+      "http://localhost:8081/api/usuarios/email/admin@example.com/redefinir-senha",
+      {
+        newPassword: "admin12345",
+      }
+    );
   }
+
+  // testGetUsuarios() {
+  //   const authToken = localStorage.getItem("authToken");
+  //   console.log("testGet token: " + authToken);
+
+  //   const headers = new HttpHeaders({
+  //     Authorization: `Bearer ${authToken}`,
+  //     Accept: "application/json",
+  //   });
+
+  //   return this.http.get(`http://localhost:4200/api/usuarios`, { headers });
+  // }
 }
