@@ -1,12 +1,12 @@
 import { Routes } from "@angular/router";
-import { SinginSignupPageComponent } from "./features/signin-signup-page/signin-signup-page.component";
-import { SignUpComponent } from "./features/sign-up/sign-up.component";
-import { CadastroPacienteComponent } from "./features/cadastro-paciente/cadastro-paciente.component";
-import { ConsultaComponent } from "./features/consulta/consulta.component";
-import { ProntuariosComponent } from "./features/prontuarios/prontuarios.component";
-import { ProntuarioPacienteComponent } from "./features/prontuario-paciente/prontuario-paciente.component";
-import { HomeComponent } from "./features/home/home.component";
-import { ExamesComponent } from "./features/exames/exames.component";
+import { SinginSignupPageComponent } from "./pages/signin-signup-page/signin-signup-page.component";
+import { SignUpComponent } from "./pages/sign-up/sign-up.component";
+import { CadastroPacienteComponent } from "./pages/cadastro-paciente/cadastro-paciente.component";
+import { ConsultaComponent } from "./pages/consulta/consulta.component";
+import { ProntuariosComponent } from "./pages/prontuarios/prontuarios.component";
+import { ProntuarioPacienteComponent } from "./pages/prontuario-paciente/prontuario-paciente.component";
+import { HomeComponent } from "./pages/home/home.component";
+import { ExamesComponent } from "./pages/exames/exames.component";
 import { TesteApiServiceComponent } from "./temp/teste-api-service/teste-api-service.component";
 import { authGuard } from "./core/guards/auth.guard";
 
