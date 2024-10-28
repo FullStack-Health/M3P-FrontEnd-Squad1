@@ -1,14 +1,13 @@
 import { Component } from "@angular/core";
 import { LoginComponent } from "../login/login.component";
 import { SignUpComponent } from "../sign-up/sign-up.component";
-import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-singin-signup-page",
   standalone: true,
-  imports: [LoginComponent, SignUpComponent, CommonModule],
-  templateUrl: "./singin-signup-page.component.html",
-  styleUrl: "./singin-signup-page.component.scss",
+  imports: [LoginComponent, SignUpComponent],
+  templateUrl: "./signin-signup-page.component.html",
+  styleUrl: "./signin-signup-page.component.scss",
 })
 export class SinginSignupPageComponent {
   isSignDivVisible: boolean = true;

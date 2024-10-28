@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { catchError, Observable, throwError } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -8,29 +8,52 @@ import { Observable } from "rxjs";
 export class ApiService {
   http = inject(HttpClient);
 
-  private baseUrl = "http://localhost:8081";
+  private apiUrl = "http://localhost:4200";
 
   constructor() {}
 
   //métodos genéricos:
-  getData(endpoint: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${endpoint}`);
+  get<T>(url: string): Observable<T> {
+    return this.http
+      .get<T>(`${this.apiUrl}/${url}`)
+      .pipe(catchError(this.handleError));
   }
 
-  postData(endpoint: string, data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/${endpoint}`, data);
+  post<T>(url: string, body: any): Observable<T> {
+    return this.http
+      .post<T>(`${this.apiUrl}/${url}`, body)
+      .pipe(catchError(this.handleError));
+  }
+  put<T>(url: string, id: string, body: any): Observable<T> {
+    return this.http
+      .put<T>(`${this.apiUrl}/${url}/${id}`, body)
+      .pipe(catchError(this.handleError));
   }
 
-  putData(endpoint: string, id: string, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${endpoint}/${id}`, data);
+  delete<T>(url: string, id: string): Observable<T> {
+    return this.http
+      .delete<T>(`${this.apiUrl}/${url}/${id}`)
+      .pipe(catchError(this.handleError));
   }
 
-  deleteData(endpoint: string, id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${endpoint}/${id}`);
-  }
-
-  //métodos específicos:
-  login(email: string, password: string): Observable<any> {
-    return this.postData("api/usuarios/login", { email, password });
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    // tratamento erros genéricos de servidor e comunicação:
+    if (error.status === 0) {
+      return throwError(
+        () =>
+          new Error(
+            "Falha na conexão com o servidor. Por favor, verifique sua conexão."
+          )
+      );
+    }
+    if (error.status >= 500) {
+      // com o proxy ativado, esse erro aparece ao invés de erro 0 falha de conexão, caso o servidor esteja offline
+      return throwError(
+        () => new Error("Erro interno do servidor. Tente novamente mais tarde.")
+      );
+    }
+    // console.error(error);
+    // erros específicos são tratados no serviço específico
+    return throwError(() => error);
   }
 }
