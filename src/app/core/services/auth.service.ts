@@ -1,22 +1,30 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, Observable, tap, throwError } from "rxjs";
+import { ApiService } from "./api.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
   http = inject(HttpClient);
+  apiService = inject(ApiService);
 
   private apiUrl = " http://localhost:8081/api/usuarios/login";
 
   constructor() {}
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post<any>(this.apiUrl, { email, password }).pipe(
-      tap((response) => this.saveLogin(response.token)),
+  login(credentials: { email: string; password: string }): Observable<any> {
+    return this.apiService.post("api/usuarios/login", credentials).pipe(
+      tap((response: any) => {
+        this.saveLogin(response.token);
+      }),
       catchError(this.handleError)
     );
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem("authToken");
   }
 
   logout() {
@@ -27,6 +35,7 @@ export class AuthService {
     localStorage.setItem("loggedUder", "user");
     localStorage.setItem("authToken", token);
   }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = "Ocorreu um erro inesperado.";
 
@@ -34,17 +43,11 @@ export class AuthService {
       errorMessage = "E-mail ou senha incorretos.";
     } else if (error.status === 400) {
       errorMessage = "Requisição inválida.";
-    } else if (error.status === 0) {
-      errorMessage = "Falha na conexão com o servidor.";
-    } else if (error.error instanceof ErrorEvent) {
-      // erro frontend
-      errorMessage = `Erro: ${error.error.message}`;
     } else {
-      // outro erro, enviado pelo backend
-      errorMessage = `Erro ${error.status}: ${error.message}`;
+      errorMessage = `${error.message}`;
     }
+    // console.error(error);
 
-    // Lança o erro como uma nova mensagem para ser exibida no componente
     return throwError(() => new Error(errorMessage));
   }
 }

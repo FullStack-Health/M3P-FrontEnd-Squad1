@@ -39,10 +39,13 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     // if (this.loginForm.valid) {
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
 
-    this.authService.login(email, password).subscribe({
+    const credentials = {
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password,
+    };
+
+    this.authService.login(credentials).subscribe({
       next: (response) => {
         console.log("Login bem-sucedido!", response);
         this.router.navigate(["/testeApi"]);
@@ -54,7 +57,7 @@ export class LoginComponent implements OnInit {
           confirmButtonColor: "#0A7B73",
           confirmButtonText: "OK",
         });
-        console.error(error.message);
+        console.error("Erro de autenticação:", error.message);
       },
     });
     // }
