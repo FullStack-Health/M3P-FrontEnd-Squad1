@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, inject, Input, OnInit } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AuthService } from "../../../core/services/auth.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-toolbar",
@@ -11,6 +12,9 @@ import { AuthService } from "../../../core/services/auth.service";
   styleUrl: "./toolbar.component.scss",
 })
 export class ToolbarComponent implements OnInit {
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
   @Input() isMenuRetracted: boolean = false;
   @Input() pageTitle: string = "Default Title";
 
@@ -20,9 +24,10 @@ export class ToolbarComponent implements OnInit {
     this.userData = loggedUser;
   }
 
-  constructor(private authService: AuthService) {}
+  constructor() {}
 
   onLogoutClick() {
     this.authService.logout();
+    this.router.navigate(["/login"]);
   }
 }

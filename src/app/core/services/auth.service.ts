@@ -3,6 +3,7 @@ import { inject, Injectable } from "@angular/core";
 import { catchError, Observable, tap, throwError } from "rxjs";
 import { ApiService } from "./api.service";
 import { jwtDecode } from "jwt-decode";
+import { LoggedUserService } from "./logged-user.service";
 
 @Injectable({
   providedIn: "root",
@@ -10,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 export class AuthService {
   http = inject(HttpClient);
   apiService = inject(ApiService);
+  loggedUserService = inject(LoggedUserService);
 
   constructor() {}
 
@@ -24,6 +26,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem("authToken");
+    this.loggedUserService.clearLoggedUser();
   }
 
   getToken(): string | null {
@@ -39,12 +42,8 @@ export class AuthService {
       role: decodedToken.role.replace("ROLE_", ""),
       expired: decodedToken.exp * 1000 < Date.now(),
     };
-    localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+    this.loggedUserService.saveUser(loggedUser);
     localStorage.setItem("authToken", token);
-  }
-
-  getLoggedUser() {
-    return JSON.parse(localStorage.getItem("loggedUser") || "{}");
   }
 
   private decodeToken(token: string): any {

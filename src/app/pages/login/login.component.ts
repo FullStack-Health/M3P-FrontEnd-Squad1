@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(credentials).subscribe({
       next: (response) => {
         console.log("Login bem-sucedido!", response);
-        this.router.navigate(["/testeApi"]);
+        this.router.navigate(["/home"]);
       },
       error: (error: Error) => {
         Swal.fire({
