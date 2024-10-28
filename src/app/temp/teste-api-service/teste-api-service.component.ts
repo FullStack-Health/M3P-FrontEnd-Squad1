@@ -1,6 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ApiService } from "../../core/services/api.service";
 import { HttpClient } from "@angular/common/http";
+import { UsuarioService } from "../../shared/services/usuario.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-teste-api-service",
@@ -10,35 +12,28 @@ import { HttpClient } from "@angular/common/http";
   styleUrl: "./teste-api-service.component.scss",
 })
 export class TesteApiServiceComponent {
-  constructor(private apiService: ApiService, private http: HttpClient) {}
-  data = {
-    newPassword: "admin12345",
-  };
+  private usuarioService = inject(UsuarioService);
+
+  constructor() {}
 
   teste(): void {
-    //
-    // this.apiService.testGetUsuarios;
-    // this.apiService.testPost("").subscribe({
-    //   next(response) {
-    //     console.log(response);
-    //   },
-    //   error(err) {
-    //     console.error(err);
-    //   },
-    // });
-    // this.apiService
-    //   .postData("api/usuarios/pre-registro", {
-    //     email: "ricrvs1@example.com",
-    //     password: "senha123",
-    //     role: "ADMIN",
-    //   })
-    //   .subscribe({
-    //     next(response) {
-    //       console.log(response);
-    //     },
-    //     error(err) {
-    //       console.error(err);
-    //     },
-    //   });
+    const credentials = {
+      email: "admin@example.com",
+      newPassword: "123123123",
+    };
+    this.usuarioService.redefinirSenha(credentials).subscribe({
+      next: (response) => {
+        console.log("senha alterada!", response);
+      },
+      error: (error: Error) => {
+        Swal.fire({
+          text: error.message,
+          icon: "error",
+          confirmButtonColor: "#0A7B73",
+          confirmButtonText: "OK",
+        });
+        console.error("Erro de autenticação:", error.message);
+      },
+    });
   }
 }

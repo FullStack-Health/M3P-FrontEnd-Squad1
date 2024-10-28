@@ -24,7 +24,15 @@ export class ApiService {
       .post<T>(`${this.apiUrl}/${url}`, body)
       .pipe(catchError(this.handleError));
   }
-  put<T>(url: string, id: string, body: any): Observable<T> {
+
+  put<T>(url: string, id: string | null, body: any): Observable<T> {
+    // redefinir senha não envia id
+    if (!id) {
+      return this.http
+        .put<T>(`${this.apiUrl}/${url}`, body)
+        .pipe(catchError(this.handleError));
+    }
+
     return this.http
       .put<T>(`${this.apiUrl}/${url}/${id}`, body)
       .pipe(catchError(this.handleError));
