@@ -1,7 +1,17 @@
 import { HttpInterceptorFn } from "@angular/common/http";
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  if (req.url.includes("/api/usuarios/login")) {
+  const noAuthUrls = [
+    "/api/usuarios/login",
+    "/api/usuarios/pre-registro",
+    "/api/usuarios/email/",
+  ];
+
+  console.log(req.url);
+
+  const isNoAuthUrl = noAuthUrls.some((url) => req.url.includes(url));
+
+  if (isNoAuthUrl) {
     return next(req);
   }
 

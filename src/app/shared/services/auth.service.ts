@@ -1,17 +1,16 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, Observable, tap, throwError } from "rxjs";
-import { ApiService } from "./api.service";
 import { jwtDecode } from "jwt-decode";
-import { LoggedUserService } from "./logged-user.service";
+import { ApiService } from "../../core/services/api.service";
+import { LoggedUserService } from "../../core/services/logged-user.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  http = inject(HttpClient);
-  apiService = inject(ApiService);
-  loggedUserService = inject(LoggedUserService);
+  private apiService = inject(ApiService);
+  private loggedUserService = inject(LoggedUserService);
 
   constructor() {}
 

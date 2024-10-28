@@ -9,6 +9,7 @@ import {
 } from "@angular/forms";
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
+import { UsuarioService } from "../../shared/services/usuario.service";
 
 @Component({
   selector: "app-sign-up",
@@ -20,6 +21,7 @@ import Swal from "sweetalert2";
 export class SignUpComponent {
   private Router = inject(Router);
   private formBuilder = inject(FormBuilder);
+  private usuarioService = inject(UsuarioService);
 
   userForm!: FormGroup;
 
@@ -43,17 +45,37 @@ export class SignUpComponent {
 
   cadastrar() {
     if (this.userForm.valid) {
-      Swal.fire({
-        text: "Cadastro efetuado com sucesso!",
-        icon: "success",
-        confirmButtonColor: "#0A7B73",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (this.Router.url === "/login") {
-          window.location.reload();
-        } else {
-          this.Router.navigate(["/login"]);
-        }
+      const newUser = {
+        email: this.userForm.value.email,
+        password: this.userForm.value.senha,
+        role: this.userForm.value.perfil,
+      };
+
+      this.usuarioService.preRegistro(newUser).subscribe({
+        next: (response) => {
+          console.log("Pré-cadastro bem-sucedido!", response);
+          Swal.fire({
+            text: "Cadastro efetuado com sucesso!",
+            icon: "success",
+            confirmButtonColor: "#0A7B73",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (this.Router.url === "/login") {
+              window.location.reload();
+            } else {
+              this.Router.navigate(["/login"]);
+            }
+          });
+        },
+        error: (error: Error) => {
+          Swal.fire({
+            text: error.message,
+            icon: "error",
+            confirmButtonColor: "#0A7B73",
+            confirmButtonText: "OK",
+          });
+          console.error("Erro de autenticação:", error.message);
+        },
       });
     } else {
       Swal.fire({
