@@ -14,7 +14,7 @@ export class UsuarioService {
   preRegistro(newUser: any): Observable<any> {
     return this.apiService.post("api/usuarios/pre-registro", newUser).pipe(
       tap((response: any) => {
-        console.log(response);
+        // console.log(response);
       }),
       catchError(this.handleError)
     );

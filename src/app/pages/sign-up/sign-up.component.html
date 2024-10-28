@@ -1,5 +1,4 @@
 <form
-  (ngSubmit)="cadastrar()"
   [formGroup]="userForm"
   class="fieldset"
 >
@@ -54,8 +53,8 @@
       >
         Perfil
       </option>
-      <option value="admin">Admin</option>
-      <option value="medico">Médico</option>
+      <option value="ADMIN">Admin</option>
+      <option value="MEDICO">Médico</option>
     </select>
 
     @if (userForm.get('perfil')?.touched &&
