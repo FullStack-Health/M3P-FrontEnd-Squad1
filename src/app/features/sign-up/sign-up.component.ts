@@ -30,6 +30,7 @@ export class SignUpComponent {
       Validators.required,
     ]),
     codigoUsuario: new FormControl(""),
+    perfil: new FormControl ("", [Validators.required]) 
   });
 
   constructor(
@@ -60,6 +61,7 @@ export class SignUpComponent {
 
         this.form.controls["nome"].setValue("");
         this.form.controls["email"].setValue("");
+        this.form.controls["perfil"].setValue("");
         this.form.controls["senha"].setValue("");
         this.form.controls["confirmarSenha"].setValue("");
 

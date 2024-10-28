@@ -30,6 +30,24 @@
             Preenchimento obrigatório
         </span>
     </div>
+
+<!-- Campo de Seleção de Perfil -->
+<div id="perfil" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.perfil.dirty ||
+form.controls.perfil.touched) &&
+form.controls.perfil.errors}">
+<select formControlName="perfil">
+    <option value="">Selecione o perfil</option>
+    <option value="admin">Admin</option>
+    <option value="medico">Médico</option>
+</select>
+<span *ngIf="(form.controls.perfil.dirty ||
+    form.controls.perfil.touched) &&
+    form.controls.perfil.errors &&
+    form.controls.perfil.errors['required']">
+    Preenchimento obrigatório
+</span>
+</div>
+
     <div id="password" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.senha.dirty ||
         form.controls.senha.touched) &&
         form.controls.senha.errors}">
