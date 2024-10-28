@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, Observable, tap, throwError } from "rxjs";
 import { ApiService } from "./api.service";
+import { jwtDecode } from "jwt-decode";
 
 @Injectable({
   providedIn: "root",
@@ -9,8 +10,6 @@ import { ApiService } from "./api.service";
 export class AuthService {
   http = inject(HttpClient);
   apiService = inject(ApiService);
-
-  private apiUrl = " http://localhost:8081/api/usuarios/login";
 
   constructor() {}
 
@@ -23,17 +22,33 @@ export class AuthService {
     );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem("authToken");
-  }
-
   logout() {
     localStorage.removeItem("authToken");
   }
 
+  getToken(): string | null {
+    return localStorage.getItem("authToken");
+  }
+
   private saveLogin(token: string): void {
-    localStorage.setItem("loggedUder", "user");
+    const decodedToken: { role: string; sub: string; exp: number } =
+      this.decodeToken(token);
+
+    const loggedUser = {
+      name: decodedToken.sub,
+      role: decodedToken.role.replace("ROLE_", ""),
+      expired: decodedToken.exp * 1000 < Date.now(),
+    };
+    localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
     localStorage.setItem("authToken", token);
+  }
+
+  getLoggedUser() {
+    return JSON.parse(localStorage.getItem("loggedUser") || "{}");
+  }
+
+  private decodeToken(token: string): any {
+    return jwtDecode(token);
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
