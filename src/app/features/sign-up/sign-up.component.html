@@ -2,20 +2,20 @@
     <img src="../../assets/logos/logo-positive.svg" alt="logo">
     <h1>Criar conta</h1>
     <span>Cadastre-se para acessar o sistema</span>
-    <div id="name" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.nome.dirty ||
-        form.controls.nome.touched) &&
-        form.controls.nome.errors}">
-        <input placeholder="Nome completo" type="text" name="nome" formControlName="nome">
-        <span *ngIf="(form.controls.nome.dirty ||
-            form.controls.nome.touched) &&
-            form.controls.nome.errors &&
-            form.controls.nome.errors['required']">
+    <div id="name" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.name.dirty ||
+        form.controls.name.touched) &&
+        form.controls.name.errors}">
+        <input placeholder="Nome completo" type="text" name="name" formControlName="name">
+        <span *ngIf="(form.controls.name.dirty ||
+            form.controls.name.touched) &&
+            form.controls.name.errors &&
+            form.controls.name.errors['required']">
             *Preenchimento obrigatório
         </span>
-        <span *ngIf="(form.controls.nome.dirty ||
-            form.controls.nome.touched) &&
-            form.controls.nome.errors &&
-            form.controls.nome.errors['validarNomeCompleto']">
+        <span *ngIf="(form.controls.name.dirty ||
+            form.controls.name.touched) &&
+            form.controls.name.errors &&
+            form.controls.name.errors['validarNomeCompleto']">
             *Por favor, insira seu nome completo
         </span>
     </div>
@@ -32,55 +32,55 @@
     </div>
 
 <!-- Campo de Seleção de Perfil -->
-<div id="perfil" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.perfil.dirty ||
-form.controls.perfil.touched) &&
-form.controls.perfil.errors}">
-<select formControlName="perfil">
+<div id="role" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.role.dirty ||
+form.controls.role.touched) &&
+form.controls.role.errors}">
+<select formControlName="role">
     <option value="">Selecione o perfil</option>
     <option value="admin">Admin</option>
     <option value="medico">Médico</option>
 </select>
-<span *ngIf="(form.controls.perfil.dirty ||
-    form.controls.perfil.touched) &&
-    form.controls.perfil.errors &&
-    form.controls.perfil.errors['required']">
+<span *ngIf="(form.controls.role.dirty ||
+    form.controls.role.touched) &&
+    form.controls.role.errors &&
+    form.controls.role.errors['required']">
     Preenchimento obrigatório
 </span>
 </div>
 
-    <div id="password" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.senha.dirty ||
-        form.controls.senha.touched) &&
-        form.controls.senha.errors}">
-        <input type="password" name="senha" formControlName="senha" placeholder="Senha">
+    <div id="password" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.password.dirty ||
+        form.controls.password.touched) &&
+        form.controls.password.errors}">
+        <input type="password" name="password" formControlName="password" placeholder="Senha">
 
-        <span *ngIf="form.controls.senha.dirty &&
-              form.controls.senha.touched &&
-              form.controls.senha.errors &&
-              form.controls.senha.errors['minlength']">
+        <span *ngIf="form.controls.password.dirty &&
+              form.controls.password.touched &&
+              form.controls.password.errors &&
+              form.controls.password.errors['minlength']">
             A senha deve conter ao menos 8 caracteres
         </span>
-        <span *ngIf="form.controls.senha.dirty &&
-              form.controls.senha.touched &&
-              form.controls.senha.errors &&
-              form.controls.senha.errors['required']">
+        <span *ngIf="form.controls.password.dirty &&
+              form.controls.password.touched &&
+              form.controls.password.errors &&
+              form.controls.password.errors['required']">
             Preenchimento obrigatório
         </span>
     </div>
-    <div id="password-confirm" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.confirmarSenha.dirty ||
-        form.controls.confirmarSenha.touched) &&
-        form.controls.confirmarSenha.errors}">
-        <input type="password" name="confirmarSenha" formControlName="confirmarSenha" placeholder="Confirme sua senha">
+    <div id="password-confirm" class="elemento-formulario" [ngClass]="{'erro-formulario': (form.controls.confirmarPassword.dirty ||
+        form.controls.confirmarPassword.touched) &&
+        form.controls.confirmarPassword.errors}">
+        <input type="password" name="confirmarPassword" formControlName="confirmarPassword" placeholder="Confirme sua senha">
 
-        <span *ngIf="form.controls.confirmarSenha.dirty &&
-              form.controls.confirmarSenha.touched &&
-              form.controls.confirmarSenha.errors &&
-              form.controls.confirmarSenha.errors['minlength']">
+        <span *ngIf="form.controls.confirmarPassword.dirty &&
+              form.controls.confirmarPassword.touched &&
+              form.controls.confirmarPassword.errors &&
+              form.controls.confirmarPassword.errors['minlength']">
             A senha deve conter ao menos 8 caracteres
         </span>
-        <span *ngIf="form.controls.confirmarSenha.dirty &&
-              form.controls.confirmarSenha.touched &&
-              form.controls.confirmarSenha.errors &&
-              form.controls.confirmarSenha.errors['required']">
+        <span *ngIf="form.controls.confirmarPassword.dirty &&
+              form.controls.confirmarPassword.touched &&
+              form.controls.confirmarPassword.errors &&
+              form.controls.confirmarPassword.errors['required']">
             Preenchimento obrigatório
         </span>
     </div>

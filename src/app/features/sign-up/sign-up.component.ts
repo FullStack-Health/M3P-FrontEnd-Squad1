@@ -19,18 +19,18 @@ import Swal from "sweetalert2";
 })
 export class SignUpComponent {
   form = new FormGroup({
-    nome: new FormControl("", [
+    name: new FormControl("", [
       Validators.required,
       this.customValidatorService.validarNomeCompleto(),
     ]),
     email: new FormControl("", [Validators.required, Validators.email]),
-    senha: new FormControl("", [Validators.minLength(8), Validators.required]),
-    confirmarSenha: new FormControl("", [
+    password: new FormControl("", [Validators.minLength(8), Validators.required]),
+    confirmarPassword: new FormControl("", [
       Validators.minLength(8),
       Validators.required,
     ]),
     codigoUsuario: new FormControl(""),
-    perfil: new FormControl ("", [Validators.required]) 
+    role: new FormControl ("", [Validators.required]) 
   });
 
   constructor(
@@ -51,7 +51,7 @@ export class SignUpComponent {
     } else {
       if (
         this.form.valid &&
-        this.form.value.senha === this.form.value.confirmarSenha
+        this.form.value.password === this.form.value.confirmarPassword
       ) {
         const userCode = Math.floor(1000 + Math.random() * 9000);
         this.form.patchValue({ codigoUsuario: userCode.toString() });
@@ -59,11 +59,11 @@ export class SignUpComponent {
         users.push(this.form.value);
         localStorage.setItem("cadastroData", JSON.stringify(users));
 
-        this.form.controls["nome"].setValue("");
+        this.form.controls["name"].setValue("");
         this.form.controls["email"].setValue("");
-        this.form.controls["perfil"].setValue("");
-        this.form.controls["senha"].setValue("");
-        this.form.controls["confirmarSenha"].setValue("");
+        this.form.controls["role"].setValue("");
+        this.form.controls["password"].setValue("");
+        this.form.controls["confirmarPassword"].setValue("");
 
         Swal.fire({
           text: "Cadastro efetuado com sucesso!",
