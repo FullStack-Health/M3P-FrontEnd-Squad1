@@ -3,6 +3,7 @@ import { ApiService } from "../../core/services/api.service";
 import { HttpClient } from "@angular/common/http";
 import { UsuarioService } from "../../shared/services/usuario.service";
 import Swal from "sweetalert2";
+import { PacienteService } from "../../shared/services/paciente.service";
 
 @Component({
   selector: "app-teste-api-service",
@@ -13,6 +14,7 @@ import Swal from "sweetalert2";
 })
 export class TesteApiServiceComponent {
   private usuarioService = inject(UsuarioService);
+  private pacienteService = inject(PacienteService);
 
   constructor() {}
 
@@ -21,9 +23,9 @@ export class TesteApiServiceComponent {
       email: "admin@example.com",
       newPassword: "123123123",
     };
-    this.usuarioService.redefinirSenha(credentials).subscribe({
+    this.pacienteService.getAllPacientes().subscribe({
       next: (response) => {
-        console.log("senha alterada!", response);
+        console.log("all pacientes:", response);
       },
       error: (error: Error) => {
         Swal.fire({

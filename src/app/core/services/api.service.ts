@@ -8,7 +8,7 @@ import { catchError, Observable, throwError } from "rxjs";
 export class ApiService {
   http = inject(HttpClient);
 
-  private apiUrl = "http://localhost:4200";
+  private apiUrl = "http://localhost:8081/api";
 
   constructor() {}
 
