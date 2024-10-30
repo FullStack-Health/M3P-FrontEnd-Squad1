@@ -24,6 +24,7 @@ export const routes: Routes = [
     path: "home",
     component: HomeComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO", "PACIENTE"] },
   },
   {
     path: "login",
@@ -38,40 +39,48 @@ export const routes: Routes = [
     path: "paciente",
     component: CadastroPacienteComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "paciente/edit/:id",
     component: CadastroPacienteComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "exame",
     component: ExamesComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "exame/:examId",
     component: ExamesComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "consulta",
     component: ConsultaComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "consulta/:consultaId",
     component: ConsultaComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "prontuarios",
     component: ProntuariosComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "prontuarios/:id",
     component: ProntuarioPacienteComponent,
     canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO", "PACIENTE"] },
   },
 ];
