@@ -29,9 +29,9 @@ export class TesteApiServiceComponent {
       email: "admin@example.com",
       newPassword: "123123123",
     };
-    this.consultaService.getAllConsultas().subscribe({
+    this.pacienteService.getAllPacientes().subscribe({
       next: (response) => {
-        console.log("all consultas:", response);
+        console.log("resposta:", response);
       },
       error: (error: Error) => {
         Swal.fire({

@@ -8,8 +8,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 })
 export class PacienteService {
   private apiService = inject(ApiService);
-  private pacienteUrl = "/pacientes";
-  private prontuarioUrl = "/prontuarios";
+  private pacienteUrl = "pacientes";
   private pacienteList: any[] = [];
 
   constructor() {}
