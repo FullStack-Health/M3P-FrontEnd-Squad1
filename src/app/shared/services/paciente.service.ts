@@ -69,26 +69,6 @@ export class PacienteService {
     );
   }
 
-  getAllProntuarios(): Observable<any> {
-    return this.apiService.get(`${this.pacienteUrl}${this.prontuarioUrl}`).pipe(
-      tap((response: any) => {
-        // isolar listas da resposta paginada
-        // console.log(response);
-      }),
-      catchError(this.handleError)
-    );
-  }
-  getProntuarioByPacienteId(pacienteId: string): Observable<any> {
-    return this.apiService
-      .get(`${this.pacienteUrl}/${pacienteId}${this.prontuarioUrl}`)
-      .pipe(
-        tap((response: any) => {
-          // console.log(response);
-        }),
-        catchError(this.handleError)
-      );
-  }
-
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = "Ocorreu um erro inesperado.";
 
