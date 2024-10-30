@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
-import { PacienteService } from "../../shared/services/paciente.service";
+import { PacienteService } from "../../temp/old/old_paciente.service";
 import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
 import { DatePipe } from "@angular/common";
 

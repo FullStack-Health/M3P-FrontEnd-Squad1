@@ -1,133 +1,89 @@
-import { Injectable } from '@angular/core';
-import { v4 as uuidv4 } from 'uuid';
-
+import { inject, Injectable } from "@angular/core";
+import { ApiService } from "../../core/services/api.service";
+import { catchError, Observable, tap, throwError } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class PacienteService {
-
+  private apiService = inject(ApiService);
+  private pacienteUrl = "api/pacientes";
   private pacienteList: any[] = [];
 
-  constructor() {
-    const localData = localStorage.getItem('pacienteData');
-    if (localData) {
-      this.pacienteList = JSON.parse(localData);
+  constructor() {}
+
+  // métodos do antigo pacienteService (com localStorage):
+  // getAllPactients(): any[];
+  // getPatientById(patientId: string): any;
+  // addPatient(patient: any): void ;
+  // updatePatient(updatedPatient: any): void ;
+  // deletePatient(patientId: string): void;
+
+  getAllPatients(): Observable<any> {
+    return this.apiService.get(this.pacienteUrl).pipe(
+      tap((response: any) => {
+        // isolar lista de pacientes da resposta paginada
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  getPatientById(pacienteId: string): Observable<any> {
+    return this.apiService.get(`${this.pacienteUrl}/${pacienteId}`).pipe(
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  addPatient(newPaciente: any): Observable<any> {
+    return this.apiService.post(this.pacienteUrl, newPaciente).pipe(
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  updatePatient(updatedPatient: any): Observable<any> {
+    return this.apiService
+      .put(this.pacienteUrl, updatedPatient.id, updatedPatient)
+      .pipe(
+        tap((response: any) => {
+          // console.log(response);
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  deletePatient(patientId: string): Observable<any> {
+    return this.apiService.post(this.pacienteUrl, patientId).pipe(
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = "Ocorreu um erro inesperado.";
+
+    if (error.status === 400) {
+      errorMessage = "Dados ausentes ou incorretos";
+    } else if (error.status === 401) {
+      errorMessage = "Falha de autenticação.";
+    } else if (error.status === 404) {
+      errorMessage = "Paciente não encontrado.";
+    } else if (error.status === 409) {
+      errorMessage = "Paciente já cadastrado";
+    } else {
+      errorMessage = `${error.message}`;
     }
+    // console.error(error);
+
+    return throwError(() => new Error(errorMessage));
   }
-
-  getAllPatients(): any[] {
-    return this.pacienteList;
-  }
-
-  getPatientById(patientId: string): any {
-    return this.pacienteList.find(p => p.id === patientId);
-  }
-
-  addPatient(patient: any): void {
-    const patientId = Math.floor(1000 + Math.random() * 9000);
-    patient.id = patientId.toString();
-    this.pacienteList.push(patient);
-    this.saveToLocalStorage();
-  }
-
-  updatePatient(updatedPatient: any): void {
-    const index = this.pacienteList.findIndex(p => p.id === updatedPatient.id);
-    if (index !== -1) {
-      const existingExams = this.pacienteList[index].exams;
-      const existingConsultas = this.pacienteList[index].consultas;
-      this.pacienteList[index] = { ...updatedPatient, exams: existingExams, consultas: existingConsultas };
-      this.saveToLocalStorage();
-    }
-  }
-
-
-  deletePatient(patientId: string): void {
-    const index = this.pacienteList.findIndex(p => p.id === patientId);
-    if (index !== -1) {
-      this.pacienteList.splice(index, 1);
-      this.saveToLocalStorage(); 
-    }
-  }
-
-  private saveToLocalStorage(): void {
-    localStorage.setItem('pacienteData', JSON.stringify(this.pacienteList));
-  }
-
-
-  addExam(patientId: string, exam: any): void {   
-    const patient = this.getPatientById(patientId);
-    
-    if (patient) {
-        if (!patient.exams) {
-            patient.exams = [];
-        }
-        const examId = uuidv4();
-        exam.id = examId;
-        patient.exams.push(exam);
-        patient.exams.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        this.saveToLocalStorage();
-    }
-}
-
-  updateExam(patientId: string, updatedExam: any): void {
-    const patient = this.getPatientById(patientId);
-    if (patient && patient.exams) {
-      const index = patient.exams.findIndex((e: any) => e.id === updatedExam.id);
-      if (index !== -1) {
-        patient.exams[index] = { ...updatedExam };
-        patient.exams.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        this.saveToLocalStorage();
-      }
-    }
-  }
-  
-  deleteExam(patientId: string, examId: string): void {
-    const patient = this.getPatientById(patientId);
-    if (patient && patient.exams) {
-      const index = patient.exams.findIndex((e: any) => e.id === examId);
-      if (index !== -1) {
-        patient.exams.splice(index, 1);
-        this.saveToLocalStorage();
-      }
-    }
-  }
-
-  addConsulta(patientId: string, consulta: any): void {
-    const patient = this.getPatientById(patientId);
-    if (patient) {
-      if (!patient.consultas) {
-        patient.consultas = [];
-      }
-      const consultaId = uuidv4();
-      consulta.id = consultaId;
-      patient.consultas.push(consulta);
-      patient.consultas.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      this.saveToLocalStorage();
-    }
-  }
-
-  updateConsulta(patientId: string, updatedConsulta: any): void {
-    const patient = this.getPatientById(patientId);
-    if (patient && patient.consultas) {
-      const index = patient.consultas.findIndex((c: any) => c.id === updatedConsulta.id);
-      if (index !== -1) {
-        patient.consultas[index] = { ...updatedConsulta };
-        patient.consultas.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        this.saveToLocalStorage();
-      }
-    }
-  }
-  
-  deleteConsulta(patientId: string, consultaId: string): void {
-    const patient = this.getPatientById(patientId);
-    if (patient && patient.consultas) {
-      const index = patient.consultas.findIndex((c: any) => c.id === consultaId);
-      if (index !== -1) {
-        patient.consultas.splice(index, 1);
-        this.saveToLocalStorage();
-      }
-    }
-  }
-
 }

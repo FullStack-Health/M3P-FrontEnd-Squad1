@@ -8,7 +8,7 @@ import {
 } from "@angular/forms";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
-import { PacienteService } from "../../shared/services/paciente.service";
+import { PacienteService } from "../../temp/old/old_paciente.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import Swal from "sweetalert2";
