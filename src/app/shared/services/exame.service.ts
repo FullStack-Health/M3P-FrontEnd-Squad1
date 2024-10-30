@@ -6,32 +6,24 @@ import { HttpErrorResponse } from "@angular/common/http";
 @Injectable({
   providedIn: "root",
 })
-export class PacienteService {
+export class ExameService {
   private apiService = inject(ApiService);
-  private pacienteUrl = "pacientes";
-  private pacienteList: any[] = [];
-
+  private exameUrl = "exames";
+  private exameList: any[] = [];
   constructor() {}
 
-  // métodos do antigo pacienteService (com localStorage):
-  // getAllPactients(): any[];
-  // getPatientById(patientId: string): any;
-  // addPatient(patient: any): void ;
-  // updatePatient(updatedPatient: any): void ;
-  // deletePatient(patientId: string): void;
-
-  getAllPacientes(): Observable<any> {
-    return this.apiService.get(this.pacienteUrl).pipe(
+  getAllExames(): Observable<any> {
+    return this.apiService.get(this.exameUrl).pipe(
       tap((response: any) => {
-        // isolar lista de pacientes da resposta paginada
+        // isolar lista de exames da resposta paginada
         // console.log(response);
       }),
       catchError(this.handleError)
     );
   }
 
-  getPacienteById(pacienteId: string): Observable<any> {
-    return this.apiService.get(`${this.pacienteUrl}/${pacienteId}`).pipe(
+  getExameById(exameId: string): Observable<any> {
+    return this.apiService.get(`${this.exameUrl}/${exameId}`).pipe(
       tap((response: any) => {
         // console.log(response);
       }),
@@ -39,8 +31,8 @@ export class PacienteService {
     );
   }
 
-  addPaciente(newPaciente: any): Observable<any> {
-    return this.apiService.post(this.pacienteUrl, newPaciente).pipe(
+  addExame(newExame: any): Observable<any> {
+    return this.apiService.post(this.exameUrl, newExame).pipe(
       tap((response: any) => {
         // console.log(response);
       }),
@@ -48,9 +40,9 @@ export class PacienteService {
     );
   }
 
-  updatePaciente(updatedPaciente: any): Observable<any> {
+  updateExame(updatedExame: any): Observable<any> {
     return this.apiService
-      .put(this.pacienteUrl, updatedPaciente.id, updatedPaciente)
+      .put(this.exameUrl, updatedExame.id, updatedExame)
       .pipe(
         tap((response: any) => {
           // console.log(response);
@@ -59,8 +51,8 @@ export class PacienteService {
       );
   }
 
-  deletePaciente(pacienteId: string): Observable<any> {
-    return this.apiService.post(this.pacienteUrl, pacienteId).pipe(
+  deleteExame(exameId: string): Observable<any> {
+    return this.apiService.post(this.exameUrl, exameId).pipe(
       tap((response: any) => {
         // console.log(response);
       }),
@@ -72,13 +64,17 @@ export class PacienteService {
     let errorMessage = "Ocorreu um erro inesperado.";
 
     if (error.status === 400) {
-      errorMessage = "Dados ausentes ou incorretos";
+      // errorMessage = "Dados ausentes ou incorretos";
+      // mensagem de erro específico vem do backend:
+      errorMessage = `${error.message}`;
     } else if (error.status === 401) {
       errorMessage = "Falha de autenticação.";
     } else if (error.status === 404) {
-      errorMessage = "Paciente não encontrado.";
+      errorMessage = "Exame não encontrado";
     } else if (error.status === 409) {
-      errorMessage = "Paciente já cadastrado";
+      // errorMessage = "Exame já cadastrado";
+      // mensagem de erro específico vem do backend:
+      errorMessage = `${error.message}`;
     } else {
       errorMessage = `${error.message}`;
     }

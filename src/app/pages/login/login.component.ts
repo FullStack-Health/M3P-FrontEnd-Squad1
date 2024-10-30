@@ -106,7 +106,7 @@ export class LoginComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const { email, newPassword } = result.value!;
-        this.usuarioService.redefinirSenha({ email, newPassword }).subscribe({
+        this.usuarioService.updateSenha({ email, newPassword }).subscribe({
           next: () => {
             Swal.fire({
               text: "Senha redefinida com sucesso!",

@@ -8,7 +8,8 @@ import { catchError, Observable, throwError } from "rxjs";
 export class ApiService {
   http = inject(HttpClient);
 
-  private apiUrl = "http://localhost:4200";
+  // URL com proxy para evistar erro CORS:
+  private apiUrl = "http://localhost:4200/api";
 
   constructor() {}
 

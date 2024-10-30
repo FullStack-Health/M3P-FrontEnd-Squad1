@@ -11,11 +11,12 @@ import { LoggedUserService } from "../../core/services/logged-user.service";
 export class AuthService {
   private apiService = inject(ApiService);
   private loggedUserService = inject(LoggedUserService);
+  private authUrl = "usuarios/login";
 
   constructor() {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
-    return this.apiService.post("api/usuarios/login", credentials).pipe(
+    return this.apiService.post(this.authUrl, credentials).pipe(
       tap((response: any) => {
         this.saveLogin(response.token);
       }),

@@ -8,11 +8,49 @@ import { catchError, Observable, tap, throwError } from "rxjs";
 })
 export class UsuarioService {
   private apiService = inject(ApiService);
+  private usuarioUrl = "usuarios";
 
   constructor() {}
 
-  preRegistro(newUser: any): Observable<any> {
-    return this.apiService.post("api/usuarios/pre-registro", newUser).pipe(
+  // usuario pré-registro
+  addPreRegistro(newUser: any): Observable<any> {
+    return this.apiService
+      .post(`${this.usuarioUrl}/pre-registro`, newUser)
+      .pipe(
+        tap((response: any) => {
+          // console.log(response);
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  updateSenha(credentials: any): Observable<any> {
+    const email = credentials.email;
+    const body = {
+      newPassword: credentials.newPassword,
+    };
+    return this.apiService
+      .put(`${this.usuarioUrl}/email/${email}/redefinir-senha`, null, body)
+      .pipe(
+        tap((response: any) => {
+          // console.log(response);
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  getAllUsuarios(): Observable<any> {
+    return this.apiService.get(this.usuarioUrl).pipe(
+      tap((response: any) => {
+        // isolar lista de usuarios da resposta paginada
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  getUsuarioById(usuarioId: string): Observable<any> {
+    return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`).pipe(
       tap((response: any) => {
         // console.log(response);
       }),
@@ -20,19 +58,34 @@ export class UsuarioService {
     );
   }
 
-  redefinirSenha(credentials: any): Observable<any> {
-    const email = credentials.email;
-    const body = {
-      newPassword: credentials.newPassword,
-    };
+  // usuario completo
+  addUsuario(newUsuario: any): Observable<any> {
+    return this.apiService.post(this.usuarioUrl, newUsuario).pipe(
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  updateUsuario(updatedUsuario: any): Observable<any> {
     return this.apiService
-      .put(`api/usuarios/email/${email}/redefinir-senha`, null, body)
+      .put(this.usuarioUrl, updatedUsuario.id, updatedUsuario)
       .pipe(
         tap((response: any) => {
           // console.log(response);
         }),
         catchError(this.handleError)
       );
+  }
+
+  deleteUsuario(usuarioId: string): Observable<any> {
+    return this.apiService.post(this.usuarioUrl, usuarioId).pipe(
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
