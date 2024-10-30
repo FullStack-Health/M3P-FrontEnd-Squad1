@@ -40,7 +40,7 @@ export class AuthService {
     const loggedUser = {
       name: decodedToken.sub,
       role: decodedToken.role.replace("ROLE_", ""),
-      expired: decodedToken.exp * 1000 < Date.now(),
+      exp: decodedToken.exp,
     };
     this.loggedUserService.saveUser(loggedUser);
     localStorage.setItem("authToken", token);

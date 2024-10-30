@@ -5,11 +5,18 @@ import { LoggedUserService } from "../services/logged-user.service";
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const loggedUserService = inject(LoggedUserService);
+  const loggedUser = inject(LoggedUserService);
+  // debugger;
 
-  const isLogged = loggedUserService.isLoggedIn();
+  if (!loggedUser.isLoggedIn()) {
+    router.navigate(["/login"]);
+    return false;
+  }
 
-  if (isLogged) {
+  const userRole = loggedUser.getUserRole();
+  const allowedRoles = route.data?.["roles"] as Array<string>;
+
+  if (userRole && allowedRoles && allowedRoles.includes(userRole)) {
     return true;
   } else {
     router.navigate(["/login"]);

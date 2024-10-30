@@ -4,30 +4,46 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class LoggedUserService {
-  private loggedUserKey = "loggedUser";
+  private readonly loggedUserKey = "loggedUser";
 
   constructor() {}
 
-  saveUser(user: any) {
+  saveUser(user: { name: string; role: string; exp: number }) {
     localStorage.setItem(this.loggedUserKey, JSON.stringify(user));
   }
-  saveToken(token: string) {
-    localStorage.setItem("authToken", token);
-  }
+
   clearLoggedUser() {
     localStorage.removeItem(this.loggedUserKey);
   }
 
-  getLoggedUser() {
-    return JSON.parse(localStorage.getItem(this.loggedUserKey) || "{}");
+  getLoggedUser(): any {
+    const user = localStorage.getItem(this.loggedUserKey);
+    return user ? JSON.parse(user) : null;
+  }
+
+  getUserRole(): string | null {
+    const user = this.getLoggedUser();
+    return user?.role || null;
+  }
+
+  isRoleAdmin(): boolean {
+    return this.getUserRole() === "ADMIN";
+  }
+
+  isRoleMedico(): boolean {
+    return this.getUserRole() === "MEDICO";
+  }
+
+  isRolePaciente(): boolean {
+    return this.getUserRole() === "PACIENTE";
   }
 
   isLoggedIn(): boolean {
     const user = this.getLoggedUser();
-    return !!user.name && !this.isTokenExpired(user.exp);
+    return user && !this.isTokenExpired(user.exp);
   }
 
   private isTokenExpired(expirationTime: number): boolean {
-    return Date.now() >= expirationTime * 1000; // O tempo de expiração é geralmente em segundos
+    return Date.now() >= expirationTime * 1000;
   }
 }
