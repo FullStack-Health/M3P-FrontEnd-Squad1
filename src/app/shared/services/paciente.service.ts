@@ -8,7 +8,8 @@ import { HttpErrorResponse } from "@angular/common/http";
 })
 export class PacienteService {
   private apiService = inject(ApiService);
-  private pacienteUrl = "api/pacientes";
+  private pacienteUrl = "/pacientes";
+  private prontuarioUrl = "/prontuarios";
   private pacienteList: any[] = [];
 
   constructor() {}
@@ -66,6 +67,26 @@ export class PacienteService {
       }),
       catchError(this.handleError)
     );
+  }
+
+  getAllProntuarios(): Observable<any> {
+    return this.apiService.get(`${this.pacienteUrl}${this.prontuarioUrl}`).pipe(
+      tap((response: any) => {
+        // isolar listas da resposta paginada
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+  getProntuarioByPacienteId(pacienteId: string): Observable<any> {
+    return this.apiService
+      .get(`${this.pacienteUrl}/${pacienteId}${this.prontuarioUrl}`)
+      .pipe(
+        tap((response: any) => {
+          // console.log(response);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
