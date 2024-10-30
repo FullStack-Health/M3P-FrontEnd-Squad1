@@ -8,7 +8,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 })
 export class ConsultaService {
   private apiService = inject(ApiService);
-  private consultaUrl = "api/consultas";
+  private consultaUrl = "consultas";
   private consultaList: any[] = [];
   constructor() {}
 

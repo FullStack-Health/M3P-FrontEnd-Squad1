@@ -4,6 +4,9 @@ import { HttpClient } from "@angular/common/http";
 import { UsuarioService } from "../../shared/services/usuario.service";
 import Swal from "sweetalert2";
 import { PacienteService } from "../../shared/services/paciente.service";
+import { ConsultaService } from "../../shared/services/consulta.service";
+import { ExameService } from "../../shared/services/exame.service";
+import { ProntuarioService } from "../../shared/services/prontuario.service";
 
 @Component({
   selector: "app-teste-api-service",
@@ -15,6 +18,9 @@ import { PacienteService } from "../../shared/services/paciente.service";
 export class TesteApiServiceComponent {
   private usuarioService = inject(UsuarioService);
   private pacienteService = inject(PacienteService);
+  private consultaService = inject(ConsultaService);
+  private exameService = inject(ExameService);
+  private prontuarioService = inject(ProntuarioService);
 
   constructor() {}
 
@@ -23,9 +29,9 @@ export class TesteApiServiceComponent {
       email: "admin@example.com",
       newPassword: "123123123",
     };
-    this.pacienteService.getAllPacientes().subscribe({
+    this.consultaService.getAllConsultas().subscribe({
       next: (response) => {
-        console.log("all pacientes:", response);
+        console.log("all consultas:", response);
       },
       error: (error: Error) => {
         Swal.fire({
