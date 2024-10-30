@@ -51,7 +51,7 @@ export class SignUpComponent {
         role: this.userForm.value.perfil,
       };
 
-      this.usuarioService.preRegistro(newUser).subscribe({
+      this.usuarioService.addPreRegistro(newUser).subscribe({
         next: (response) => {
           console.log("Pré-cadastro bem-sucedido!", response);
           Swal.fire({

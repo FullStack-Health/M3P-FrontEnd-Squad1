@@ -29,7 +29,7 @@ export class TesteApiServiceComponent {
       email: "admin@example.com",
       newPassword: "123123123",
     };
-    this.pacienteService.getAllPacientes().subscribe({
+    this.prontuarioService.getAllProntuarios().subscribe({
       next: (response) => {
         console.log("resposta:", response);
       },
