@@ -20,7 +20,7 @@ export class PacienteService {
   // updatePatient(updatedPatient: any): void ;
   // deletePatient(patientId: string): void;
 
-  getAllPatients(): Observable<any> {
+  getAllPacientes(): Observable<any> {
     return this.apiService.get(this.pacienteUrl).pipe(
       tap((response: any) => {
         // isolar lista de pacientes da resposta paginada
@@ -30,7 +30,7 @@ export class PacienteService {
     );
   }
 
-  getPatientById(pacienteId: string): Observable<any> {
+  getPacienteById(pacienteId: string): Observable<any> {
     return this.apiService.get(`${this.pacienteUrl}/${pacienteId}`).pipe(
       tap((response: any) => {
         // console.log(response);
@@ -39,7 +39,7 @@ export class PacienteService {
     );
   }
 
-  addPatient(newPaciente: any): Observable<any> {
+  addPaciente(newPaciente: any): Observable<any> {
     return this.apiService.post(this.pacienteUrl, newPaciente).pipe(
       tap((response: any) => {
         // console.log(response);
@@ -48,9 +48,9 @@ export class PacienteService {
     );
   }
 
-  updatePatient(updatedPatient: any): Observable<any> {
+  updatePaciente(updatedPaciente: any): Observable<any> {
     return this.apiService
-      .put(this.pacienteUrl, updatedPatient.id, updatedPatient)
+      .put(this.pacienteUrl, updatedPaciente.id, updatedPaciente)
       .pipe(
         tap((response: any) => {
           // console.log(response);
@@ -59,8 +59,8 @@ export class PacienteService {
       );
   }
 
-  deletePatient(patientId: string): Observable<any> {
-    return this.apiService.post(this.pacienteUrl, patientId).pipe(
+  deletePaciente(pacienteId: string): Observable<any> {
+    return this.apiService.post(this.pacienteUrl, pacienteId).pipe(
       tap((response: any) => {
         // console.log(response);
       }),
