@@ -308,6 +308,7 @@ export class ExamesComponent implements OnInit {
 
   selectPatient(patientId: string): void {
     this.selectedPatientId = patientId;
+    this.form.patchValue({ patientId: patientId });
     this.isFormVisible = true;
     this.loadPatientExams();
   }
