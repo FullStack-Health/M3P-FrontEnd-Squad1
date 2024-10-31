@@ -9,7 +9,7 @@ export class ApiService {
   http = inject(HttpClient);
 
   // URL com proxy para evistar erro CORS:
-  private apiUrl = "http://localhost:4200/api";
+  private apiUrl = "http://localhost:8081/api";
 
   constructor() {}
 
