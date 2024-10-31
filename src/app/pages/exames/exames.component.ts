@@ -14,7 +14,8 @@ import Swal from "sweetalert2";
 import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
-import { PacienteService } from "../../temp/old/old_paciente.service";
+import { ExameService } from "../../shared/services/exame.service";
+import { PacienteService } from "../../shared/services/paciente.service";
 
 @Component({
   selector: "app-exames",
@@ -44,6 +45,7 @@ export class ExamesComponent implements OnInit {
   selectedPatientId: string | null = null;
   selectedExamId: string = "";
   isFormVisible: boolean = false;
+  patientExams: any[] = [];
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -65,15 +67,20 @@ export class ExamesComponent implements OnInit {
       this.selectedExamId = params["examId"];
       this.containerSearch = !this.selectedExamId;
       if (this.selectedExamId) {
-        const patient = this.pacienteData.find((patient) =>
-          patient.exams.some(
-            (exam: { id: string }) => exam.id === this.selectedExamId
-          )
+        this.exameService.getExameById(this.selectedExamId).subscribe(
+          (exam) => {
+            const patient = this.pacienteData.find((patient) =>
+              patient.exams.some((e: { id: string }) => e.id === this.selectedExamId)
+            );
+            if (patient) {
+              this.selectPatient(patient.id);
+              this.editar(exam);
+            }
+          },
+          (error) => {
+            console.error("Erro ao carregar exame", error);
+          }
         );
-        if (patient) {
-          this.selectPatient(patient.id);
-          this.editar(this.selectedExamId);
-        }
       }
     });
   }
@@ -81,13 +88,11 @@ export class ExamesComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private pacienteService: PacienteService
+    private pacienteService: PacienteService,
+    private exameService: ExameService
   ) {
     this.detectScreenSize();
-
-    this.pacienteData = this.pacienteService.getAllPatients();
-    this.filteredPacienteData = [...this.pacienteData];
-
+    this.loadPacientes();
     this.form = new FormGroup({
       name: new FormControl("", [
         Validators.required,
@@ -120,6 +125,26 @@ export class ExamesComponent implements OnInit {
     });
   }
 
+  loadPacientes(): void {
+    this.pacienteService.getAllPacientes().subscribe(
+      (data) => {
+        // Verifique se a resposta contém a propriedade 'patients' e se é um array
+        if (data && Array.isArray(data.patients)) {
+          this.pacienteData = data.patients;
+          this.filteredPacienteData = [...this.pacienteData];
+        } else {
+          console.error("Formato de resposta inesperado", data);
+          this.pacienteData = [];
+          this.filteredPacienteData = [];
+        }
+      },
+      (error) => {
+        console.error("Erro ao carregar pacientes", error);
+        this.pacienteData = [];
+        this.filteredPacienteData = [];
+      }
+    );
+  }
   getCurrentDate(): string {
     const date = new Date();
     const day = ("0" + date.getDate()).slice(-2);
@@ -136,66 +161,103 @@ export class ExamesComponent implements OnInit {
   filterPatients(): void {
     const lowercaseSearchQuery = this.searchQuery.trim().toLowerCase();
     if (lowercaseSearchQuery !== "") {
-      this.filteredPacienteData = this.pacienteData.filter(
-        (patient) =>
-          patient.name.toLowerCase().includes(lowercaseSearchQuery) ||
-          patient.email.toLowerCase().includes(lowercaseSearchQuery) ||
-          patient.phone.toLowerCase().includes(lowercaseSearchQuery)
+      this.pacienteService.getPacientesByName(lowercaseSearchQuery).subscribe(
+        (data) => {
+          // Verifique se a resposta contém a propriedade 'patients' e se é um array
+          if (data && Array.isArray(data.patients)) {
+            this.filteredPacienteData = data.patients;
+          } else {
+            console.error("Formato de resposta inesperado", data);
+            this.filteredPacienteData = [];
+          }
+        },
+        (error) => {
+          console.error("Erro ao filtrar pacientes", error);
+          this.filteredPacienteData = [];
+        }
       );
     } else {
-      this.filteredPacienteData = [...this.pacienteData];
+      this.loadPacientes();
     }
   }
 
-  get patientExams(): any[] {
-    const patient = this.pacienteService.getPatientById(
-      this.selectedPatientId!
-    );
-    return patient ? patient.exams : [];
+  loadPatientExams(): void {
+    if (this.selectedPatientId) {
+      this.pacienteService.getPacienteById(this.selectedPatientId).subscribe(
+        (patient) => {
+          this.patientExams = patient.exams;
+        },
+        (error) => {
+          console.error("Erro ao carregar exames do paciente", error);
+        }
+      );
+    }
   }
 
   cadastrar(): void {
     if (this.form.valid) {
       const exam = this.form.value;
       if (this.isEdit) {
-        this.pacienteService.updateExam(this.selectedPatientId!, exam);
+        this.exameService.updateExame(this.selectedExamId, exam).subscribe(
+          () => {
+            Swal.fire({
+              text: "Exame atualizado com sucesso!",
+              icon: "success",
+              confirmButtonColor: "#0A7B73",
+              confirmButtonText: "OK",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.reload();
+              }
+            });
+          },
+          (error) => {
+            console.error("Erro ao atualizar exame", error);
+          }
+        );
       } else {
-        this.pacienteService.addExam(this.selectedPatientId!, exam);
+        this.exameService.addExame(exam).subscribe(
+          () => {
+            Swal.fire({
+              text: "Exame salvo com sucesso!",
+              icon: "success",
+              confirmButtonColor: "#0A7B73",
+              confirmButtonText: "OK",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.reload();
+              }
+            });
+          },
+          (error) => {
+            console.error("Erro ao salvar exame", error);
+          }
+        );
       }
-      Swal.fire({
-        text: "Exame salvo com sucesso!",
-        icon: "success",
-        confirmButtonColor: "#0A7B73",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-        }
-      });
     }
   }
 
-  editar(examId: string): void {
-    const patient = this.pacienteService.getPatientById(
-      this.selectedPatientId!
-    );
-    const exam = patient.exams.find((e: any) => e.id === examId);
-    if (exam) {
-      this.form.patchValue(exam);
-      this.isEdit = true;
-      this.selectedExamId = examId;
-    }
+  editar(exam: any): void {
+    this.form.patchValue(exam);
+    this.isEdit = true;
+    this.selectedExamId = exam.id;
   }
 
   deletar(examId: string): void {
-    this.pacienteService.deleteExam(this.selectedPatientId!, examId);
-    Swal.fire({
-      text: "Exame excluído com sucesso!",
-      icon: "success",
-      confirmButtonColor: "#0A7B73",
-      confirmButtonText: "OK",
-    });
-    this.resetForm();
+    this.exameService.deleteExame(examId).subscribe(
+      () => {
+        Swal.fire({
+          text: "Exame excluído com sucesso!",
+          icon: "success",
+          confirmButtonColor: "#0A7B73",
+          confirmButtonText: "OK",
+        });
+        this.resetForm();
+      },
+      (error) => {
+        console.error("Erro ao excluir exame", error);
+      }
+    );
   }
 
   resetForm(): void {
@@ -207,5 +269,6 @@ export class ExamesComponent implements OnInit {
   selectPatient(patientId: string): void {
     this.selectedPatientId = patientId;
     this.isFormVisible = true;
+    this.loadPatientExams();
   }
 }
