@@ -30,6 +30,15 @@ export class ExameService {
     );
   }
 
+  getExamesByPatientId(patientId: string): Observable<any> {
+    return this.apiService.get(`${this.exameUrl}?patientId=${patientId}`).pipe(
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   addExame(newExame: any): Observable<any> {
     return this.apiService.post(this.exameUrl, newExame).pipe(
       tap((response: any) => {

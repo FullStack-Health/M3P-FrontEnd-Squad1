@@ -145,6 +145,7 @@ export class ExamesComponent implements OnInit {
       }
     );
   }
+
   getCurrentDate(): string {
     const date = new Date();
     const day = ("0" + date.getDate()).slice(-2);
@@ -166,6 +167,10 @@ export class ExamesComponent implements OnInit {
           // Verifique se a resposta contém a propriedade 'patients' e se é um array
           if (data && Array.isArray(data.patients)) {
             this.filteredPacienteData = data.patients;
+            if (this.filteredPacienteData.length === 1) {
+              const patientId = this.filteredPacienteData[0].id;
+              this.selectPatient(patientId);
+            }
           } else {
             console.error("Formato de resposta inesperado", data);
             this.filteredPacienteData = [];
@@ -183,12 +188,18 @@ export class ExamesComponent implements OnInit {
 
   loadPatientExams(): void {
     if (this.selectedPatientId) {
-      this.pacienteService.getPacienteById(this.selectedPatientId).subscribe(
-        (patient) => {
-          this.patientExams = patient.exams;
+      this.exameService.getExamesByPatientId(this.selectedPatientId).subscribe(
+        (response) => {
+          if (response && Array.isArray(response.exams)) {
+            this.patientExams = response.exams.filter((exam: { patientId: string | null; }) => exam.patientId === this.selectedPatientId);
+          } else {
+            console.error("Formato de resposta inesperado", response);
+            this.patientExams = [];
+          }
         },
         (error) => {
           console.error("Erro ao carregar exames do paciente", error);
+          this.patientExams = [];
         }
       );
     }

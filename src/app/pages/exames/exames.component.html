@@ -31,52 +31,52 @@
     </div>
 
     <div
-        class="search-result"
-        *ngIf="searchQuery.trim() !== ''"
-    >
-        <div
-            class="patient-result"
-            *ngFor="let patient of filteredPacienteData"
-        >
-            <div class="patient-data">
-                <p class="patient-name">{{ patient.name }}</p>
-                <button
-                    class="select-button"
-                    *ngIf="selectedPatientId !== patient.id"
-                    (click)="selectPatient(patient.id)"
-                >
-                    Selecionar
-                </button>
-            </div>
-            <div
-                class="exam-list"
-                *ngIf="selectedPatientId === patient.id"
-            >
-                <div
-                    *ngFor="let exam of patient.exams"
-                    class="exam-row"
-                >
-                    <div class="exam-name">
-                        <p>{{ exam.name }}</p>
-                    </div>
-                    <div class="exam-buttons">
-                        <button
-                            class="button-edit"
-                            (click)="editar(exam.id)"
-                        >
-                            Editar
-                        </button>
-                        <button
-                            class="button-delete"
-                            (click)="deletar(exam.id)"
-                        >
-                            Deletar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  class="search-result"
+  *ngIf="searchQuery.trim() !== ''"
+>
+  <div
+    class="patient-result"
+    *ngFor="let patient of filteredPacienteData"
+  >
+    <div class="patient-data">
+      <p class="patient-name">{{ patient.name }}</p>
+      <button
+        class="select-button"
+        *ngIf="selectedPatientId !== patient.id"
+        (click)="selectPatient(patient.id)"
+      >
+        Selecionar
+      </button>
     </div>
+    <div
+      class="exam-list"
+      *ngIf="selectedPatientId === patient.id"
+    >
+      <div
+        *ngFor="let exam of patientExams"
+        class="exam-row"
+      >
+        <div class="exam-name">
+          <p>{{ exam.name }}</p>
+        </div>
+        <div class="exam-buttons">
+          <button
+            class="button-edit"
+            (click)="editar(exam.id)"
+          >
+            Editar
+          </button>
+          <button
+            class="button-delete"
+            (click)="deletar(exam.id)"
+          >
+            Deletar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
     <div
         class="form-container"
