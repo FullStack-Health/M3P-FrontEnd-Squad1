@@ -122,6 +122,7 @@ export class ExamesComponent implements OnInit {
         Validators.maxLength(1024),
       ]),
       id: new FormControl(""),
+      patientId: new FormControl("", Validators.required)
     });
   }
 
@@ -207,7 +208,16 @@ export class ExamesComponent implements OnInit {
 
   cadastrar(): void {
     if (this.form.valid) {
-      const exam = this.form.value;
+      const exam = {
+        name: this.form.get('name')?.value,
+        examDate: this.form.get('date')?.value,
+        examTime: this.form.get('time')?.value,
+        type: this.form.get('type')?.value,
+        laboratory: this.form.get('lab')?.value,
+        documentUrl: this.form.get('url')?.value,
+        results: this.form.get('results')?.value,
+        patientId: this.form.get('patientId')?.value
+      };
       if (this.isEdit) {
         this.exameService.updateExame(this.selectedExamId, exam).subscribe(
           () => {
@@ -248,10 +258,29 @@ export class ExamesComponent implements OnInit {
     }
   }
 
-  editar(exam: any): void {
-    this.form.patchValue(exam);
-    this.isEdit = true;
-    this.selectedExamId = exam.id;
+  editar(examId: string): void {
+    this.exameService.getExameById(examId).subscribe(
+      (response) => {
+        const exam = response.exam;
+        this.form.patchValue({
+          name: exam.name,
+          date: exam.examDate,
+          time: exam.examTime,
+          type: exam.type,
+          url: exam.documentUrl,
+          lab: exam.laboratory,
+          results: exam.results,
+          id: exam.id,
+          patientId: exam.patientId 
+        });
+        this.isEdit = true;
+        this.selectedExamId = exam.id;
+        this.isFormVisible = true;
+      },
+      (error) => {
+        console.error("Erro ao carregar exame", error);
+      }
+    );
   }
 
   deletar(examId: string): void {

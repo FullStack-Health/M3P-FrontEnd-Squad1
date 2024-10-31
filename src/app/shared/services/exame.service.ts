@@ -57,6 +57,7 @@ export class ExameService {
     );
   }
 
+
   deleteExame(exameId: string): Observable<any> {
     return this.apiService.delete(this.exameUrl, exameId).pipe(
       tap((response: any) => {
