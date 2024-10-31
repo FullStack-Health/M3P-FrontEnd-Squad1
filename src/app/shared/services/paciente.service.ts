@@ -13,20 +13,12 @@ export class PacienteService {
 
   constructor() {}
 
-  // métodos do antigo pacienteService (com localStorage):
-  // getAllPactients(): any[];
-  // getPatientById(patientId: string): any;
-  // addPatient(patient: any): void ;
-  // updatePatient(updatedPatient: any): void ;
-  // deletePatient(patientId: string): void;
-
   getAllPacientes(): Observable<any> {
     return this.apiService.get(this.pacienteUrl).pipe(
       tap((response: any) => {
         // isolar lista de pacientes da resposta paginada
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -34,8 +26,7 @@ export class PacienteService {
     return this.apiService.get(`${this.pacienteUrl}/${pacienteId}`).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -43,8 +34,7 @@ export class PacienteService {
     return this.apiService.post(this.pacienteUrl, newPaciente).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -54,8 +44,7 @@ export class PacienteService {
       .pipe(
         tap((response: any) => {
           // console.log(response);
-        }),
-        catchError(this.handleError)
+        })
       );
   }
 
@@ -63,27 +52,7 @@ export class PacienteService {
     return this.apiService.post(this.pacienteUrl, pacienteId).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
-  }
-
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = "Ocorreu um erro inesperado.";
-
-    if (error.status === 400) {
-      errorMessage = "Dados ausentes ou incorretos";
-    } else if (error.status === 401) {
-      errorMessage = "Falha de autenticação.";
-    } else if (error.status === 404) {
-      errorMessage = "Paciente não encontrado.";
-    } else if (error.status === 409) {
-      errorMessage = "Paciente já cadastrado";
-    } else {
-      errorMessage = `${error.message}`;
-    }
-    // console.error(error);
-
-    return throwError(() => new Error(errorMessage));
   }
 }

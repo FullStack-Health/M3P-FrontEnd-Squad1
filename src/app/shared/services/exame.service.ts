@@ -17,8 +17,7 @@ export class ExameService {
       tap((response: any) => {
         // isolar lista de exames da resposta paginada
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -26,8 +25,7 @@ export class ExameService {
     return this.apiService.get(`${this.exameUrl}/${exameId}`).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -35,8 +33,7 @@ export class ExameService {
     return this.apiService.post(this.exameUrl, newExame).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -46,8 +43,7 @@ export class ExameService {
       .pipe(
         tap((response: any) => {
           // console.log(response);
-        }),
-        catchError(this.handleError)
+        })
       );
   }
 
@@ -55,31 +51,7 @@ export class ExameService {
     return this.apiService.post(this.exameUrl, exameId).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
-  }
-
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = "Ocorreu um erro inesperado.";
-
-    if (error.status === 400) {
-      // errorMessage = "Dados ausentes ou incorretos";
-      // mensagem de erro específico vem do backend:
-      errorMessage = `${error.message}`;
-    } else if (error.status === 401) {
-      errorMessage = "Falha de autenticação.";
-    } else if (error.status === 404) {
-      errorMessage = "Exame não encontrado";
-    } else if (error.status === 409) {
-      // errorMessage = "Exame já cadastrado";
-      // mensagem de erro específico vem do backend:
-      errorMessage = `${error.message}`;
-    } else {
-      errorMessage = `${error.message}`;
-    }
-    // console.error(error);
-
-    return throwError(() => new Error(errorMessage));
   }
 }
