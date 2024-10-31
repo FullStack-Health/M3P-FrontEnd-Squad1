@@ -34,14 +34,18 @@ export class AuthService {
   }
 
   private saveLogin(token: string): void {
-    const decodedToken: { role: string; sub: string; exp: number } =
-      this.decodeToken(token);
+    const decodedToken: {
+      role: string;
+      sub: string;
+      exp: number;
+      patientId: number;
+    } = this.decodeToken(token);
 
     const loggedUser = {
       name: decodedToken.sub,
       role: decodedToken.role.replace("ROLE_", ""),
       exp: decodedToken.exp,
-      //todo add pacienteid
+      patientId: decodedToken.patientId,
     };
     this.loggedUserService.saveUser(loggedUser);
     localStorage.setItem("authToken", token);
