@@ -41,6 +41,7 @@ export class AuthService {
       name: decodedToken.sub,
       role: decodedToken.role.replace("ROLE_", ""),
       exp: decodedToken.exp,
+      //todo add pacienteid
     };
     this.loggedUserService.saveUser(loggedUser);
     localStorage.setItem("authToken", token);

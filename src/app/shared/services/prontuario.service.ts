@@ -8,18 +8,20 @@ import { HttpErrorResponse } from "@angular/common/http";
 })
 export class ProntuarioService {
   private apiService = inject(ApiService);
-  private pacienteUrl = "/pacientes";
-  private prontuarioUrl = "/prontuarios";
+  private pacienteUrl = "pacientes";
+  private prontuarioUrl = "prontuarios";
   constructor() {}
 
   getAllProntuarios(): Observable<any> {
-    return this.apiService.get(`${this.pacienteUrl}${this.prontuarioUrl}`).pipe(
-      tap((response: any) => {
-        // isolar listas da resposta paginada
-        // console.log(response);
-      }),
-      catchError(this.handleError)
-    );
+    return this.apiService
+      .get(`${this.pacienteUrl}/${this.prontuarioUrl}`)
+      .pipe(
+        tap((response: any) => {
+          // isolar listas da resposta paginada
+          // console.log(response);
+        }),
+        catchError(this.handleError)
+      );
   }
   getProntuarioByPacienteId(pacienteId: string): Observable<any> {
     return this.apiService
