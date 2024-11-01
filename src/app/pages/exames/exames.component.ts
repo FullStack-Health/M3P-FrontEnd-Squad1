@@ -326,12 +326,16 @@ export class ExamesComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.form.reset();
+    this.form.reset({
+      date: formatDate(new Date(), "yyyy-MM-dd", "en"),
+      time: formatDate(new Date(), "HH:mm", "en")
+    });
     this.isEdit = false;
     this.selectedExamId = "";
   }
 
   selectPatient(patientId: string): void {
+    this.resetForm();
     this.selectedPatientId = patientId;
     this.form.patchValue({ patientId: patientId });
     this.isFormVisible = true;
