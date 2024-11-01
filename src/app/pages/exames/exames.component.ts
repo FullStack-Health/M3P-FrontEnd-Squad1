@@ -48,6 +48,9 @@ export class ExamesComponent implements OnInit {
   isFormVisible: boolean = false;
   patientExams: any[] = [];
   searchPerformed: boolean = false;
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalPages: number = 0;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -248,10 +251,11 @@ cleanString(value: string): string {
 
   loadPatientExams(): void {
     if (this.selectedPatientId) {
-      this.exameService.getExamesByPatientId(this.selectedPatientId).subscribe(
+      this.exameService.getExamesByPatientId(this.selectedPatientId, this.currentPage, this.pageSize).subscribe(
         (response) => {
           if (response && Array.isArray(response.exams)) {
             this.patientExams = response.exams.filter((exam: { patientId: string | null; }) => exam.patientId === this.selectedPatientId);
+            this.totalPages = response.page.totalPages;
           } else {
             console.error("Formato de resposta inesperado", response);
             this.patientExams = [];
@@ -262,6 +266,20 @@ cleanString(value: string): string {
           this.patientExams = [];
         }
       );
+    }
+  }
+  
+  goToPreviousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadPatientExams();
+    }
+  }
+  
+  goToNextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadPatientExams();
     }
   }
 
