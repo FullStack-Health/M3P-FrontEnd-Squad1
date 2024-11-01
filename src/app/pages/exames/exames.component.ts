@@ -179,7 +179,6 @@ export class ExamesComponent implements OnInit {
           }
         },
         (error) => {
-          console.log("Erro capturado:", error); // Verificação do erro
           if (error.message === "Paciente não encontrado.") {
             Swal.fire({
               text: "Paciente não encontrado.",
@@ -187,7 +186,7 @@ export class ExamesComponent implements OnInit {
               confirmButtonColor: "#0A7B73",
               confirmButtonText: "OK",
             }).then(() => {
-              this.resetSearch();
+              window.location.reload();
             });
           } else {
             console.error("Erro ao filtrar pacientes", error);
@@ -253,10 +252,9 @@ export class ExamesComponent implements OnInit {
               icon: "success",
               confirmButtonColor: "#0A7B73",
               confirmButtonText: "OK",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.reload();
-              }
+            }).then(() => {
+              this.loadPatientExams(); 
+              this.resetForm();
             });
           },
           (error) => {
@@ -271,10 +269,9 @@ export class ExamesComponent implements OnInit {
               icon: "success",
               confirmButtonColor: "#0A7B73",
               confirmButtonText: "OK",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.reload();
-              }
+            }).then(() => {
+              this.loadPatientExams(); 
+              this.resetForm();
             });
           },
           (error) => {
@@ -318,8 +315,9 @@ export class ExamesComponent implements OnInit {
           icon: "success",
           confirmButtonColor: "#0A7B73",
           confirmButtonText: "OK",
+        }).then(() => {
+          this.patientExams = this.patientExams.filter(exam => exam.id !== examId);
         });
-        this.resetForm();
       },
       (error) => {
         console.error("Erro ao excluir exame", error);
