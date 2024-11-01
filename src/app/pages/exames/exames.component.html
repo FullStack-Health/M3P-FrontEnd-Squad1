@@ -15,7 +15,7 @@
       [(ngModel)]="searchQuery"
       (keyup.enter)="searchPatients()"
     />
-    <button (click)="searchPatients()" >Buscar</button>
+    <button (click)="searchPatients()">Buscar</button>
   </div>
 
   <div class="search-result" *ngIf="filteredPacienteData.length > 0 && searchPerformed">
@@ -43,6 +43,11 @@
               Deletar
             </button>
           </div>
+        </div>
+        <div class="pagination-controls">
+          <button (click)="goToPreviousPage()" [disabled]="currentPage === 0">Anterior</button>
+          <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+          <button (click)="goToNextPage()" [disabled]="currentPage === totalPages - 1">Próxima</button>
         </div>
       </div>
     </div>
