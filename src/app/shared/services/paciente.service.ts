@@ -16,8 +16,7 @@ export class PacienteService {
     return this.apiService.get(`${this.pacienteUrl}?page=${page}&size=${size}`).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -25,8 +24,7 @@ export class PacienteService {
     return this.apiService.get(`${this.pacienteUrl}/${pacienteId}`).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -34,8 +32,7 @@ export class PacienteService {
     return this.apiService.post(this.pacienteUrl, newPaciente).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -57,7 +54,6 @@ export class PacienteService {
     );
   }
 
- 
   getPacientesByPhone(phone: string): Observable<any> {
     const cleanedPhone = this.cleanString(phone);
     return this.apiService.get(`${this.pacienteUrl}/telefone/${cleanedPhone}`).pipe(
@@ -81,7 +77,6 @@ export class PacienteService {
       catchError(this.handleError)
     );
   }
-
 
   getPacientesByEmail(email: string): Observable<any> {
     return this.apiService.get(`${this.pacienteUrl}/email/${email}`).pipe(
@@ -112,8 +107,7 @@ export class PacienteService {
     return this.apiService.get(`${this.pacienteUrl}/${id}/prontuarios`).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 

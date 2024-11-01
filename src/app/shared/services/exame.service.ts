@@ -16,8 +16,7 @@ export class ExameService {
     return this.apiService.get(`${this.exameUrl}?page=${page}&size=${size}`).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -25,8 +24,7 @@ export class ExameService {
     return this.apiService.get(`${this.exameUrl}/${exameId}`).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -43,8 +41,7 @@ export class ExameService {
     return this.apiService.post(this.exameUrl, newExame).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 
@@ -57,13 +54,11 @@ export class ExameService {
     );
   }
 
-
   deleteExame(exameId: string): Observable<any> {
     return this.apiService.delete(this.exameUrl, exameId).pipe(
       tap((response: any) => {
         // console.log(response);
-      }),
-      catchError(this.handleError)
+      })
     );
   }
 

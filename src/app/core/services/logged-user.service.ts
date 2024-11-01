@@ -26,6 +26,11 @@ export class LoggedUserService {
     return user?.role || null;
   }
 
+  getPacienteId(): string | null {
+    const user = this.getLoggedUser();
+    return user?.patientId || null;
+  }
+
   isRoleAdmin(): boolean {
     return this.getUserRole() === "ADMIN";
   }
