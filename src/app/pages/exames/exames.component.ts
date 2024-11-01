@@ -16,6 +16,7 @@ import { SidebarComponent } from "../../shared/components/sidebar/sidebar.compon
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
 import { ExameService } from "../../shared/services/exame.service";
 import { PacienteService } from "../../shared/services/paciente.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-exames",
@@ -161,42 +162,73 @@ export class ExamesComponent implements OnInit {
   }
 
   filterPatients(): void {
-    const lowercaseSearchQuery = this.searchQuery.trim().toLowerCase();
-    if (lowercaseSearchQuery !== "") {
-      this.pacienteService.getPacientesByName(lowercaseSearchQuery).subscribe(
-        (data) => {
-          if (data && Array.isArray(data.patients)) {
-            this.filteredPacienteData = data.patients;
-            if (this.filteredPacienteData.length === 1) {
-              const patientId = this.filteredPacienteData[0].id;
-              this.selectPatient(patientId);
-            } else {
-              this.resetSearch();
-            }
-          } else {
-            console.error("Formato de resposta inesperado", data);
-            this.resetSearch();
-          }
-        },
-        (error) => {
-          if (error.message === "Paciente não encontrado.") {
-            Swal.fire({
-              text: "Paciente não encontrado.",
-              icon: "warning",
-              confirmButtonColor: "#0A7B73",
-              confirmButtonText: "OK",
-            }).then(() => {
-              window.location.reload();
-            });
-          } else {
-            console.error("Erro ao filtrar pacientes", error);
-            this.resetSearch();
-          }
+    const searchQuery = this.searchQuery.trim().toLowerCase();
+    if (searchQuery !== "") {
+        let searchObservable: Observable<any>;
+
+        if (this.isValidEmail(searchQuery)) {
+            searchObservable = this.pacienteService.getPacientesByEmail(searchQuery);
+        } else if (this.isValidPhone(searchQuery)) {
+            const cleanedPhone = this.cleanString(searchQuery);
+            searchObservable = this.pacienteService.getPacientesByPhone(cleanedPhone);
+        } else {
+            searchObservable = this.pacienteService.getPacientesByName(searchQuery);
         }
-      );
+
+        searchObservable.subscribe(
+            (data) => {
+                if (data && Array.isArray(data.patients)) {
+                    this.filteredPacienteData = data.patients;
+                    if (this.filteredPacienteData.length === 1) {
+                        const patientId = this.filteredPacienteData[0].id;
+                        this.selectPatient(patientId);
+                    } else {
+                        this.resetSearch();
+                    }
+                } else if (data && data.patient) {
+                    this.filteredPacienteData = [data.patient];
+                    const patientId = data.patient.id;
+                    this.selectPatient(patientId);
+                } else {
+                    console.error("Formato de resposta inesperado", data);
+                    this.resetSearch();
+                }
+            },
+            (error) => {
+                if (error.message === "Paciente não encontrado.") {
+                    Swal.fire({
+                        text: "Paciente não encontrado.",
+                        icon: "warning",
+                        confirmButtonColor: "#0A7B73",
+                        confirmButtonText: "OK",
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    console.error("Erro ao filtrar pacientes", error);
+                    this.resetSearch();
+                }
+            }
+        );
     } else {
-      this.resetSearch();
+        this.resetSearch();
     }
+}
+
+cleanString(value: string): string {
+    return value ? value.replace(/\D/g, '') : '';
+}
+
+  isValidEmail(email: string): boolean {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
+
+  isValidPhone(phone: string): boolean {
+    const cleanedPhone = this.cleanString(phone);
+    const phonePattern = /^\d{10,11}$/;
+    const isValid = phonePattern.test(cleanedPhone);
+    return isValid;
   }
 
   resetSearch(): void {
@@ -206,7 +238,6 @@ export class ExamesComponent implements OnInit {
     this.isFormVisible = false;
     this.form.reset();
   }
-
 
   searchPatients(): void {
     this.searchPerformed = true;
