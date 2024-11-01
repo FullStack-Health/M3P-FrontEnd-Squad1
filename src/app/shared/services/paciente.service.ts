@@ -112,7 +112,7 @@ export class PacienteService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = "Ocorreu um erro inesperado.";
-
+  
     if (error.status === 400) {
       errorMessage = "Dados ausentes ou incorretos";
     } else if (error.status === 401) {
@@ -125,7 +125,7 @@ export class PacienteService {
       errorMessage = `${error.message}`;
     }
     // console.error(error);
-
+  
     return throwError(() => new Error(errorMessage));
   }
 }

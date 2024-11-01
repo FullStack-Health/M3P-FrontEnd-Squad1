@@ -177,7 +177,16 @@ export class ExamesComponent implements OnInit {
           }
         },
         (error) => {
-          console.error("Erro ao filtrar pacientes", error);
+          if (error.message === "Paciente não encontrado.") {
+            Swal.fire({
+              text: "Paciente não encontrado.",
+              icon: "warning",
+              confirmButtonColor: "#0A7B73",
+              confirmButtonText: "OK",
+            });
+          } else {
+            console.error("Erro ao filtrar pacientes", error);
+          }
           this.filteredPacienteData = [];
         }
       );
@@ -185,7 +194,6 @@ export class ExamesComponent implements OnInit {
       this.filteredPacienteData = [];
     }
   }
-
   searchPatients(): void {
     this.searchPerformed = true;
     this.filterPatients();
