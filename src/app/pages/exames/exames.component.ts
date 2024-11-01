@@ -182,6 +182,8 @@ export class ExamesComponent implements OnInit {
                     if (this.filteredPacienteData.length === 1) {
                         const patientId = this.filteredPacienteData[0].id;
                         this.selectPatient(patientId);
+                    } else if (this.filteredPacienteData.length === 0) {
+                        this.showPatientNotFoundAlert();
                     } else {
                         this.resetSearch();
                     }
@@ -191,28 +193,28 @@ export class ExamesComponent implements OnInit {
                     this.selectPatient(patientId);
                 } else {
                     console.error("Formato de resposta inesperado", data);
-                    this.resetSearch();
+                    this.showPatientNotFoundAlert();
                 }
             },
             (error) => {
-                if (error.message === "Paciente não encontrado.") {
-                    Swal.fire({
-                        text: "Paciente não encontrado.",
-                        icon: "warning",
-                        confirmButtonColor: "#0A7B73",
-                        confirmButtonText: "OK",
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    console.error("Erro ao filtrar pacientes", error);
-                    this.resetSearch();
-                }
+                console.error("Erro ao filtrar pacientes", error);
+                this.showPatientNotFoundAlert();
             }
         );
     } else {
         this.resetSearch();
     }
+}
+
+showPatientNotFoundAlert(): void {
+  Swal.fire({
+      text: "Paciente não encontrado.",
+      icon: "warning",
+      confirmButtonColor: "#0A7B73",
+      confirmButtonText: "OK",
+  }).then(() => {
+      window.location.reload();
+  });
 }
 
 cleanString(value: string): string {
