@@ -57,8 +57,10 @@ export class PacienteService {
     );
   }
 
-  getPacienteByCpf(cpf: string): Observable<any> {
-    return this.apiService.get(`${this.pacienteUrl}/cpf/${cpf}`).pipe(
+ 
+  getPacientesByPhone(phone: string): Observable<any> {
+    const cleanedPhone = this.cleanString(phone);
+    return this.apiService.get(`${this.pacienteUrl}/telefone/${cleanedPhone}`).pipe(
       tap((response: any) => {
         // console.log(response);
       }),
@@ -66,19 +68,23 @@ export class PacienteService {
     );
   }
 
+  cleanString(value: string): string {
+    return value ? value.replace(/\D/g, '') : '';
+  }
+
   getPacientesByName(name: string): Observable<any> {
     const encodedName = encodeURIComponent(name.trim());
-    console.log(`URL gerada: ${this.pacienteUrl}/nome/${encodedName}`); // Adicione este log
     return this.apiService.get(`${this.pacienteUrl}/nome/${encodedName}`).pipe(
-        tap((response: any) => {
-            // console.log(response);
-        }),
-        catchError(this.handleError)
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
     );
-}
+  }
 
-  getPacientesByPhone(phone: string): Observable<any> {
-    return this.apiService.get(`${this.pacienteUrl}/telefone/${phone}`).pipe(
+
+  getPacientesByEmail(email: string): Observable<any> {
+    return this.apiService.get(`${this.pacienteUrl}/email/${email}`).pipe(
       tap((response: any) => {
         // console.log(response);
       }),

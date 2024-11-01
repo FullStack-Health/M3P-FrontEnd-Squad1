@@ -16,6 +16,7 @@ import { SidebarComponent } from "../../shared/components/sidebar/sidebar.compon
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
 import { ExameService } from "../../shared/services/exame.service";
 import { PacienteService } from "../../shared/services/paciente.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-exames",
@@ -46,6 +47,7 @@ export class ExamesComponent implements OnInit {
   selectedExamId: string = "";
   isFormVisible: boolean = false;
   patientExams: any[] = [];
+  searchPerformed: boolean = false;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -129,7 +131,6 @@ export class ExamesComponent implements OnInit {
   loadPacientes(): void {
     this.pacienteService.getAllPacientes().subscribe(
       (data) => {
-        // Verifique se a resposta contém a propriedade 'patients' e se é um array
         if (data && Array.isArray(data.patients)) {
           this.pacienteData = data.patients;
           this.filteredPacienteData = [...this.pacienteData];
@@ -161,30 +162,86 @@ export class ExamesComponent implements OnInit {
   }
 
   filterPatients(): void {
-    const lowercaseSearchQuery = this.searchQuery.trim().toLowerCase();
-    if (lowercaseSearchQuery !== "") {
-      this.pacienteService.getPacientesByName(lowercaseSearchQuery).subscribe(
-        (data) => {
-          // Verifique se a resposta contém a propriedade 'patients' e se é um array
-          if (data && Array.isArray(data.patients)) {
-            this.filteredPacienteData = data.patients;
-            if (this.filteredPacienteData.length === 1) {
-              const patientId = this.filteredPacienteData[0].id;
-              this.selectPatient(patientId);
-            }
-          } else {
-            console.error("Formato de resposta inesperado", data);
-            this.filteredPacienteData = [];
-          }
-        },
-        (error) => {
-          console.error("Erro ao filtrar pacientes", error);
-          this.filteredPacienteData = [];
+    const searchQuery = this.searchQuery.trim().toLowerCase();
+    if (searchQuery !== "") {
+        let searchObservable: Observable<any>;
+
+        if (this.isValidEmail(searchQuery)) {
+            searchObservable = this.pacienteService.getPacientesByEmail(searchQuery);
+        } else if (this.isValidPhone(searchQuery)) {
+            const cleanedPhone = this.cleanString(searchQuery);
+            searchObservable = this.pacienteService.getPacientesByPhone(cleanedPhone);
+        } else {
+            searchObservable = this.pacienteService.getPacientesByName(searchQuery);
         }
-      );
+
+        searchObservable.subscribe(
+            (data) => {
+                if (data && Array.isArray(data.patients)) {
+                    this.filteredPacienteData = data.patients;
+                    if (this.filteredPacienteData.length === 1) {
+                        const patientId = this.filteredPacienteData[0].id;
+                        this.selectPatient(patientId);
+                    } else {
+                        this.resetSearch();
+                    }
+                } else if (data && data.patient) {
+                    this.filteredPacienteData = [data.patient];
+                    const patientId = data.patient.id;
+                    this.selectPatient(patientId);
+                } else {
+                    console.error("Formato de resposta inesperado", data);
+                    this.resetSearch();
+                }
+            },
+            (error) => {
+                if (error.message === "Paciente não encontrado.") {
+                    Swal.fire({
+                        text: "Paciente não encontrado.",
+                        icon: "warning",
+                        confirmButtonColor: "#0A7B73",
+                        confirmButtonText: "OK",
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    console.error("Erro ao filtrar pacientes", error);
+                    this.resetSearch();
+                }
+            }
+        );
     } else {
-      this.loadPacientes();
+        this.resetSearch();
     }
+}
+
+cleanString(value: string): string {
+    return value ? value.replace(/\D/g, '') : '';
+}
+
+  isValidEmail(email: string): boolean {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
+
+  isValidPhone(phone: string): boolean {
+    const cleanedPhone = this.cleanString(phone);
+    const phonePattern = /^\d{10,11}$/;
+    const isValid = phonePattern.test(cleanedPhone);
+    return isValid;
+  }
+
+  resetSearch(): void {
+    this.searchQuery = "";
+    this.filteredPacienteData = [];
+    this.selectedPatientId = null;
+    this.isFormVisible = false;
+    this.form.reset();
+  }
+
+  searchPatients(): void {
+    this.searchPerformed = true;
+    this.filterPatients();
   }
 
   loadPatientExams(): void {
@@ -226,10 +283,9 @@ export class ExamesComponent implements OnInit {
               icon: "success",
               confirmButtonColor: "#0A7B73",
               confirmButtonText: "OK",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.reload();
-              }
+            }).then(() => {
+              this.loadPatientExams(); 
+              this.resetForm();
             });
           },
           (error) => {
@@ -244,10 +300,9 @@ export class ExamesComponent implements OnInit {
               icon: "success",
               confirmButtonColor: "#0A7B73",
               confirmButtonText: "OK",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.reload();
-              }
+            }).then(() => {
+              this.loadPatientExams(); 
+              this.resetForm();
             });
           },
           (error) => {
@@ -291,8 +346,9 @@ export class ExamesComponent implements OnInit {
           icon: "success",
           confirmButtonColor: "#0A7B73",
           confirmButtonText: "OK",
+        }).then(() => {
+          this.patientExams = this.patientExams.filter(exam => exam.id !== examId);
         });
-        this.resetForm();
       },
       (error) => {
         console.error("Erro ao excluir exame", error);
@@ -301,12 +357,16 @@ export class ExamesComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.form.reset();
+    this.form.reset({
+      date: formatDate(new Date(), "yyyy-MM-dd", "en"),
+      time: formatDate(new Date(), "HH:mm", "en")
+    });
     this.isEdit = false;
     this.selectedExamId = "";
   }
 
   selectPatient(patientId: string): void {
+    this.resetForm();
     this.selectedPatientId = patientId;
     this.form.patchValue({ patientId: patientId });
     this.isFormVisible = true;

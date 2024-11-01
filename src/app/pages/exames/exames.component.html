@@ -13,12 +13,12 @@
       type="text"
       placeholder="Busque um paciente por nome, telefone ou e-mail"
       [(ngModel)]="searchQuery"
-      (input)="filterPatients()"
+      (keyup.enter)="searchPatients()"
     />
-    <button>Buscar</button>
+    <button (click)="searchPatients()" >Buscar</button>
   </div>
 
-  <div class="search-result" *ngIf="searchQuery.trim() !== ''">
+  <div class="search-result" *ngIf="filteredPacienteData.length > 0 && searchPerformed">
     <div class="patient-result" *ngFor="let patient of filteredPacienteData">
       <div class="patient-data">
         <p class="patient-name">{{ patient.name }}</p>
