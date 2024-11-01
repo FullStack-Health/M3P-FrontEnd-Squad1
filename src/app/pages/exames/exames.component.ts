@@ -46,6 +46,7 @@ export class ExamesComponent implements OnInit {
   selectedExamId: string = "";
   isFormVisible: boolean = false;
   patientExams: any[] = [];
+  searchPerformed: boolean = false;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -129,7 +130,6 @@ export class ExamesComponent implements OnInit {
   loadPacientes(): void {
     this.pacienteService.getAllPacientes().subscribe(
       (data) => {
-        // Verifique se a resposta contém a propriedade 'patients' e se é um array
         if (data && Array.isArray(data.patients)) {
           this.pacienteData = data.patients;
           this.filteredPacienteData = [...this.pacienteData];
@@ -165,7 +165,6 @@ export class ExamesComponent implements OnInit {
     if (lowercaseSearchQuery !== "") {
       this.pacienteService.getPacientesByName(lowercaseSearchQuery).subscribe(
         (data) => {
-          // Verifique se a resposta contém a propriedade 'patients' e se é um array
           if (data && Array.isArray(data.patients)) {
             this.filteredPacienteData = data.patients;
             if (this.filteredPacienteData.length === 1) {
@@ -183,8 +182,13 @@ export class ExamesComponent implements OnInit {
         }
       );
     } else {
-      this.loadPacientes();
+      this.filteredPacienteData = [];
     }
+  }
+
+  searchPatients(): void {
+    this.searchPerformed = true;
+    this.filterPatients();
   }
 
   loadPatientExams(): void {

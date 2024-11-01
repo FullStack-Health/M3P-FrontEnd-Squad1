@@ -68,7 +68,6 @@ export class PacienteService {
 
   getPacientesByName(name: string): Observable<any> {
     const encodedName = encodeURIComponent(name.trim());
-    console.log(`URL gerada: ${this.pacienteUrl}/nome/${encodedName}`); // Adicione este log
     return this.apiService.get(`${this.pacienteUrl}/nome/${encodedName}`).pipe(
         tap((response: any) => {
             // console.log(response);
