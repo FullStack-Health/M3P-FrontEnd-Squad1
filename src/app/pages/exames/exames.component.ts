@@ -308,6 +308,7 @@ cleanString(value: string): string {
             }).then(() => {
               this.loadPatientExams(); 
               this.resetForm();
+              this.location.go('/exames'); // Atualiza a URL
             });
           },
           (error) => {
@@ -325,6 +326,7 @@ cleanString(value: string): string {
             }).then(() => {
               this.loadPatientExams(); 
               this.resetForm();
+              this.location.go('/exames');
             });
           },
           (error) => {
