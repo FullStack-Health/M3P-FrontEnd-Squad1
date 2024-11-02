@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { ApiService } from "../../core/services/api.service";
 import { LoggedUserService } from "../../core/services/logged-user.service";
 import { ErrorHandlingService } from "../../core/services/error-handling.service";
+import { Credentials } from "../interfaces/credentials";
 
 @Injectable({
   providedIn: "root",
@@ -17,7 +18,7 @@ export class AuthService {
 
   constructor() {}
 
-  login(credentials: { email: string; password: string }): Observable<any> {
+  login(credentials: Credentials): Observable<any> {
     return this.apiService.post(this.authUrl, credentials).pipe(
       tap((response: any) => {
         this.saveLogin(response.token);

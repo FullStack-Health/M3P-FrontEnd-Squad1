@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from "@angular/core";
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -10,6 +9,7 @@ import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../shared/services/auth.service";
 import Swal from "sweetalert2";
 import { UsuarioService } from "../../shared/services/usuario.service";
+import { Credentials } from "../../shared/interfaces/credentials";
 
 @Component({
   selector: "app-login",
@@ -40,13 +40,13 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    const credentials = {
+    const credentials: Credentials = {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password,
     };
 
     this.authService.login(credentials).subscribe({
-      next: (response) => {
+      next: () => {
         this.router.navigate(["/home"]);
       },
       error: (error: Error) => {
