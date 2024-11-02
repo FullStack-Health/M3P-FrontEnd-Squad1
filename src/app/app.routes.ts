@@ -9,6 +9,7 @@ import { HomeComponent } from "./pages/home/home.component";
 import { ExamesComponent } from "./pages/exames/exames.component";
 import { TesteApiServiceComponent } from "./temp/teste-api-service/teste-api-service.component";
 import { authGuard } from "./core/guards/auth.guard";
+import { UserListComponent } from "./pages/user-list/user-list/user-list.component";
 
 export const routes: Routes = [
   {
@@ -82,4 +83,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ["ADMIN", "MEDICO", "PACIENTE"] },
   },
+  {
+    path: "admin",
+    component: UserListComponent,
+    canActivate: [authGuard],
+    data: { roles: ["ADMIN"] },
+  }
 ];

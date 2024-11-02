@@ -1,0 +1,43 @@
+<app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
+<app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
+<div class="container" id="usuarios" [ngClass]="{'retracted': isMenuRetracted}">
+  <h3 class="encontre">Lista de Usuários:</h3>
+  <div class="container-search">
+    <input type="text" placeholder="Busque um usuário por login ou ID" [(ngModel)]="searchQuery" (input)="filterUsuarios()">
+    <button (click)="filterUsuarios()">Buscar</button>
+  </div>
+
+  <div class="container-usuarios">
+    <div class="card-usuario" *ngFor="let usuario of filteredUsuarioData">
+      <div class="information">
+        <div class="main-info">
+          <div class="name">
+              <h4 class="id">
+                <p>ID: <span class="id-number">{{ usuario.id }}</span></p>
+              </h4>
+            </div>
+        </div>
+        <div class="secondary-info">
+            
+            <div>{{ usuario.email }}</div>
+          <div class="perfil">
+            <p>Perfil: {{ usuario.role }}</p>
+          </div>
+          <div class="senha">
+            <p>Senha: {{ usuario.maskedPassword | passwordMask }}</p>
+          </div>         
+        </div>
+        <div class="btn">
+          <button (click)="navigateToEdit(usuario.id)">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="pagination-controls">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">Anterior</button>
+    <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+    <button (click)="onPageChange(currentPage + 1)" [disabled]="(currentPage + 1) * pageSize >= totalElements">Próxima</button>
+  </div>
+</div>
