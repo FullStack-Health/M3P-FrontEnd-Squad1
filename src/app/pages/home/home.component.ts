@@ -8,6 +8,7 @@ import { PacienteService } from "../../shared/services/paciente.service";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { FormsModule } from "@angular/forms";
 import { DashboardService, DashboardMetrics } from "../../shared/services/dashboard.service"; 
+import { LoggedUserService } from "../../core/services/logged-user.service";
 
 @Component({
   selector: "app-home",
@@ -40,15 +41,19 @@ export class HomeComponent implements OnInit {
   totalUsers: number = 0; 
   errorMessage: string | null = null;
 
+  userRole: string | null = null; 
+
   constructor(
     private pacienteService: PacienteService,
     private router: Router,
-    private dashboardService: DashboardService 
+    private dashboardService: DashboardService,
+    private loggedUserService: LoggedUserService 
   ) {}
 
   ngOnInit(): void {
     this.loadPacientes();
-    this.loadDashboardMetrics(); 
+    this.loadDashboardMetrics();
+    this.userRole = this.loggedUserService.getUserRole(); 
   }
 
   loadPacientes() {

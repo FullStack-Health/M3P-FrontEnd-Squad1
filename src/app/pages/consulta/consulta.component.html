@@ -5,11 +5,12 @@
 
     <div class="container-search" *ngIf="containerSearch">
         <input type="text" placeholder="Busque um paciente por nome, telefone ou e-mail" [(ngModel)]="searchQuery"
-            (input)="filterPatients()">
-        <button>Buscar</button>
+        (keyup.enter)="searchPacientes()">
+            
+        <button (click)="searchPacientes()">Buscar</button>
     </div>
 
-    <div class="search-result" *ngIf="searchQuery.trim() !== ''">
+    <!-- <div class="search-result" *ngIf="searchQuery.trim() !== ''">
         <div class="patient-result" *ngFor="let patient of filteredPacienteData">
             <div class="patient-data">
                 <p class="patient-name">{{ patient.name }}</p>
@@ -28,7 +29,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+
+
+
     <div class="form-container" *ngIf="isFormVisible">
         <form [formGroup]="form" class="fieldset" (ngSubmit)="cadastrar()">
             <div id=motive class="elemento-formulario"
@@ -80,12 +84,36 @@
             </div>
 
             <div class="buttons">
-                <button class="delete" [disabled]="!isEdit" [class.disabled]="!isEdit"
-                    (click)="deletar(selectedConsultaId)">Deletar</button>
-                <button class="edit" [disabled]="!isEdit" [class.disabled]="!isEdit"
-                    (click)="cadastrar()">Editar</button>
-                <button class="save" [disabled]="!form.valid" [class.disabled]="!form.valid">Salvar</button>
-            </div>
+                <button 
+                  *ngIf="isEdit"
+                  class="delete" 
+                  [disabled]="!isEdit" 
+                  [class.disabled]="!isEdit"
+                  (click)="deletar(selectedConsultaId)"
+                >
+                  Deletar
+                </button>
+              
+                <button 
+                  *ngIf="isEdit"
+                  class="edit"
+                  [disabled]="!form.valid" 
+                  [class.disabled]="!form.valid" 
+                  (click)="cadastrar()"
+                >
+                  Editar
+                </button>
+              
+                <button 
+                  *ngIf="!isEdit"
+                  class="save" 
+                  [disabled]="!form.valid" 
+                  [class.disabled]="!form.valid" 
+                  (click)="cadastrar()"
+                >
+                  Salvar
+                </button>
+              </div>
         </form>
     </div>
 </div>
