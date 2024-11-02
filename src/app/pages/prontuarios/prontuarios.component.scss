@@ -92,10 +92,10 @@
 
     .secondary-info {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: flex-start;
       width: 100%;
-      flex-direction: row;
-      .id, .phone, .plan {
+      .id {
         display: flex;
         flex-direction: row;
         font-size: 12px;
@@ -103,27 +103,48 @@
         line-height: 100%;
         margin-bottom: 10px;
       }
-      .id .id-number, .phone .phone-number {
-        color: $color-500;
-        font-weight: bold;
-      }
-      .plan fa-icon {
-        margin-right: 10px;
-        color: $color-500;
+      .phone-plan {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        .phone, .plan {
+          display: flex;
+          flex-direction: row;
+          font-size: 12px;
+          text-transform: uppercase;
+          line-height: 100%;
+          margin-bottom: 10px;
+        }
+        .phone .phone-number, .plan p {
+          color: $color-500;
+          font-weight: bold;
+        }
+        .plan fa-icon {
+          margin-right: 10px;
+          color: $color-500;
+        }
       }
     }
 
     .btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+
       button {
         background-color: $color-500;
         border: none;
-        width: 100%;
-        height: 27px;
+        width: 50%;
+        max-width: 200px;
+        height: 25px;
         border-radius: 100px;
         font-size: 12px;
         color: white;
         font-weight: bold;
         line-height: 27px;
+        text-align: center;
       }
     }
   }
