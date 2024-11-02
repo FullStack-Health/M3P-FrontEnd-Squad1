@@ -1,12 +1,12 @@
 <app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
 <app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
 <div class="container" [ngClass]="{'retracted': isMenuRetracted}">
-  <div class="main">
+  <div class="main" *ngIf="patient">
     <img src="{{ patient.gender | genderPicture}}" alt="">
     <h1>{{ patient.fullName }}</h1>
   </div>
 
-  <div class="general-info">
+  <div class="general-info" *ngIf="patient">
     <h3>Informações Gerais:</h3>
     <div class="general-det">
       <p>Convênio: <span>{{ patient.healthInsurance }}</span></p>
@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <div class="consultas">
+  <div class="consultas" *ngIf="patient && patient.consultas">
     <h3>Consultas:</h3>
     <div class="container-consultas">
       <div class="card-consulta" *ngFor="let consulta of patient.consultas">
@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  <div class="exames">
+  <div class="exames" *ngIf="patient && patient.exams">
     <h3>Exames:</h3>
     <div class="container-exames">
       <div class="card-exames" *ngFor="let exam of patient.exams">
@@ -67,15 +67,15 @@
           <div class="extra-info">
             <div class="secondary-info">
               <div class="id">
-                <p>Data: <span class="id-number">{{ exam.date | date: 'dd-MM-yyyy' }}</span></p>
+                <p>Data: <span class="id-number">{{ exam.examDate | date: 'dd-MM-yyyy' }}</span></p>
               </div>
               <div class="id">
-                <p>Hora: <span class="id-number">{{ exam.time }}</span></p>
+                <p>Hora: <span class="id-number">{{ exam.examTime }}</span></p>
               </div>
             </div>
             <div class="lab">
               <p>Laboratório:</p>
-              <p>{{ exam.lab }}</p>
+              <p>{{ exam.laboratory }}</p>
             </div>
             <div class="lab">
               <p>Tipo:</p>
