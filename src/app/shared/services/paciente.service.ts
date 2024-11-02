@@ -2,6 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { ApiService } from "../../core/services/api.service";
 import { catchError, Observable, tap, throwError } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: "root",
@@ -32,10 +33,11 @@ export class PacienteService {
     return this.apiService.post(this.pacienteUrl, newPaciente).pipe(
       tap((response: any) => {
         // console.log(response);
-      })
+      }),
+      catchError(this.handleError)
     );
   }
-
+  
   updatePaciente(updatedPaciente: any): Observable<any> {
     return this.apiService.put(this.pacienteUrl, updatedPaciente.id, updatedPaciente).pipe(
       tap((response: any) => {
@@ -44,7 +46,7 @@ export class PacienteService {
       catchError(this.handleError)
     );
   }
-
+  
   deletePaciente(pacienteId: string): Observable<any> {
     return this.apiService.delete(this.pacienteUrl, pacienteId).pipe(
       tap((response: any) => {
@@ -113,20 +115,30 @@ export class PacienteService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = "Ocorreu um erro inesperado.";
-
-    if (error.status === 400) {
-      errorMessage = "Dados ausentes ou incorretos";
-    } else if (error.status === 401) {
-      errorMessage = "Falha de autenticação.";
-    } else if (error.status === 404) {
-      errorMessage = "Paciente não encontrado.";
-    } else if (error.status === 409) {
-      errorMessage = "Paciente já cadastrado";
+  
+    if (error.error && error.error.message) {
+      errorMessage = error.error.message;
     } else {
-      errorMessage = `${error.message}`;
+      if (error.status === 400) {
+        errorMessage = "Dados ausentes ou incorretos";
+      } else if (error.status === 401) {
+        errorMessage = "Falha de autenticação.";
+      } else if (error.status === 404) {
+        errorMessage = "Paciente não encontrado.";
+      } else if (error.status === 409) {
+        errorMessage = "Paciente já cadastrado";
+      } else {
+        errorMessage = `${error.message}`;
+      }
     }
-    // console.error(error);
-
+  
+    Swal.fire({
+      text: errorMessage,
+      icon: "error",
+      confirmButtonColor: "#0A7B73",
+      confirmButtonText: "OK",
+    });
+  
     return throwError(() => new Error(errorMessage));
   }
 }

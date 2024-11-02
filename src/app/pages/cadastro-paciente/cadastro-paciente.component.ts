@@ -15,7 +15,6 @@ import Swal from "sweetalert2";
 import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
 import { ViaCepService } from "../../shared/services/via-cep.service";
 
-
 @Component({
   selector: "app-cadastro-paciente",
   standalone: true,
@@ -37,6 +36,7 @@ export class CadastroPacienteComponent implements OnInit {
   showAddress: boolean = false;
   form: FormGroup;
   isEdit: boolean = false;
+  isSubmitting: boolean = false; 
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -100,7 +100,7 @@ export class CadastroPacienteComponent implements OnInit {
         });
       }
     });
-  
+
     this.form.get("zipCode")?.valueChanges.subscribe((cep) => {
       const sanitizedCep = cep.replace("-", "");
       if (sanitizedCep.length === 8) {
@@ -124,7 +124,12 @@ export class CadastroPacienteComponent implements OnInit {
   }
 
   cadastrar() {
+    if (this.isSubmitting) {
+      return;
+    }
+
     if (this.form.valid) {
+      this.isSubmitting = true;
       const pacienteData: any = {
         ...this.form.value,
         birthDate: this.formatDate(this.form.value.birthDate),
@@ -137,30 +142,40 @@ export class CadastroPacienteComponent implements OnInit {
         street: this.form.get('street')?.value,
         neighborhood: this.form.get('neighborhood')?.value
       };
-  
+
       if (this.form.value.healthInsuranceValidity) {
         pacienteData.healthInsuranceValidity = this.formatDate(this.form.value.healthInsuranceValidity);
       }
-  
+
       if (this.isEdit) {
-        this.pacienteService.updatePaciente(pacienteData).subscribe(() => {
-          Swal.fire({
-            text: "Cadastro atualizado com sucesso!",
-            icon: "success",
-            confirmButtonColor: "#0A7B73",
-            confirmButtonText: "OK",
-          });
-          this.router.navigate(["/home"]);
+        this.pacienteService.updatePaciente(pacienteData).subscribe({
+          next: (response) => {
+            Swal.fire({
+              text: response.message || "Cadastro atualizado com sucesso!",
+              icon: "success",
+              confirmButtonColor: "#0A7B73",
+              confirmButtonText: "OK",
+            });
+            this.router.navigate(["/home"]);
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+          }
         });
       } else {
-        this.pacienteService.addPaciente(pacienteData).subscribe(() => {
-          Swal.fire({
-            text: "Paciente cadastrado com sucesso!",
-            icon: "success",
-            confirmButtonColor: "#0A7B73",
-            confirmButtonText: "OK",
-          });
-          this.router.navigate(["/home"]);
+        this.pacienteService.addPaciente(pacienteData).subscribe({
+          next: (response) => {
+            Swal.fire({
+              text: response.message || "Paciente cadastrado com sucesso!",
+              icon: "success",
+              confirmButtonColor: "#0A7B73",
+              confirmButtonText: "OK",
+            });
+            this.router.navigate(["/home"]);
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+          }
         });
       }
     } else {
@@ -171,7 +186,7 @@ export class CadastroPacienteComponent implements OnInit {
       });
     }
   }
-  
+
   formatDate(date: string): string {
     const [year, month, day] = date.split('-');
     return `${year}-${month}-${day}`;
