@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
 import { ConsultaService } from "../../shared/services/consulta.service";
 import { PacienteService } from "../../shared/services/paciente.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-consulta",
@@ -33,6 +34,12 @@ import { PacienteService } from "../../shared/services/paciente.service";
   styleUrl: "./consulta.component.scss",
 })
 export class ConsultaComponent implements OnInit {
+
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private pacienteService = inject(PacienteService);
+  private consultaService = inject(ConsultaService);
+
   containerSearch: boolean = true;
   isMenuRetracted = false;
   pageTitle: string = "Cadastro de consultas";
@@ -47,17 +54,10 @@ export class ConsultaComponent implements OnInit {
   isFormVisible: boolean = false;
 
 
-  private route = inject(ActivatedRoute);
-  private pacienteService = inject(PacienteService);
-  private consultaService = inject(ConsultaService);
-
   constructor(
 
   ) {
     this.detectScreenSize();
-
-    // this.pacienteData = this.pacienteService.getAllPatients();
-    // this.filteredPacienteData = [...this.pacienteData];
 
     this.form = new FormGroup({
       motive: new FormControl("", [
@@ -82,7 +82,6 @@ export class ConsultaComponent implements OnInit {
         Validators.minLength(16),
         Validators.maxLength(256),
       ]),
-      // id: new FormControl(""),
     });
   }
 
@@ -105,23 +104,6 @@ export class ConsultaComponent implements OnInit {
           },
         });
       }
-
-
-      //     this.consultaService.getConsultaById(selectedConsultaId)
-
-
-
-      //     const patient = this.pacienteData.find((patient) =>
-      //       patient.consultas.some(
-      //         (consulta: { id: string }) =>
-      //           consulta.id === this.selectedConsultaId
-      //       )
-      //     );
-      //     if (patient) {
-      //       this.selectPatient(patient.id);
-      //       this.editar(this.selectedConsultaId);
-      //     }
-      //   }
     });
   }
 
@@ -141,53 +123,50 @@ export class ConsultaComponent implements OnInit {
   }
 
 
-  searchPacientes(): void { }
+  searchPacientes(): void {
+    const searchQuery = this.searchQuery.trim().toLowerCase();
+    if (searchQuery !== "") {
+      let searchObservable: Observable<any>;
 
+      if (this.isValidEmail(searchQuery)) {
+          searchObservable = this.pacienteService.getPacientesByEmail(searchQuery);
+      } else if (this.isValidPhone(searchQuery)) {
+          const cleanedPhone = this.cleanString(searchQuery);
+          searchObservable = this.pacienteService.getPacientesByPhone(cleanedPhone);
+      } else {
+          searchObservable = this.pacienteService.getPacientesByName(searchQuery);
+      }
+      searchObservable.subscribe({
+        next: (response) => {
+          console.log(response);
+          this.filteredPacienteData = response.patients || [];
 
-  mensagemSucesso(mensagem: string): void {
-    Swal.fire({
-      text: mensagem,
-      icon: "success",
-      confirmButtonColor: "#0A7B73",
-      confirmButtonText: "OK",
-    }).then((result) => {
+        },
+        error: (error: Error) => {
+          console.error("Erro ao buscar paciente:", error.message);
+          this.mensagemErro(error.message);
+        }
 
-    });
+        
+      });
   }
-  mensagemErro(mensagem: string): void {
-    Swal.fire({
-      text: mensagem,
-      icon: "error",
-      confirmButtonColor: "#0A7B73",
-      confirmButtonText: "OK",
-    });
-    console.error("Erro:", mensagem);
-  }
+}
 
+cleanString(value: string): string {
+  return value ? value.replace(/\D/g, '') : '';
+}
 
+isValidEmail(email: string): boolean {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(email);
+}
 
-  // filterPatients(): void {
-  //   const lowercaseSearchQuery = this.searchQuery.trim().toLowerCase();
-  //   if (lowercaseSearchQuery !== "") {
-  //     this.filteredPacienteData = this.pacienteData.filter(
-  //       (patient) =>
-  //         patient.name.toLowerCase().includes(lowercaseSearchQuery) ||
-  //         patient.email.toLowerCase().includes(lowercaseSearchQuery) ||
-  //         patient.phone.toLowerCase().includes(lowercaseSearchQuery)
-  //     );
-  //   } else {
-  //     this.filteredPacienteData = [...this.pacienteData];
-  //   }
-  // }
-
-  // get patientConsultas(): any[] {
-  //   const patient = this.pacienteService.getPatientById(
-  //     this.selectedPatientId!
-  //   );
-  //   return patient ? patient.consultas : [];
-  // }
-
-
+isValidPhone(phone: string): boolean {
+  const cleanedPhone = this.cleanString(phone);
+  const phonePattern = /^\d{10,11}$/;
+  const isValid = phonePattern.test(cleanedPhone);
+  return isValid;
+}
 
   editar(consultaData: any): void {
     this.isEdit = true;
@@ -205,9 +184,11 @@ export class ConsultaComponent implements OnInit {
   }
 
   cadastrar(): void {
+
     if (this.form.valid) {
 
       const consulta = {
+        id: "",
         appointmentReason: this.form.value.motive,
         appointmentDate: this.form.value.date,
         appointmentTime: this.form.value.time,
@@ -218,12 +199,12 @@ export class ConsultaComponent implements OnInit {
       };
 
       if (this.isEdit) {
-        debugger;
+        consulta.id = this.selectedConsultaId;
         this.consultaService.updateConsulta(consulta).subscribe({
           next: (response) => {
-            console.log("resposta:", response);
-            this.mensagemSucesso(response.message);
-            window.location.reload();
+            this.mensagemSucesso(response.messagem, false);
+            this.router.navigate(["/consulta/"+this.selectedConsultaId]);
+
           },
           error: (error: Error) => {
 
@@ -231,11 +212,13 @@ export class ConsultaComponent implements OnInit {
           },
         });
       } else {
+        //salvar nova consulta
         this.consultaService.addConsulta(consulta).subscribe({
           next: (response) => {
-            console.log("resposta:", response);
-            this.mensagemSucesso(response.message);
-            window.location.reload();
+            this.mensagemSucesso(response.message, true);
+            this.router.navigate(["/consulta"]);
+            // window.location.reload();
+
           },
           error: (error: Error) => {
 
@@ -251,11 +234,11 @@ export class ConsultaComponent implements OnInit {
     this.consultaData;
     this.consultaService.deleteConsulta(this.consultaData.id).subscribe({
       next: (response) => {
-        console.log("resposta:", response);
-        this.mensagemSucesso(response.message);
+        this.mensagemSucesso(response.message,false);
+        this.resetForm();
+        this.router.navigate(["/consulta"]);
       },
       error: (error: Error) => {
-
         this.mensagemErro(error.message);
       },
     });
@@ -264,11 +247,39 @@ export class ConsultaComponent implements OnInit {
   selectPatient(patientId: string): void {
     this.selectedPatientId = patientId;
     this.isFormVisible = true;
+    this.containerSearch = false;
   }
 
-  // resetForm(): void {
-  //   this.form.reset();
-  //   this.isEdit = false;
-  //   this.selectedConsultaId = "";
-  // }
+  resetForm(): void {
+    this.form.reset();
+    this.isEdit = false;
+    this.selectedConsultaId = "";
+  }
+
+
+
+  mensagemSucesso(mensagem: string, reload: boolean): void {
+    Swal.fire({
+      text: mensagem,
+      icon: "success",
+      confirmButtonColor: "#0A7B73",
+      confirmButtonText: "OK",
+    }).then((result) => {
+    if (reload) {
+      window.location.reload();
+    } 
+  });
+  }
+
+  mensagemErro(mensagem: string): void {
+    Swal.fire({
+      text: mensagem,
+      icon: "error",
+      confirmButtonColor: "#0A7B73",
+      confirmButtonText: "OK",
+    });
+    console.error("Erro:", mensagem);
+  }
+
 }
+
