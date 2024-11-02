@@ -1,25 +1,29 @@
 import { inject } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
-import { AuthService } from "../../shared/services/auth.service";
 import { LoggedUserService } from "../services/logged-user.service";
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const loggedUser = inject(LoggedUserService);
-  // debugger;
 
   if (!loggedUser.isLoggedIn()) {
     router.navigate(["/login"]);
-    return false;
+    return false; 
   }
 
   const userRole = loggedUser.getUserRole();
   const allowedRoles = route.data?.["roles"] as Array<string>;
 
+  if (userRole === 'PACIENTE' && state.url === '/home') {
+    const patientId = loggedUser.getPacienteId(); 
+    router.navigate(['/prontuarios', patientId]);
+    return false; 
+  }
+
   if (userRole && allowedRoles && allowedRoles.includes(userRole)) {
-    return true;
+    return true; 
   } else {
-    router.navigate(["/login"]);
-    return false;
+    router.navigate(["/login"]); 
+    return false; 
   }
 };
