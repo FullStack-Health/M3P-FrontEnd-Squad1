@@ -36,6 +36,7 @@ export class CadastroPacienteComponent implements OnInit {
   showAddress: boolean = false;
   form: FormGroup;
   isEdit: boolean = false;
+  isSubmitting: boolean = false; 
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -60,45 +61,30 @@ export class CadastroPacienteComponent implements OnInit {
   ) {
     this.detectScreenSize();
     this.form = new FormGroup({
-      fullName: new FormControl("", [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.maxLength(64),
-      ]),
+      fullName: new FormControl("", [Validators.required, Validators.minLength(8), Validators.maxLength(64)]),
       gender: new FormControl("", Validators.required),
       birthDate: new FormControl("", Validators.required),
-      cpf: new FormControl("", 
-        Validators.required,),
-      rg: new FormControl("", [
-        Validators.required,
-        Validators.maxLength(20),
-      ]),
+      cpf: new FormControl("", Validators.required),
+      rg: new FormControl("", [Validators.required, Validators.maxLength(20)]),
       rgIssuer: new FormControl("", Validators.required),
       maritalStatus: new FormControl("", Validators.required),
-      phone: new FormControl("", 
-        Validators.required,),
+      phone: new FormControl("", Validators.required),
       email: new FormControl("", [Validators.required, Validators.email]),
-      placeOfBirth: new FormControl("", [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.maxLength(64),
-      ]),
-      emergencyContact: new FormControl("", 
-        Validators.required,),
+      placeOfBirth: new FormControl("", [Validators.required, Validators.minLength(8), Validators.maxLength(64)]),
+      emergencyContact: new FormControl("", Validators.required),
       allergies: new FormControl("", Validators.required),
       specificCare: new FormControl(""),
       healthInsurance: new FormControl(""),
       healthInsuranceNumber: new FormControl(""),
       healthInsuranceValidity: new FormControl(""),
-      zipCode: new FormControl("", 
-        Validators.required,),
+      zipCode: new FormControl("", Validators.required),
       state: new FormControl({ value: "", disabled: true }),
       city: new FormControl({ value: "", disabled: true }),
       street: new FormControl({ value: "", disabled: true }),
       number: new FormControl("", Validators.required),
       complement: new FormControl(""),
       neighborhood: new FormControl({ value: "", disabled: true }),
-      referencePoint: new FormControl(""),
+      referencePoint: new FormControl("")
     });
   }
 
@@ -116,8 +102,9 @@ export class CadastroPacienteComponent implements OnInit {
     });
 
     this.form.get("zipCode")?.valueChanges.subscribe((cep) => {
-      if (cep && cep.length === 9) {
-        this.viaCepService.get(cep).subscribe((address) => {
+      const sanitizedCep = cep.replace("-", "");
+      if (sanitizedCep.length === 8) {
+        this.viaCepService.get(sanitizedCep).subscribe((address) => {
           this.form.patchValue({
             state: address.uf,
             city: address.localidade,
@@ -137,26 +124,58 @@ export class CadastroPacienteComponent implements OnInit {
   }
 
   cadastrar() {
+    if (this.isSubmitting) {
+      return;
+    }
+
     if (this.form.valid) {
+      this.isSubmitting = true;
+      const pacienteData: any = {
+        ...this.form.value,
+        birthDate: this.formatDate(this.form.value.birthDate),
+        allergies: this.form.value.allergies.split(',').map((allergy: string) => allergy.trim()),
+        specificCare: this.form.value.specificCare.split(',').map((care: string) => care.trim()),
+        cpf: this.form.value.cpf.replace(/\D/g, ''), 
+        zipCode: this.form.value.zipCode.replace(/\D/g, ''), 
+        state: this.form.get('state')?.value,
+        city: this.form.get('city')?.value,
+        street: this.form.get('street')?.value,
+        neighborhood: this.form.get('neighborhood')?.value
+      };
+
+      if (this.form.value.healthInsuranceValidity) {
+        pacienteData.healthInsuranceValidity = this.formatDate(this.form.value.healthInsuranceValidity);
+      }
+
       if (this.isEdit) {
-        this.pacienteService.updatePaciente(this.form.value).subscribe(() => {
-          Swal.fire({
-            text: "Cadastro atualizado com sucesso!",
-            icon: "success",
-            confirmButtonColor: "#0A7B73",
-            confirmButtonText: "OK",
-          });
-          this.router.navigate(["/home"]);
+        this.pacienteService.updatePaciente(pacienteData).subscribe({
+          next: (response) => {
+            Swal.fire({
+              text: response.message || "Cadastro atualizado com sucesso!",
+              icon: "success",
+              confirmButtonColor: "#0A7B73",
+              confirmButtonText: "OK",
+            });
+            this.router.navigate(["/home"]);
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+          }
         });
       } else {
-        this.pacienteService.addPaciente(this.form.value).subscribe(() => {
-          Swal.fire({
-            text: "Paciente cadastrado com sucesso!",
-            icon: "success",
-            confirmButtonColor: "#0A7B73",
-            confirmButtonText: "OK",
-          });
-          this.router.navigate(["/home"]);
+        this.pacienteService.addPaciente(pacienteData).subscribe({
+          next: (response) => {
+            Swal.fire({
+              text: response.message || "Paciente cadastrado com sucesso!",
+              icon: "success",
+              confirmButtonColor: "#0A7B73",
+              confirmButtonText: "OK",
+            });
+            this.router.navigate(["/home"]);
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+          }
         });
       }
     } else {
@@ -166,6 +185,11 @@ export class CadastroPacienteComponent implements OnInit {
         confirmButtonColor: "#0A7B73",
       });
     }
+  }
+
+  formatDate(date: string): string {
+    const [year, month, day] = date.split('-');
+    return `${year}-${month}-${day}`;
   }
 
   hasConsultasOrExams(patientId: string): boolean {

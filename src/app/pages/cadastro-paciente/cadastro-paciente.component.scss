@@ -135,6 +135,11 @@ select {
   padding-left: 150px;
 }
 
+.erro-formulario input.ng-invalid.ng-touched,
+.erro-formulario select.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
 @media (min-width: 768px) {
   .row {
     grid-template-columns: repeat(2, 1fr);
