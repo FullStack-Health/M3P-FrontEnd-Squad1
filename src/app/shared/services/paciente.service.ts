@@ -89,30 +89,6 @@ export class PacienteService {
     );
   }
 
-  getAllPatientRecords(page: number = 0, size: number = 10, name?: string, id?: number): Observable<any> {
-    let url = `${this.pacienteUrl}/prontuarios?page=${page}&size=${size}`;
-    if (name) {
-      url += `&name=${encodeURIComponent(name)}`;
-    }
-    if (id) {
-      url += `&id=${id}`;
-    }
-    return this.apiService.get(url).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      }),
-      catchError(this.handleError)
-    );
-  }
-
-  getPatientRecordById(id: number): Observable<any> {
-    return this.apiService.get(`${this.pacienteUrl}/${id}/prontuarios`).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
-  }
-
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = "Ocorreu um erro inesperado.";
   

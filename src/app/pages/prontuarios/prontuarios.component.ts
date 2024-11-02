@@ -3,7 +3,7 @@ import { Component, HostListener, OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
-import { PacienteService } from "../../temp/old/old_paciente.service";
+import { PacienteService } from "../../shared/services/paciente.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
@@ -45,17 +45,21 @@ export class ProntuariosComponent implements OnInit {
     this.isMenuRetracted = isRetracted;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadPacientes();
+  }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private pacienteService: PacienteService
-  ) {
-    this.pacienteData = this.pacienteService.getAllPatients();
-    this.filteredPacienteData = [...this.pacienteData];
+  ) {}
 
-    this.detectScreenSize();
+  loadPacientes() {
+    this.pacienteService.getAllPacientes().subscribe((response: any) => {
+      this.pacienteData = response.patients; 
+      this.filteredPacienteData = [...this.pacienteData];
+    });
   }
 
   filterPatients() {
@@ -65,12 +69,16 @@ export class ProntuariosComponent implements OnInit {
     }
     this.filteredPacienteData = this.pacienteData.filter(
       (patient) =>
-        patient.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        patient.id.toLowerCase().includes(this.searchQuery.toLowerCase())
+        patient.fullName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        patient.id.toString().includes(this.searchQuery)
     );
   }
 
   navigateToProntuario(patientId: string) {
     this.router.navigate(["/prontuarios", patientId]);
+  }
+
+  navigateToEdit(patientId: string) {
+    this.router.navigate(["/editar-paciente", patientId]);
   }
 }

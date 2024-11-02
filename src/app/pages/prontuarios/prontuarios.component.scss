@@ -95,11 +95,7 @@
       justify-content: space-between;
       width: 100%;
       flex-direction: row;
-      .id {
-        .id-number {
-          color: $color-500;
-          font-weight: bold;
-        }
+      .id, .phone, .plan {
         display: flex;
         flex-direction: row;
         font-size: 12px;
@@ -107,18 +103,13 @@
         line-height: 100%;
         margin-bottom: 10px;
       }
-      .plan {
-        display: flex;
-        flex-direction: row;
-        font-size: 12px;
-        text-transform: uppercase;
-        line-height: 100%;
-        margin-bottom: 10px;
-
-        fa-icon {
-          margin-right: 10px;
-          color: $color-500;
-        }
+      .id .id-number, .phone .phone-number {
+        color: $color-500;
+        font-weight: bold;
+      }
+      .plan fa-icon {
+        margin-right: 10px;
+        color: $color-500;
       }
     }
 
