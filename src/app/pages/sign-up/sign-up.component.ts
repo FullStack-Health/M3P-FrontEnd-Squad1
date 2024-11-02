@@ -8,9 +8,14 @@ import {
   AbstractControl,
 } from "@angular/forms";
 import { Router } from "@angular/router";
-import Swal from "sweetalert2";
 import { UsuarioService } from "../../shared/services/usuario.service";
 import { MessageService } from "../../shared/services/message.service";
+
+interface NewUser {
+  email: string;
+  password: string;
+  role: string;
+}
 
 @Component({
   selector: "app-sign-up",
@@ -28,11 +33,12 @@ export class SignUpComponent {
   userForm!: FormGroup;
 
   constructor() {}
+
   ngOnInit() {
     this.createForm();
   }
 
-  createForm() {
+  private createForm() {
     this.userForm = this.formBuilder.group(
       {
         email: ["", [Validators.required, Validators.email]],
@@ -44,7 +50,7 @@ export class SignUpComponent {
     );
   }
 
-  passwordsMatch(control: AbstractControl) {
+  private passwordsMatch(control: AbstractControl) {
     const senha = control.get("senha")?.value;
     const confirmarSenha = control.get("confirmarSenha")?.value;
     return senha === confirmarSenha ? null : { senhaMismatch: true };
@@ -52,7 +58,7 @@ export class SignUpComponent {
 
   cadastrar() {
     if (this.userForm.valid) {
-      const newUser = {
+      const newUser: NewUser = {
         email: this.userForm.value.email,
         password: this.userForm.value.senha,
         role: this.userForm.value.perfil,
@@ -60,35 +66,31 @@ export class SignUpComponent {
 
       this.usuarioService.addPreRegistro(newUser).subscribe({
         next: (response) => {
-          this.messageService.showSuccess(response.message).then(() => {
-            if (this.router.url === "/login") {
-              window.location.reload();
-            } else {
-              this.router.navigate(["/login"]);
-            }
-          });
+          this.messageService
+            .showSuccess("Cadastro realizado com sucesso")
+            .then(() => {
+              if (this.router.url === "/login") {
+                this.reload();
+              } else {
+                this.goToLogin();
+              }
+            });
         },
         error: (error: Error) => {
-          Swal.fire({
-            text: error.message,
-            icon: "error",
-            confirmButtonColor: "#0A7B73",
-            confirmButtonText: "OK",
-          });
+          this.messageService.showError(error.message);
           console.error("Erro de autenticação:", error.message);
         },
       });
     } else {
-      Swal.fire({
-        text: "Formulário inválido",
-        icon: "error",
-        confirmButtonColor: "#0A7B73",
-        confirmButtonText: "OK",
-      });
+      this.messageService.showError("Formulário inválido");
     }
   }
 
-  goToLogin() {
+  private reload() {
+    window.location.reload();
+  }
+
+  private goToLogin() {
     this.router.navigate(["/login"]);
   }
 }
