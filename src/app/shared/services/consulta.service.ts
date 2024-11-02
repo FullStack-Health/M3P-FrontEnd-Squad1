@@ -1,7 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { ApiService } from "../../core/services/api.service";
-import { catchError, Observable, tap, throwError } from "rxjs";
-import { HttpErrorResponse } from "@angular/common/http";
+import {  Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -13,45 +12,23 @@ export class ConsultaService {
   constructor() {}
 
   getAllConsultas(): Observable<any> {
-    return this.apiService.get(this.consultaUrl).pipe(
-      tap((response: any) => {
-        // isolar lista de consultas da resposta paginada
-        // console.log(response);
-      })
-    );
+    return this.apiService.get(this.consultaUrl);
   }
 
   getConsultaById(consultaId: string): Observable<any> {
-    return this.apiService.get(`${this.consultaUrl}/${consultaId}`).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
+    return this.apiService.get(`${this.consultaUrl}/${consultaId}`);
   }
 
   addConsulta(newConsulta: any): Observable<any> {
-    return this.apiService.post(this.consultaUrl, newConsulta).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
+    return this.apiService.post(this.consultaUrl, newConsulta);
   }
 
   updateConsulta(updatedConsulta: any): Observable<any> {
     return this.apiService
-      .put(this.consultaUrl, updatedConsulta.id, updatedConsulta)
-      .pipe(
-        tap((response: any) => {
-          // console.log(response);
-        })
-      );
+      .put(this.consultaUrl, updatedConsulta.id, updatedConsulta);
   }
 
   deleteConsulta(consultaId: string): Observable<any> {
-    return this.apiService.post(this.consultaUrl, consultaId).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
+    return this.apiService.delete(this.consultaUrl, consultaId);
   }
 }
