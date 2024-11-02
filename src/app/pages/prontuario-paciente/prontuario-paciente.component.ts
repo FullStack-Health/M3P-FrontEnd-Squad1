@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
-import { PacienteService } from "../../temp/old/old_paciente.service";
+import { ProntuarioService } from "../../shared/services/prontuario.service";
 import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
 import { DatePipe } from "@angular/common";
 
@@ -20,7 +20,7 @@ import { DatePipe } from "@angular/common";
     GenderPicturePipe,
   ],
   templateUrl: "./prontuario-paciente.component.html",
-  styleUrl: "./prontuario-paciente.component.scss",
+  styleUrls: ["./prontuario-paciente.component.scss"],
 })
 export class ProntuarioPacienteComponent implements OnInit {
   isMenuRetracted = false;
@@ -46,7 +46,7 @@ export class ProntuarioPacienteComponent implements OnInit {
     this.route.params.subscribe((params) => {
       const pacienteId = params["id"];
       if (pacienteId) {
-        this.patient = this.patientService.getPatientById(pacienteId);
+        this.loadProntuario(pacienteId);
       }
     });
   }
@@ -54,9 +54,22 @@ export class ProntuarioPacienteComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private patientService: PacienteService
+    private prontuarioService: ProntuarioService
   ) {
     this.detectScreenSize();
+  }
+
+  loadProntuario(pacienteId: string) {
+    this.prontuarioService.getProntuarioByPacienteId(pacienteId).subscribe(
+      (response: any) => {
+        this.patient = response.record.patient;
+        this.patient.exams = response.record.exams;
+        this.patient.consultas = response.record.appointments;
+      },
+      (error) => {
+        console.error("Erro ao carregar prontuário", error);
+      }
+    );
   }
 
   editarExame(examId: string): void {
