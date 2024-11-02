@@ -29,6 +29,9 @@ export class ProntuariosComponent implements OnInit {
   pacienteData: any[] = [];
   filteredPacienteData: any[] = [];
   searchQuery: string = "";
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalElements: number = 0;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -56,9 +59,10 @@ export class ProntuariosComponent implements OnInit {
   ) {}
 
   loadPacientes() {
-    this.pacienteService.getAllPacientes().subscribe((response: any) => {
-      this.pacienteData = response.patients; 
+    this.pacienteService.getAllPacientes(this.currentPage, this.pageSize).subscribe((response: any) => {
+      this.pacienteData = response.patients;
       this.filteredPacienteData = [...this.pacienteData];
+      this.totalElements = response.page.totalElements;
     });
   }
 
@@ -80,5 +84,14 @@ export class ProntuariosComponent implements OnInit {
 
   navigateToEdit(patientId: string) {
     this.router.navigate(["/editar-paciente", patientId]);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadPacientes();
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalElements / this.pageSize);
   }
 }
