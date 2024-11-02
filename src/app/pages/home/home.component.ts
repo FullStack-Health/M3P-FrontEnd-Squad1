@@ -1,12 +1,13 @@
-import { Component, HostListener } from "@angular/core";
+import { Component, HostListener, OnInit } from "@angular/core";
 import { Router, RouterOutlet } from "@angular/router";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { CommonModule } from "@angular/common";
-import { PacienteService } from "../../temp/old/old_paciente.service";
+import { PacienteService } from "../../shared/services/paciente.service";
 import { CardComponent } from "../../shared/components/card/card.component";
 import { FormsModule } from "@angular/forms";
+import { DashboardService, DashboardMetrics } from "../../shared/services/dashboard.service"; 
 
 @Component({
   selector: "app-home",
@@ -21,26 +22,56 @@ import { FormsModule } from "@angular/forms";
     FormsModule,
   ],
   templateUrl: "./home.component.html",
-  styleUrl: "./home.component.scss",
+  styleUrls: ["./home.component.scss"],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   pacienteData: any[] = [];
   filteredPacienteData: any[] = [];
   searchQuery: string = "";
-  totalPatients: number = 0;
-  totalExams: number = 0;
-  totalConsultas: number = 0;
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalElements: number = 0;
   isMenuRetracted = false;
   pageTitle: string = "Página Inicial";
 
+  totalPatients: number = 0;
+  totalConsultas: number = 0;
+  totalExams: number = 0;
+  totalUsers: number = 0; 
+  errorMessage: string | null = null;
+
   constructor(
     private pacienteService: PacienteService,
-    private router: Router
-  ) {
-    this.pacienteData = this.pacienteService.getAllPatients();
-    this.filteredPacienteData = [...this.pacienteData];
-    this.calculateTotals();
-    this.detectScreenSize();
+    private router: Router,
+    private dashboardService: DashboardService 
+  ) {}
+
+  ngOnInit(): void {
+    this.loadPacientes();
+    this.loadDashboardMetrics(); 
+  }
+
+  loadPacientes() {
+    this.pacienteService.getAllPacientes(this.currentPage, this.pageSize).subscribe((response: any) => {
+      this.pacienteData = response.patients;
+      this.filteredPacienteData = [...this.pacienteData];
+      this.totalElements = response.page.totalElements;
+    });
+  }
+
+  loadDashboardMetrics() {
+    this.dashboardService.getDashboardData().subscribe(
+      (data: DashboardMetrics) => {
+        this.totalPatients = data.statistics.patientCount;
+        this.totalConsultas = data.statistics.appointmentCount;
+        this.totalExams = data.statistics.examCount;
+        this.totalUsers = data.statistics.userCount; 
+      },
+      error => {
+        this.errorMessage = 'Erro ao obter dados do dashboard';
+        console.error(error);
+      }
+    );
   }
 
   @HostListener("window:resize", ["$event"])
@@ -58,42 +89,42 @@ export class HomeComponent {
     this.isMenuRetracted = isRetracted;
   }
 
-  editarPaciente(event: any) {
-    const patientId = event;
-    const paciente = this.pacienteData.find((p) => p.id === patientId);
+  filterPatients() {
+    const cleanedSearchQuery = this.searchQuery.trim().toLowerCase(); 
+
+    if (cleanedSearchQuery === "") {
+        this.filteredPacienteData = [...this.pacienteData];
+        return;
+    }
+
+    
+    this.filteredPacienteData = this.pacienteData.filter((patient) => {
+        const fullName = patient.fullName.toLowerCase(); 
+        const email = patient.email.toLowerCase(); 
+        const phone = this.cleanString(patient.phone);
+
+        return (
+            fullName.includes(cleanedSearchQuery) ||
+            email.includes(cleanedSearchQuery) ||
+            phone.includes(cleanedSearchQuery)
+        );
+    });
+}
+
+cleanString(value: string): string {
+  return value ? value.replace(/[\s()\-.\+]/g, '') : '';
+}
+
+  navigateToEdit(patientId: string) {
     this.router.navigate(["/paciente/edit", patientId]);
   }
 
-  filterPatients() {
-    if (this.searchQuery.trim() === "") {
-      this.filteredPacienteData = [...this.pacienteData];
-      return;
-    }
-    this.filteredPacienteData = this.pacienteData.filter(
-      (patient) =>
-        patient.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        patient.email.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        patient.phone.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadPacientes();
   }
 
-  calculateTotals(): void {
-    const pacientes = this.pacienteService.getAllPatients();
-    this.totalPatients = pacientes.length;
-
-    let totalExams = 0;
-    let totalConsultas = 0;
-
-    pacientes.forEach((paciente) => {
-      if (paciente.exams) {
-        totalExams += paciente.exams.length;
-      }
-      if (paciente.consultas) {
-        totalConsultas += paciente.consultas.length;
-      }
-    });
-
-    this.totalExams = totalExams;
-    this.totalConsultas = totalConsultas;
+  get totalPages(): number {
+    return Math.ceil(this.totalElements / this.pageSize);
   }
 }
