@@ -17,6 +17,7 @@ import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.compon
 import { ExameService } from "../../shared/services/exame.service";
 import { PacienteService } from "../../shared/services/paciente.service";
 import { Observable } from "rxjs";
+import { Location } from '@angular/common';
 
 @Component({
   selector: "app-exames",
@@ -79,7 +80,7 @@ export class ExamesComponent implements OnInit {
             );
             if (patient) {
               this.selectPatient(patient.id);
-              this.editar(exam);
+              this.editar(this.selectedExamId);
             }
           },
           (error) => {
@@ -94,7 +95,8 @@ export class ExamesComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private pacienteService: PacienteService,
-    private exameService: ExameService
+    private exameService: ExameService,
+    private location: Location
   ) {
     this.detectScreenSize();
     this.loadPacientes();
@@ -306,6 +308,7 @@ cleanString(value: string): string {
             }).then(() => {
               this.loadPatientExams(); 
               this.resetForm();
+              this.location.go('/exames'); // Atualiza a URL
             });
           },
           (error) => {
@@ -323,6 +326,7 @@ cleanString(value: string): string {
             }).then(() => {
               this.loadPatientExams(); 
               this.resetForm();
+              this.location.go('/exames');
             });
           },
           (error) => {
@@ -334,6 +338,7 @@ cleanString(value: string): string {
   }
 
   editar(examId: string): void {
+    this.location.go(`/exame/${examId}`);
     this.exameService.getExameById(examId).subscribe(
       (response) => {
         const exam = response.exam;
