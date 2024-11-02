@@ -10,12 +10,7 @@ import {
 import { Router } from "@angular/router";
 import { UsuarioService } from "../../shared/services/usuario.service";
 import { MessageService } from "../../shared/services/message.service";
-
-interface NewUser {
-  email: string;
-  password: string;
-  role: string;
-}
+import { PreUser } from "../../shared/interfaces/pre-user";
 
 @Component({
   selector: "app-sign-up",
@@ -58,7 +53,7 @@ export class SignUpComponent {
 
   cadastrar() {
     if (this.userForm.valid) {
-      const newUser: NewUser = {
+      const newUser: PreUser = {
         email: this.userForm.value.email,
         password: this.userForm.value.senha,
         role: this.userForm.value.perfil,

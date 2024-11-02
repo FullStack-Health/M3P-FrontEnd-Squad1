@@ -1,7 +1,7 @@
-import { HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { ApiService } from "../../core/services/api.service";
-import { catchError, Observable, tap, throwError } from "rxjs";
+import { Observable } from "rxjs";
+import { PreUser } from "../interfaces/pre-user";
 
 @Injectable({
   providedIn: "root",
@@ -13,14 +13,8 @@ export class UsuarioService {
   constructor() {}
 
   // usuario pré-registro
-  addPreRegistro(newUser: any): Observable<any> {
-    return this.apiService
-      .post(`${this.usuarioUrl}/pre-registro`, newUser)
-      .pipe(
-        tap((response: any) => {
-          // console.log(response);
-        })
-      );
+  addPreRegistro(newUser: PreUser): Observable<any> {
+    return this.apiService.post(`${this.usuarioUrl}/pre-registro`, newUser);
   }
 
   updateSenha(credentials: any): Observable<any> {
@@ -28,56 +22,35 @@ export class UsuarioService {
     const body = {
       newPassword: credentials.newPassword,
     };
-    return this.apiService
-      .put(`${this.usuarioUrl}/email/${email}/redefinir-senha`, null, body)
-      .pipe(
-        tap((response: any) => {
-          // console.log(response);
-        })
-      );
+    return this.apiService.put(
+      `${this.usuarioUrl}/email/${email}/redefinir-senha`,
+      null,
+      body
+    );
   }
 
   getAllUsuarios(): Observable<any> {
-    return this.apiService.get(this.usuarioUrl).pipe(
-      tap((response: any) => {
-        // isolar lista de usuarios da resposta paginada
-        // console.log(response);
-      })
-    );
+    return this.apiService.get(this.usuarioUrl);
   }
 
   getUsuarioById(usuarioId: string): Observable<any> {
-    return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
+    return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`);
   }
 
   // usuario completo
   addUsuario(newUsuario: any): Observable<any> {
-    return this.apiService.post(this.usuarioUrl, newUsuario).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
+    return this.apiService.post(this.usuarioUrl, newUsuario);
   }
 
   updateUsuario(updatedUsuario: any): Observable<any> {
-    return this.apiService
-      .put(this.usuarioUrl, updatedUsuario.id, updatedUsuario)
-      .pipe(
-        tap((response: any) => {
-          // console.log(response);
-        })
-      );
+    return this.apiService.put(
+      this.usuarioUrl,
+      updatedUsuario.id,
+      updatedUsuario
+    );
   }
 
   deleteUsuario(usuarioId: string): Observable<any> {
-    return this.apiService.post(this.usuarioUrl, usuarioId).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
+    return this.apiService.delete(this.usuarioUrl, usuarioId);
   }
 }
