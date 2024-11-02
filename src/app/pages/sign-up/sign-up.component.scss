@@ -87,6 +87,11 @@ form button.sign-up-btn:hover {
   }
 }
 
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media screen and (max-width: 768px) {
   .sign-up {
     display: block !important;

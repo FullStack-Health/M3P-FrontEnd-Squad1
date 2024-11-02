@@ -115,7 +115,13 @@
     }
   </div>
 
-  <button (click)="cadastrar()">Cadastrar</button>
+  <button
+    (click)="cadastrar()"
+    [disabled]="!userForm.valid"
+    [class.disabled]="!userForm.valid"
+  >
+    Cadastrar
+  </button>
   <div
     class="sign-up"
     style="display: none"
