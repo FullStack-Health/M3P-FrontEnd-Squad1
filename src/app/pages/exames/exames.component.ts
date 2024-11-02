@@ -75,13 +75,20 @@ export class ExamesComponent implements OnInit {
       if (this.selectedExamId) {
         this.exameService.getExameById(this.selectedExamId).subscribe(
           (exam) => {
-            const patient = this.pacienteData.find((patient) =>
-              patient.exams.some((e: { id: string }) => e.id === this.selectedExamId)
-            );
-            if (patient) {
-              this.selectPatient(patient.id);
-              this.editar(this.selectedExamId);
-            }
+            this.form.patchValue({
+              name: exam.name,
+              date: exam.examDate,
+              time: exam.examTime,
+              type: exam.type,
+              url: exam.documentUrl,
+              lab: exam.laboratory,
+              results: exam.results,
+              id: exam.id,
+              patientId: exam.patientId 
+            });
+            this.isEdit = true;
+            this.isFormVisible = true;
+            this.loadPatientData(exam.patientId);
           },
           (error) => {
             console.error("Erro ao carregar exame", error);
@@ -89,6 +96,18 @@ export class ExamesComponent implements OnInit {
         );
       }
     });
+  }
+  
+  loadPatientData(patientId: string): void {
+    this.pacienteService.getPacienteById(patientId).subscribe(
+      (patient) => {
+        this.selectedPatientId = patient.id;
+        this.filteredPacienteData = [patient];
+      },
+      (error) => {
+        console.error("Erro ao carregar dados do paciente", error);
+      }
+    );
   }
 
   constructor(
