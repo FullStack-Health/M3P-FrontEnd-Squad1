@@ -92,10 +92,15 @@ export class CadastroPacienteComponent implements OnInit {
     this.route.params.subscribe((params) => {
       const pacienteId = params["id"];
       if (pacienteId) {
-        this.pacienteService.getPacienteById(pacienteId).subscribe((paciente) => {
-          if (paciente) {
+        this.pacienteService.getPacienteById(pacienteId).subscribe((response) => {
+          if (response && response.patient) {
             this.isEdit = true;
-            this.form.patchValue(paciente);
+            this.form.patchValue({
+              ...response.patient,
+              birthDate: this.formatDate(response.patient.birthDate),
+              allergies: response.patient.allergies.join(', '),
+              specificCare: response.patient.specificCare.join(', ')
+            });
           }
         });
       }

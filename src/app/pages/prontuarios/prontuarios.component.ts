@@ -83,7 +83,7 @@ export class ProntuariosComponent implements OnInit {
   }
 
   navigateToEdit(patientId: string) {
-    this.router.navigate(["/editar-paciente", patientId]);
+    this.router.navigate(["/paciente/edit", patientId]);
   }
 
   onPageChange(page: number) {
