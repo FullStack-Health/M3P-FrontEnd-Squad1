@@ -46,7 +46,7 @@ export class PacienteService {
       catchError(this.handleError)
     );
   }
-  
+
   deletePaciente(pacienteId: string): Observable<any> {
     return this.apiService.delete(this.pacienteUrl, pacienteId).pipe(
       tap((response: any) => {
