@@ -46,7 +46,7 @@ export class PacienteService {
       catchError(this.handleError)
     );
   }
-  
+
   deletePaciente(pacienteId: string): Observable<any> {
     return this.apiService.delete(this.pacienteUrl, pacienteId).pipe(
       tap((response: any) => {
@@ -86,30 +86,6 @@ export class PacienteService {
         // console.log(response);
       }),
       catchError(this.handleError)
-    );
-  }
-
-  getAllPatientRecords(page: number = 0, size: number = 10, name?: string, id?: number): Observable<any> {
-    let url = `${this.pacienteUrl}/prontuarios?page=${page}&size=${size}`;
-    if (name) {
-      url += `&name=${encodeURIComponent(name)}`;
-    }
-    if (id) {
-      url += `&id=${id}`;
-    }
-    return this.apiService.get(url).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      }),
-      catchError(this.handleError)
-    );
-  }
-
-  getPatientRecordById(id: number): Observable<any> {
-    return this.apiService.get(`${this.pacienteUrl}/${id}/prontuarios`).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
     );
   }
 

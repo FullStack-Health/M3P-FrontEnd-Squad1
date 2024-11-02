@@ -36,7 +36,8 @@ export class CadastroPacienteComponent implements OnInit {
   showAddress: boolean = false;
   form: FormGroup;
   isEdit: boolean = false;
-  isSubmitting: boolean = false; 
+  isSubmitting: boolean = false;
+  pacienteId: string | null = null; 
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -90,12 +91,17 @@ export class CadastroPacienteComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      const pacienteId = params["id"];
-      if (pacienteId) {
-        this.pacienteService.getPacienteById(pacienteId).subscribe((paciente) => {
-          if (paciente) {
+      this.pacienteId = params["id"]; 
+      if (this.pacienteId) {
+        this.pacienteService.getPacienteById(this.pacienteId).subscribe((response) => {
+          if (response && response.patient) {
             this.isEdit = true;
-            this.form.patchValue(paciente);
+            this.form.patchValue({
+              ...response.patient,
+              birthDate: this.formatDate(response.patient.birthDate),
+              allergies: response.patient.allergies.join(', '),
+              specificCare: response.patient.specificCare.join(', ')
+            });
           }
         });
       }
@@ -127,7 +133,7 @@ export class CadastroPacienteComponent implements OnInit {
     if (this.isSubmitting) {
       return;
     }
-
+  
     if (this.form.valid) {
       this.isSubmitting = true;
       const pacienteData: any = {
@@ -142,12 +148,13 @@ export class CadastroPacienteComponent implements OnInit {
         street: this.form.get('street')?.value,
         neighborhood: this.form.get('neighborhood')?.value
       };
-
+  
       if (this.form.value.healthInsuranceValidity) {
         pacienteData.healthInsuranceValidity = this.formatDate(this.form.value.healthInsuranceValidity);
       }
-
+  
       if (this.isEdit) {
+        pacienteData.id = this.pacienteId;
         this.pacienteService.updatePaciente(pacienteData).subscribe({
           next: (response) => {
             Swal.fire({
@@ -198,10 +205,9 @@ export class CadastroPacienteComponent implements OnInit {
   }
 
   deletePatient() {
-    if (this.isEdit) {
-      const pacienteId = this.form.get("id")?.value;
-      const hasConsultasOrExams = this.hasConsultasOrExams(pacienteId);
-
+    if (this.isEdit && this.pacienteId) {
+      const hasConsultasOrExams = this.hasConsultasOrExams(this.pacienteId);
+  
       if (hasConsultasOrExams) {
         Swal.fire({
           text: "Paciente não pode ser excluído. Para excluir, exclua exames e consultas relacionadas a esse paciente!",
@@ -212,7 +218,7 @@ export class CadastroPacienteComponent implements OnInit {
         this.router.navigate(["/home"]);
         return;
       } else {
-        this.pacienteService.deletePaciente(pacienteId).subscribe(() => {
+        this.pacienteService.deletePaciente(this.pacienteId).subscribe(() => {
           Swal.fire({
             text: "Paciente excluído com sucesso!",
             icon: "success",

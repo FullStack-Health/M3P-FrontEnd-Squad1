@@ -22,9 +22,10 @@ export class ProntuarioService {
         })
       );
   }
+
   getProntuarioByPacienteId(pacienteId: string): Observable<any> {
     return this.apiService
-      .get(`${this.pacienteUrl}/${pacienteId}${this.prontuarioUrl}`)
+      .get(`${this.pacienteUrl}/${pacienteId}/${this.prontuarioUrl}`)
       .pipe(
         tap((response: any) => {
           // console.log(response);

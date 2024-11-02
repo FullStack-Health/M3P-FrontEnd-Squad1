@@ -14,7 +14,7 @@ export const routes: Routes = [
   {
     path: "testeApi",
     component: TesteApiServiceComponent,
-  }, // temporario para testes em developer
+  },
   {
     path: "",
     redirectTo: "home",
@@ -30,7 +30,6 @@ export const routes: Routes = [
     path: "login",
     component: SinginSignupPageComponent,
   },
-
   {
     path: "cadastro",
     component: SignUpComponent,
