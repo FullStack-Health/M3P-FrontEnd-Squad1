@@ -205,10 +205,9 @@ export class CadastroPacienteComponent implements OnInit {
   }
 
   deletePatient() {
-    if (this.isEdit) {
-      const pacienteId = this.form.get("id")?.value;
-      const hasConsultasOrExams = this.hasConsultasOrExams(pacienteId);
-
+    if (this.isEdit && this.pacienteId) {
+      const hasConsultasOrExams = this.hasConsultasOrExams(this.pacienteId);
+  
       if (hasConsultasOrExams) {
         Swal.fire({
           text: "Paciente não pode ser excluído. Para excluir, exclua exames e consultas relacionadas a esse paciente!",
@@ -219,7 +218,7 @@ export class CadastroPacienteComponent implements OnInit {
         this.router.navigate(["/home"]);
         return;
       } else {
-        this.pacienteService.deletePaciente(pacienteId).subscribe(() => {
+        this.pacienteService.deletePaciente(this.pacienteId).subscribe(() => {
           Swal.fire({
             text: "Paciente excluído com sucesso!",
             icon: "success",
