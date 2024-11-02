@@ -40,18 +40,21 @@ export class ConsultaService {
   updateConsulta(updatedConsulta: any): Observable<any> {
     return this.apiService
       .put(this.consultaUrl, updatedConsulta.id, updatedConsulta)
-      .pipe(
-        tap((response: any) => {
-          // console.log(response);
-        })
-      );
+      // .pipe(
+      //   tap((response: any) => {
+      //     // console.log(response);
+      //   })
+      // )
+      ;
   }
 
   deleteConsulta(consultaId: string): Observable<any> {
-    return this.apiService.post(this.consultaUrl, consultaId).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
+    return this.apiService.delete(this.consultaUrl, consultaId)
+    // .pipe(
+    //   tap((response: any) => {
+    //     // console.log(response);
+    //   })
+    // )
+    ;
   }
 }
