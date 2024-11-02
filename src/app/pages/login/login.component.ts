@@ -40,8 +40,6 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    // if (this.loginForm.valid) {
-
     const credentials = {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password,
@@ -49,20 +47,12 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        // console.log("Login bem-sucedido!", response);
         this.router.navigate(["/home"]);
       },
       error: (error: Error) => {
-        Swal.fire({
-          text: error.message,
-          icon: "error",
-          confirmButtonColor: "#0A7B73",
-          confirmButtonText: "OK",
-        });
-        console.error("Erro de autenticação:", error.message);
+        this.errorMessage(error.message);
       },
     });
-    // }
   }
 
   esqueciSenha() {
@@ -107,24 +97,32 @@ export class LoginComponent implements OnInit {
       if (result.isConfirmed) {
         const { email, newPassword } = result.value!;
         this.usuarioService.updateSenha({ email, newPassword }).subscribe({
-          next: () => {
-            Swal.fire({
-              text: "Senha redefinida com sucesso!",
-              icon: "success",
-              confirmButtonColor: "#0A7B73",
-              confirmButtonText: "OK",
-            });
+          next: (response) => {
+            this.successMessage(response.message);
           },
           error: (error) => {
-            Swal.fire({
-              text: `Erro: ${error.message}`,
-              icon: "error",
-              confirmButtonColor: "#0A7B73",
-              confirmButtonText: "OK",
-            });
+            this.errorMessage(error.message);
           },
         });
       }
+    });
+  }
+
+  private successMessage(message: string) {
+    Swal.fire({
+      text: message,
+      icon: "success",
+      confirmButtonColor: "#0A7B73",
+      confirmButtonText: "OK",
+    });
+  }
+
+  private errorMessage(message: string) {
+    Swal.fire({
+      text: `Erro: ${message}`,
+      icon: "error",
+      confirmButtonColor: "#0A7B73",
+      confirmButtonText: "OK",
     });
   }
 }
