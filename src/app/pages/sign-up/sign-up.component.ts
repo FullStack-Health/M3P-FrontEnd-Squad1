@@ -10,6 +10,7 @@ import {
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 import { UsuarioService } from "../../shared/services/usuario.service";
+import { MessageService } from "../../shared/services/message.service";
 
 @Component({
   selector: "app-sign-up",
@@ -19,13 +20,19 @@ import { UsuarioService } from "../../shared/services/usuario.service";
   styleUrl: "./sign-up.component.scss",
 })
 export class SignUpComponent {
-  private Router = inject(Router);
+  private router = inject(Router);
   private formBuilder = inject(FormBuilder);
   private usuarioService = inject(UsuarioService);
+  private messageService = inject(MessageService);
 
   userForm!: FormGroup;
 
-  constructor() {
+  constructor() {}
+  ngOnInit() {
+    this.createForm();
+  }
+
+  createForm() {
     this.userForm = this.formBuilder.group(
       {
         email: ["", [Validators.required, Validators.email]],
@@ -36,7 +43,7 @@ export class SignUpComponent {
       { validators: this.passwordsMatch }
     );
   }
-  ngOnInit() {}
+
   passwordsMatch(control: AbstractControl) {
     const senha = control.get("senha")?.value;
     const confirmarSenha = control.get("confirmarSenha")?.value;
@@ -53,17 +60,11 @@ export class SignUpComponent {
 
       this.usuarioService.addPreRegistro(newUser).subscribe({
         next: (response) => {
-          console.log("Pré-cadastro bem-sucedido!", response);
-          Swal.fire({
-            text: "Cadastro efetuado com sucesso!",
-            icon: "success",
-            confirmButtonColor: "#0A7B73",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (this.Router.url === "/login") {
+          this.messageService.showSuccess(response.message).then(() => {
+            if (this.router.url === "/login") {
               window.location.reload();
             } else {
-              this.Router.navigate(["/login"]);
+              this.router.navigate(["/login"]);
             }
           });
         },
@@ -88,6 +89,6 @@ export class SignUpComponent {
   }
 
   goToLogin() {
-    this.Router.navigate(["/login"]);
+    this.router.navigate(["/login"]);
   }
 }

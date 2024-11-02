@@ -9,27 +9,17 @@ export class MessageService {
   private router = inject(Router);
   constructor() {}
 
-  showSuccess(
-    message: string,
-    redirectTo?: string,
-    reloadPage: boolean = false
-  ) {
-    Swal.fire({
+  showSuccess(message: string) {
+    return Swal.fire({
       text: message,
       icon: "success",
       confirmButtonColor: "#0A7B73",
       confirmButtonText: "OK",
-    }).then(() => {
-      if (redirectTo) {
-        this.router.navigate([redirectTo]);
-      } else if (reloadPage) {
-        window.location.reload();
-      }
     });
   }
 
   showError(message: string) {
-    Swal.fire({
+    return Swal.fire({
       text: `Erro: ${message}`,
       icon: "error",
       confirmButtonColor: "#0A7B73",
