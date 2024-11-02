@@ -3,7 +3,7 @@
 <div class="container" [ngClass]="{'retracted': isMenuRetracted}">
     <div class="container-numbers">
         <div class="estatisticas">
-            <div class="card pacientes">
+            <div class="card pacientes" *ngIf="userRole === 'ADMIN' || userRole === 'MEDICO'">
                 <div class="icon-box">
                     <div class="icon"><fa-icon icon="address-book"></fa-icon></div>
                 </div>
@@ -12,7 +12,7 @@
                     <p>Pacientes</p>
                 </div>
             </div>
-            <div class="card consultas">
+            <div class="card consultas" *ngIf="userRole === 'ADMIN' || userRole === 'MEDICO'">
                 <div class="icon-box">
                     <div class="icon"><fa-icon icon="calendar-alt"></fa-icon></div>
                 </div>
@@ -21,7 +21,7 @@
                     <p>Consultas</p>
                 </div>
             </div>
-            <div class="card exames">
+            <div class="card exames" *ngIf="userRole === 'ADMIN' || userRole === 'MEDICO'">
                 <div class="icon-box">
                     <div class="icon"><fa-icon icon="x-ray"></fa-icon></div>
                 </div>
@@ -30,7 +30,7 @@
                     <p>Exames</p>
                 </div>
             </div>
-            <div class="card usuarios">
+            <div class="card usuarios" *ngIf="userRole === 'ADMIN'">
                 <div class="icon-box">
                     <div class="icon"><fa-icon icon="users"></fa-icon></div> 
                 </div>
