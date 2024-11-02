@@ -338,7 +338,7 @@ cleanString(value: string): string {
   }
 
   editar(examId: string): void {
-    this.location.go(`/exame/${examId}`);
+    this.router.navigate(['/exame', examId]);
     this.exameService.getExameById(examId).subscribe(
       (response) => {
         const exam = response.exam;
