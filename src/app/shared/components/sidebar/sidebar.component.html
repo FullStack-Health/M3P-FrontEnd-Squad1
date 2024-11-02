@@ -27,7 +27,7 @@
                     </a>
                     <div class="icon-end"><fa-icon icon="plus"></fa-icon></div>
                 </li>
-                <li>
+                <li *ngIf="!isPaciente()">
                     <a href="/prontuarios">
                         <div class="icon"><fa-icon icon="file-medical"></fa-icon></div>
                         <p>Prontuários</p>
@@ -35,7 +35,7 @@
                     <div class="icon-end"><fa-icon icon="arrow-right"></fa-icon></div>
                 </li>
                 <li *ngIf="isPaciente()">
-                    <a href="/prontuario">
+                    <a [routerLink]="['/prontuarios', patientId]"> 
                         <div class="icon"><fa-icon icon="file-medical"></fa-icon></div>
                         <p>Prontuários</p>
                     </a>

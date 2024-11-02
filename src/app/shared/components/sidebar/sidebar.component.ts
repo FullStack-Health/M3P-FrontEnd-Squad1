@@ -2,11 +2,12 @@ import { Component, EventEmitter, HostListener, Input, Output, OnInit } from '@a
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LoggedUserService } from '../../../core/services/logged-user.service';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [FontAwesomeModule, CommonModule],
+  imports: [FontAwesomeModule, CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
@@ -17,6 +18,7 @@ export class SidebarComponent implements OnInit {
 
   isMenuRetracted = false;
   userRole: string | null = null;
+  patientId: string | null = null; 
 
   constructor(private loggedUserService: LoggedUserService) {
     this.checkScreenSize();
@@ -24,6 +26,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.userRole = this.loggedUserService.getUserRole(); 
+    this.patientId = this.loggedUserService.getPacienteId(); 
   }
 
   toggleMenuRetraction() {
