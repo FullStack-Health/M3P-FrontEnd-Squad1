@@ -51,12 +51,14 @@ export const routes: Routes = [
     component: ExamesComponent,
     canActivate: [authGuard],
     data: { roles: ["ADMIN", "MEDICO"] },
-  },
-  {
-    path: "exame/:examId",
-    component: ExamesComponent,
-    canActivate: [authGuard],
-    data: { roles: ["ADMIN", "MEDICO"] },
+    children: [
+      {
+        path: ":examId",
+        component: ExamesComponent,
+        canActivate: [authGuard],
+        data: { roles: ["ADMIN", "MEDICO"] },
+      },
+    ],
   },
   {
     path: "consulta",
