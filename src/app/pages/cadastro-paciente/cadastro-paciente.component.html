@@ -19,21 +19,21 @@
     (ngSubmit)="cadastrar()"
   >
     <div
-      id="name"
+      id="fullName"
       class="elemento-formulario"
       [ngClass]="{
         'erro-formulario':
-          form.get('name')?.invalid && form.get('name')?.touched
+          form.get('fullName')?.invalid && form.get('fullName')?.touched
       }"
     >
-      <label for="name">Nome Completo:</label>
+      <label for="fullName">Nome Completo:</label>
       <input
         placeholder="Nome completo"
         type="text"
-        name="name"
-        formControlName="name"
+        name="fullName"
+        formControlName="fullName"
       />
-      <span *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+      <span *ngIf="form.get('fullName')?.invalid && form.get('fullName')?.touched">
         Nome é obrigatório e deve ter entre 8 e 64 caracteres.
       </span>
     </div>
@@ -53,7 +53,7 @@
         >
           <option
             value=""
-            disabled
+            [disabled]="true"
             selected
           >
             Selecione o gênero
@@ -73,24 +73,24 @@
         </span>
       </div>
       <div
-        id="dataNascimento"
+        id="birthDate"
         class="elemento-formulario"
         [ngClass]="{
           'erro-formulario':
-            form.get('dataNascimento')?.invalid &&
-            form.get('dataNascimento')?.touched
+            form.get('birthDate')?.invalid &&
+            form.get('birthDate')?.touched
         }"
       >
-        <label for="dataNascimento">Data de Nascimento:</label>
+        <label for="birthDate">Data de Nascimento:</label>
         <input
           type="date"
-          name="dataNascimento"
-          formControlName="dataNascimento"
+          name="birthDate"
+          formControlName="birthDate"
         />
         <span
           *ngIf="
-            form.get('dataNascimento')?.invalid &&
-            form.get('dataNascimento')?.touched
+            form.get('birthDate')?.invalid &&
+            form.get('birthDate')?.touched
           "
           class="erro-formulario"
         >
@@ -98,7 +98,7 @@
         </span>
       </div>
     </div>
-    <div class="row">
+    <div class="row-3">
       <div
         id="cpf"
         class="elemento-formulario"
@@ -129,9 +129,9 @@
           'erro-formulario': form.get('rg')?.invalid && form.get('rg')?.touched
         }"
       >
-        <label for="rg">RG com Orgão Expedidor:</label>
+        <label for="rg">RG:</label>
         <input
-          placeholder="Ex.: 000000-0 SESP SC"
+          placeholder="Ex.: 1234567890"
           type="text"
           name="rg"
           formControlName="rg"
@@ -140,23 +140,45 @@
           *ngIf="form.get('rg')?.invalid && form.get('rg')?.touched"
           class="erro-formulario"
         >
-          RG é obrigatório e deve conter orgão expedidor.
+          RG é obrigatório e deve ter no máximo 20 caracteres.
+        </span>
+      </div>
+      <div
+        id="rgIssuer"
+        class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('rgIssuer')?.invalid && form.get('rgIssuer')?.touched
+        }"
+      >
+        <label for="rgIssuer">Órgão Expedidor:</label>
+        <input
+          placeholder="Ex.: SSP"
+          type="text"
+          name="rgIssuer"
+          formControlName="rgIssuer"
+        />
+        <span
+          *ngIf="form.get('rgIssuer')?.invalid && form.get('rgIssuer')?.touched"
+          class="erro-formulario"
+        >
+          Órgão Expedidor é obrigatório.
         </span>
       </div>
     </div>
     <div class="row">
       <div
-        id="civil"
+        id="maritalStatus"
         class="elemento-formulario"
         [ngClass]="{
           'erro-formulario':
-            form.get('civil')?.invalid && form.get('civil')?.touched
+            form.get('maritalStatus')?.invalid && form.get('maritalStatus')?.touched
         }"
       >
-        <label for="civil">Estado Civil:</label>
+        <label for="maritalStatus">Estado Civil:</label>
         <select
-          name="civil"
-          formControlName="civil"
+          name="maritalStatus"
+          formControlName="maritalStatus"
         >
           <option
             value=""
@@ -167,34 +189,36 @@
           </option>
           <option value="Casado">Casado</option>
           <option value="Solteiro">Solteiro</option>
+          <option value="Divorciado">Divorciado</option>
+          <option value="Viúvo">Viúvo</option>
         </select>
         <span
-          *ngIf="form.get('civil')?.invalid && form.get('civil')?.touched"
+          *ngIf="form.get('maritalStatus')?.invalid && form.get('maritalStatus')?.touched"
           class="erro-formulario"
         >
           Selecione um estado civil.
         </span>
       </div>
       <div
-        id="natural"
+        id="placeOfBirth"
         class="elemento-formulario"
         [ngClass]="{
           'erro-formulario':
-            form.get('natural')?.invalid && form.get('natural')?.touched
+            form.get('placeOfBirth')?.invalid && form.get('placeOfBirth')?.touched
         }"
       >
-        <label for="natural">Naturalidade:</label>
+        <label for="placeOfBirth">Naturalidade:</label>
         <input
-          placeholder="Ex.: Brasileiro"
+          placeholder="Ex.: São Paulo"
           type="text"
-          name="natural"
-          formControlName="natural"
+          name="placeOfBirth"
+          formControlName="placeOfBirth"
         />
         <span
-          *ngIf="form.get('natural')?.invalid && form.get('natural')?.touched"
+          *ngIf="form.get('placeOfBirth')?.invalid && form.get('placeOfBirth')?.touched"
           class="erro-formulario"
         >
-          Naturalidade é obrigatorio e deve ter entre 8 e 64 caracteres.
+          Naturalidade é obrigatória e deve ter entre 8 e 64 caracteres.
         </span>
       </div>
     </div>
@@ -209,7 +233,7 @@
       >
         <label for="phone">Telefone:</label>
         <input
-          placeholder="Ex.: (00) 00000-0000"
+          placeholder="Ex.: (99) 9 9999-9999"
           mask="(00) 0 0000-0000"
           type="text"
           name="phone"
@@ -247,7 +271,7 @@
     </div>
     <div class="row">
       <div
-        id="emergency-contact"
+        id="emergencyContact"
         class="elemento-formulario"
         [ngClass]="{
           'erro-formulario':
@@ -255,11 +279,12 @@
             form.get('emergencyContact')?.touched
         }"
       >
-        <label for="emergency-contact">Nome do contato de emergência:</label>
+        <label for="emergencyContact">Contato de Emergência:</label>
         <input
-          placeholder="Ex.: Maria"
+          placeholder="Ex.: (99) 9 9999-9999"
+          mask="(00) 0 0000-0000"
           type="text"
-          name="emergency-contact"
+          name="emergencyContact"
           formControlName="emergencyContact"
         />
         <span
@@ -269,135 +294,138 @@
           "
           class="erro-formulario"
         >
-          Contato de emergencia é obrigatório.
+          Contato de Emergência é obrigatório e deve seguir o formato (99) 9 9999-9999.
         </span>
       </div>
       <div
-        id="rg"
+        id="allergies"
         class="elemento-formulario"
         [ngClass]="{
           'erro-formulario':
-            form.get('contactPhone')?.invalid &&
-            form.get('contactPhone')?.touched
+            form.get('allergies')?.invalid && form.get('allergies')?.touched
         }"
       >
-        <label for="contact-phone">Telefone do contato de emergência:</label>
+        <label for="allergies">Alergias:</label>
         <input
-          placeholder="Ex.: (00) 00000-0000"
-          mask="(00) 0 0000-0000"
+          placeholder="Ex.: Amendoim, Pólen"
           type="text"
-          name="contact-phone"
-          formControlName="contactPhone"
+          name="allergies"
+          formControlName="allergies"
         />
         <span
-          *ngIf="
-            form.get('contactPhone')?.invalid &&
-            form.get('contactPhone')?.touched
-          "
+          *ngIf="form.get('allergies')?.invalid && form.get('allergies')?.touched"
           class="erro-formulario"
         >
-          Telefone do contato de emrgência é obrigatório e deve seguir o formato
-          (99) 9 9999-99999.
+          Alergias são obrigatórias e devem ser separadas por vírgulas.
         </span>
       </div>
     </div>
-    <div
-      id="alergies"
-      class="elemento-formulario"
-    >
-      <label for="alergies">Alergias:</label>
-      <input
-        placeholder="Ex.: Tomate, Sol, Aspirina"
-        type="text"
-        name="alergies"
-        formControlName="alergies"
-      />
-    </div>
-    <div
-      id="care"
-      class="elemento-formulario"
-    >
-      <label for="care">Cuidados Específicos:</label>
-      <input
-        placeholder="Ex.: Paciente diabético(a), usa insulina"
-        type="text"
-        name="care"
-        formControlName="care"
-      />
-    </div>
-    <div class="row-3">
+    <div class="row">
       <div
-        id="convenio"
+        id="specificCare"
         class="elemento-formulario"
       >
-        <label for="convenio">Convênio:</label>
+        <label for="specificCare">Cuidados Específicos:</label>
         <input
-          placeholder="Ex.: UNIMED"
+          placeholder="Ex.: Dieta especial, Medicamentos"
           type="text"
-          name="convenio"
-          formControlName="convenio"
+          name="specificCare"
+          formControlName="specificCare"
         />
       </div>
       <div
-        id="convenio-num"
+        id="healthInsurance"
         class="elemento-formulario"
       >
-        <label for="convenio-num">Número do Convênio:</label>
+        <label for="healthInsurance">Convênio:</label>
         <input
-          placeholder="Ex.: 00000000000"
+          placeholder="Ex.: Unimed"
           type="text"
-          name="convenio-num"
-          formControlName="convenioNum"
+          name="healthInsurance"
+          formControlName="healthInsurance"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div
+        id="healthInsuranceNumber"
+        class="elemento-formulario"
+      >
+        <label for="healthInsuranceNumber">Número do Convênio:</label>
+        <input
+          placeholder="Ex.: 1234567890"
+          type="text"
+          name="healthInsuranceNumber"
+          formControlName="healthInsuranceNumber"
         />
       </div>
       <div
-        id="convenio-val"
+        id="healthInsuranceValidity"
         class="elemento-formulario"
       >
-        <label for="convenio-val">Validade do Convênio:</label>
+        <label for="healthInsuranceValidity">Validade do Convênio:</label>
         <input
-          placeholder="Ex.: 00000000000"
-          type="text"
-          name="convenio-val"
-          formControlName="convenioVal"
+          type="date"
+          name="healthInsuranceValidity"
+          formControlName="healthInsuranceValidity"
         />
       </div>
     </div>
     <div class="row-3">
       <div
-        id="cep"
+        id="zipCode"
         class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('zipCode')?.invalid && form.get('zipCode')?.touched
+        }"
       >
-        <label for="cep">CEP:</label>
+        <label for="zipCode">CEP:</label>
         <input
-          placeholder="Ex.: 000000000"
+          placeholder="Ex.: 12345-678"
           type="text"
-          name="cep"
-          formControlName="cep"
+          name="zipCode"
+          formControlName="zipCode"
         />
+        <span
+          *ngIf="form.get('zipCode')?.invalid && form.get('zipCode')?.touched"
+          class="erro-formulario"
+        >
+          CEP é obrigatório e deve estar no formato 12345-678.
+        </span>
       </div>
       <div
         id="state"
         class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('state')?.invalid && form.get('state')?.touched
+        }"
       >
         <label for="state">Estado:</label>
         <input
-          placeholder="Ex.: Santa Catarina"
+          placeholder="Ex.: SP"
           type="text"
           name="state"
           formControlName="state"
+          [disabled]="true"
         />
       </div>
       <div
         id="city"
         class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('city')?.invalid && form.get('city')?.touched
+        }"
       >
         <label for="city">Cidade:</label>
         <input
-          placeholder="Ex.: Florianopolis"
+          placeholder="Ex.: São Paulo"
           type="text"
           name="city"
           formControlName="city"
+          [disabled]="true"
         />
       </div>
     </div>
@@ -405,67 +433,86 @@
       <div
         id="street"
         class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('street')?.invalid && form.get('street')?.touched
+        }"
       >
         <label for="street">Logradouro:</label>
         <input
-          placeholder="Ex.: Rua das flores"
+          placeholder="Ex.: Rua Exemplo"
           type="text"
           name="street"
           formControlName="street"
+          [disabled]="true"
         />
       </div>
       <div
-        id="street-num"
+        id="number"
         class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('number')?.invalid && form.get('number')?.touched
+        }"
       >
-        <label for="street-num">Número:</label>
+        <label for="number">Número:</label>
         <input
-          placeholder="Ex.: 500"
+          placeholder="Ex.: 123"
           type="text"
-          name="street-num"
-          formControlName="streetNum"
+          name="number"
+          formControlName="number"
         />
+        <span
+          *ngIf="form.get('number')?.invalid && form.get('number')?.touched"
+          class="erro-formulario"
+        >
+          Número é obrigatório.
+        </span>
       </div>
       <div
-        id="street-extra"
+        id="complement"
         class="elemento-formulario"
       >
-        <label for="street-extra">Complemento:</label>
+        <label for="complement">Complemento:</label>
         <input
-          placeholder="Ex.: Apto 01"
+          placeholder="Ex.: Apto 101"
           type="text"
-          name="street-extra"
-          formControlName="streetExtra"
+          name="complement"
+          formControlName="complement"
         />
       </div>
     </div>
     <div class="row">
       <div
-        id="hood"
+        id="neighborhood"
         class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('neighborhood')?.invalid && form.get('neighborhood')?.touched
+        }"
       >
-        <label for="hood">Bairro:</label>
+        <label for="neighborhood">Bairro:</label>
         <input
-          placeholder="Ex.: Bairro das aves"
+          placeholder="Ex.: Centro"
           type="text"
-          name="hood"
-          formControlName="hood"
+          name="neighborhood"
+          formControlName="neighborhood"
+          [disabled]="true"
         />
       </div>
       <div
-        id="reference"
+        id="referencePoint"
         class="elemento-formulario"
       >
-        <label for="reference">Ponto de referência:</label>
+        <label for="referencePoint">Ponto de Referência:</label>
         <input
-          placeholder="Ex.: Perto da farmacia"
+          placeholder="Ex.: Próximo ao mercado"
           type="text"
-          name="reference"
-          formControlName="reference"
+          name="referencePoint"
+          formControlName="referencePoint"
         />
       </div>
     </div>
-
     <div class="buttons">
       <button
         class="delete"

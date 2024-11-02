@@ -8,7 +8,7 @@ import {
 } from "@angular/forms";
 import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
-import { PacienteService } from "../../temp/old/old_paciente.service";
+import { PacienteService } from "../../shared/services/paciente.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import Swal from "sweetalert2";
@@ -55,70 +55,74 @@ export class CadastroPacienteComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private patientService: PacienteService,
+    private pacienteService: PacienteService,
     private viaCepService: ViaCepService
   ) {
     this.detectScreenSize();
     this.form = new FormGroup({
-      name: new FormControl("", [
+      fullName: new FormControl("", [
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(64),
       ]),
       gender: new FormControl("", Validators.required),
-      dataNascimento: new FormControl("", Validators.required),
-      cpf: new FormControl("", Validators.required),
+      birthDate: new FormControl("", Validators.required),
+      cpf: new FormControl("", 
+        Validators.required,),
       rg: new FormControl("", [
         Validators.required,
-        Validators.minLength(9),
         Validators.maxLength(20),
       ]),
-      civil: new FormControl("", Validators.required),
-      natural: new FormControl("", [
+      rgIssuer: new FormControl("", Validators.required),
+      maritalStatus: new FormControl("", Validators.required),
+      phone: new FormControl("", 
+        Validators.required,),
+      email: new FormControl("", [Validators.required, Validators.email]),
+      placeOfBirth: new FormControl("", [
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(64),
       ]),
-      phone: new FormControl("", Validators.required),
-      email: new FormControl("", Validators.email),
-      emergencyContact: new FormControl("", Validators.required),
-      contactPhone: new FormControl("", Validators.required),
-      alergies: new FormControl(""),
-      care: new FormControl(""),
-      convenio: new FormControl(""),
-      convenioNum: new FormControl(""),
-      convenioVal: new FormControl(""),
-      cep: new FormControl(""),
-      state: new FormControl(""),
-      city: new FormControl(""),
-      street: new FormControl(""),
-      streetNum: new FormControl(""),
-      streetExtra: new FormControl(""),
-      hood: new FormControl(""),
-      reference: new FormControl(""),
-      id: new FormControl(""),
+      emergencyContact: new FormControl("", 
+        Validators.required,),
+      allergies: new FormControl("", Validators.required),
+      specificCare: new FormControl(""),
+      healthInsurance: new FormControl(""),
+      healthInsuranceNumber: new FormControl(""),
+      healthInsuranceValidity: new FormControl(""),
+      zipCode: new FormControl("", 
+        Validators.required,),
+      state: new FormControl({ value: "", disabled: true }),
+      city: new FormControl({ value: "", disabled: true }),
+      street: new FormControl({ value: "", disabled: true }),
+      number: new FormControl("", Validators.required),
+      complement: new FormControl(""),
+      neighborhood: new FormControl({ value: "", disabled: true }),
+      referencePoint: new FormControl(""),
     });
   }
+
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       const pacienteId = params["id"];
       if (pacienteId) {
-        const paciente = this.patientService.getPatientById(pacienteId);
-        if (paciente) {
-          this.isEdit = true;
-          this.form.patchValue(paciente);
-        }
+        this.pacienteService.getPacienteById(pacienteId).subscribe((paciente) => {
+          if (paciente) {
+            this.isEdit = true;
+            this.form.patchValue(paciente);
+          }
+        });
       }
     });
 
-    this.form.get("cep")?.valueChanges.subscribe((cep) => {
-      if (cep && cep.length === 8) {
+    this.form.get("zipCode")?.valueChanges.subscribe((cep) => {
+      if (cep && cep.length === 9) {
         this.viaCepService.get(cep).subscribe((address) => {
           this.form.patchValue({
             state: address.uf,
             city: address.localidade,
             street: address.logradouro,
-            hood: address.bairro,
+            neighborhood: address.bairro,
           });
         });
       } else if (cep === null || cep === "") {
@@ -126,7 +130,7 @@ export class CadastroPacienteComponent implements OnInit {
           state: null,
           city: null,
           street: null,
-          hood: null,
+          neighborhood: null,
         });
       }
     });
@@ -135,23 +139,26 @@ export class CadastroPacienteComponent implements OnInit {
   cadastrar() {
     if (this.form.valid) {
       if (this.isEdit) {
-        this.patientService.updatePatient(this.form.value);
-        Swal.fire({
-          text: "Cadastro atualizado com sucesso!",
-          icon: "success",
-          confirmButtonColor: "#0A7B73",
-          confirmButtonText: "OK",
+        this.pacienteService.updatePaciente(this.form.value).subscribe(() => {
+          Swal.fire({
+            text: "Cadastro atualizado com sucesso!",
+            icon: "success",
+            confirmButtonColor: "#0A7B73",
+            confirmButtonText: "OK",
+          });
+          this.router.navigate(["/home"]);
         });
       } else {
-        this.patientService.addPatient(this.form.value);
-        Swal.fire({
-          text: "Paciente cadastrado com sucesso!",
-          icon: "success",
-          confirmButtonColor: "#0A7B73",
-          confirmButtonText: "OK",
+        this.pacienteService.addPaciente(this.form.value).subscribe(() => {
+          Swal.fire({
+            text: "Paciente cadastrado com sucesso!",
+            icon: "success",
+            confirmButtonColor: "#0A7B73",
+            confirmButtonText: "OK",
+          });
+          this.router.navigate(["/home"]);
         });
       }
-      this.router.navigate(["/home"]);
     } else {
       Swal.fire({
         text: "Por favor, preencha todos os campos corretamente.",
@@ -162,16 +169,8 @@ export class CadastroPacienteComponent implements OnInit {
   }
 
   hasConsultasOrExams(patientId: string): boolean {
-    const patient = this.patientService.getPatientById(patientId);
-
-    if (patient && (patient.consultas || patient.exams)) {
-      return (
-        (patient.consultas && patient.consultas.length > 0) ||
-        (patient.exams && patient.exams.length > 0)
-      );
-    } else {
-      return false;
-    }
+    // Implementar lógica para verificar consultas ou exames
+    return false;
   }
 
   deletePatient() {
@@ -189,16 +188,15 @@ export class CadastroPacienteComponent implements OnInit {
         this.router.navigate(["/home"]);
         return;
       } else {
-        this.patientService.deletePatient(pacienteId);
-
-        Swal.fire({
-          text: "Paciente excluído com sucesso!",
-          icon: "success",
-          confirmButtonColor: "#0A7B73",
-          confirmButtonText: "OK",
+        this.pacienteService.deletePaciente(pacienteId).subscribe(() => {
+          Swal.fire({
+            text: "Paciente excluído com sucesso!",
+            icon: "success",
+            confirmButtonColor: "#0A7B73",
+            confirmButtonText: "OK",
+          });
+          this.router.navigate(["/home"]);
         });
-
-        this.router.navigate(["/home"]);
       }
     }
   }
