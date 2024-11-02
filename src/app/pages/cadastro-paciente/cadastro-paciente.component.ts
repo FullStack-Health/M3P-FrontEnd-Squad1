@@ -102,11 +102,9 @@ export class CadastroPacienteComponent implements OnInit {
     });
   
     this.form.get("zipCode")?.valueChanges.subscribe((cep) => {
-      console.log("CEP alterado:", cep); // Log para verificar o valor do CEP
       const sanitizedCep = cep.replace("-", "");
       if (sanitizedCep.length === 8) {
         this.viaCepService.get(sanitizedCep).subscribe((address) => {
-          console.log("Endereço recebido:", address); // Log para verificar o endereço recebido
           this.form.patchValue({
             state: address.uf,
             city: address.localidade,
@@ -124,17 +122,26 @@ export class CadastroPacienteComponent implements OnInit {
       }
     });
   }
-  
+
   cadastrar() {
     if (this.form.valid) {
-      const pacienteData = {
+      const pacienteData: any = {
         ...this.form.value,
         birthDate: this.formatDate(this.form.value.birthDate),
-        healthInsuranceValidity: this.formatDate(this.form.value.healthInsuranceValidity),
         allergies: this.form.value.allergies.split(',').map((allergy: string) => allergy.trim()),
-        specificCare: this.form.value.specificCare.split(',').map((care: string) => care.trim())
+        specificCare: this.form.value.specificCare.split(',').map((care: string) => care.trim()),
+        cpf: this.form.value.cpf.replace(/\D/g, ''), 
+        zipCode: this.form.value.zipCode.replace(/\D/g, ''), 
+        state: this.form.get('state')?.value,
+        city: this.form.get('city')?.value,
+        street: this.form.get('street')?.value,
+        neighborhood: this.form.get('neighborhood')?.value
       };
-
+  
+      if (this.form.value.healthInsuranceValidity) {
+        pacienteData.healthInsuranceValidity = this.formatDate(this.form.value.healthInsuranceValidity);
+      }
+  
       if (this.isEdit) {
         this.pacienteService.updatePaciente(pacienteData).subscribe(() => {
           Swal.fire({
@@ -164,9 +171,9 @@ export class CadastroPacienteComponent implements OnInit {
       });
     }
   }
-
+  
   formatDate(date: string): string {
-    const [day, month, year] = date.split('-');
+    const [year, month, day] = date.split('-');
     return `${year}-${month}-${day}`;
   }
 
