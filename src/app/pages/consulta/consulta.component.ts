@@ -159,7 +159,7 @@ export class ConsultaComponent implements OnInit {
         const searchQuery = this.searchQuery.trim().toLowerCase();
         if (searchQuery !== "") {
             let searchObservable: Observable<any>;
-
+    
             if (this.isValidEmail(searchQuery)) {
                 searchObservable = this.pacienteService.getPacientesByEmail(searchQuery);
             } else if (this.isValidPhone(searchQuery)) {
@@ -168,11 +168,18 @@ export class ConsultaComponent implements OnInit {
             } else {
                 searchObservable = this.pacienteService.getPacientesByName(searchQuery);
             }
-
+    
             searchObservable.subscribe(
                 (data) => {
                     if (data && Array.isArray(data.patients)) {
                         this.filteredPacienteData = data.patients;
+    
+                        this.filteredPacienteData.forEach(patient => {
+                            this.consultaService.getConsultasByPatientId(patient.id).subscribe(consultasData => {
+                                patient.consultas = consultasData.consultas; 
+                            });
+                        });
+    
                         if (this.filteredPacienteData.length === 1) {
                             const patientId = this.filteredPacienteData[0].id;
                             this.selectPatient(patientId);

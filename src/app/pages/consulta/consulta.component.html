@@ -12,29 +12,19 @@
         <div class="patient-result" *ngFor="let patient of filteredPacienteData">
             <div class="patient-data">
                 <p class="patient-name">{{ patient.fullName }}</p>
-                <button class="select-button" *ngIf="selectedPatientId !== patient.id"
-                    (click)="selectPatient(patient.id)">
+                <button class="select-button" *ngIf="selectedPatientId !== patient.id" (click)="selectPatient(patient.id)">
                     Selecionar
                 </button>
             </div>
             <div class="consulta-list" *ngIf="selectedPatientId === patient.id">
-                <div *ngFor="let consulta of patientConsultas" class="consulta-row">
+                <div *ngFor="let consulta of patient.consultas" class="consulta-row">
                     <div class="consulta-name">
                         <p>{{ consulta.appointmentReason }}</p>
                     </div>
                     <div class="consulta-buttons">
-                        <button class="button-edit" (click)="editar(consulta.id)">
-                            Editar
-                        </button>
-                        <button class="button-delete" (click)="deletar(consulta.id)">
-                            Deletar
-                        </button>
+                        <button class="button-edit" (click)="editar(consulta.id)">Editar</button>
+                        <button class="button-delete" (click)="deletar(consulta.id)">Deletar</button>
                     </div>
-                </div>
-                <div class="pagination-controls">
-                    <button (click)="goToPreviousPage()" [disabled]="currentPage === 0">Anterior</button>
-                    <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
-                    <button (click)="goToNextPage()" [disabled]="currentPage === totalPages - 1">Próxima</button>
                 </div>
             </div>
         </div>
