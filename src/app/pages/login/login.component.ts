@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        console.log("Login bem-sucedido!", response);
+        // console.log("Login bem-sucedido!", response);
         this.router.navigate(["/home"]);
       },
       error: (error: Error) => {
