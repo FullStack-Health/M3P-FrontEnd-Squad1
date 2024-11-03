@@ -50,4 +50,8 @@ export class SidebarComponent implements OnInit {
   isPaciente(): boolean {
     return this.userRole === 'PACIENTE'; 
   }
+
+  isAdmin(): boolean {
+    return this.userRole === 'ADMIN';
+  }
 }

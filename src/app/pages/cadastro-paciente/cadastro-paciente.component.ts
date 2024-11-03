@@ -14,6 +14,7 @@ import { SweetAlert2Module } from "@sweetalert2/ngx-sweetalert2";
 import Swal from "sweetalert2";
 import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
 import { ViaCepService } from "../../shared/services/via-cep.service";
+import { DateFormatPipe } from "../../shared/pipes/date-format.pipe";
 
 @Component({
   selector: "app-cadastro-paciente",
@@ -26,6 +27,7 @@ import { ViaCepService } from "../../shared/services/via-cep.service";
     SweetAlert2Module,
     NgxMaskDirective,
     NgxMaskPipe,
+    DateFormatPipe,
   ],
   templateUrl: "./cadastro-paciente.component.html",
   styleUrl: "./cadastro-paciente.component.scss",
@@ -200,7 +202,6 @@ export class CadastroPacienteComponent implements OnInit {
   }
 
   hasConsultasOrExams(patientId: string): boolean {
-    // Implementar lógica para verificar consultas ou exames
     return false;
   }
 

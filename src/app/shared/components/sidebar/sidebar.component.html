@@ -6,6 +6,13 @@
     <div class="menu-area">
         <div class="menu">
             <ul class="menu-list">
+                <li *ngIf="isAdmin()">
+                    <a href="/usuarios">
+                        <div class="icon"><fa-icon icon="users"></fa-icon></div>
+                        <p>Usuários</p>
+                    </a>
+                    <div class="icon-end"><fa-icon icon="plus"></fa-icon></div>
+                </li>
                 <li *ngIf="!isPaciente()">
                     <a href="/paciente">
                         <div class="icon"><fa-icon icon="address-book"></fa-icon></div>
@@ -37,7 +44,7 @@
                 <li *ngIf="isPaciente()">
                     <a [routerLink]="['/prontuarios', patientId]"> 
                         <div class="icon"><fa-icon icon="file-medical"></fa-icon></div>
-                        <p>Prontuários</p>
+                        <p>Prontuário</p>
                     </a>
                     <div class="icon-end"><fa-icon icon="arrow-right"></fa-icon></div>
                 </li>

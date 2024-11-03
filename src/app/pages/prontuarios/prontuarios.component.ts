@@ -32,6 +32,7 @@ export class ProntuariosComponent implements OnInit {
   currentPage: number = 0;
   pageSize: number = 10;
   totalElements: number = 0;
+  isSearching: boolean = false;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -66,11 +67,24 @@ export class ProntuariosComponent implements OnInit {
     });
   }
 
+  loadAllPacientes() {
+    this.pacienteService.getAllPacientes(0, this.totalElements).subscribe((response: any) => {
+      this.pacienteData = response.patients;
+      this.applyFilter();
+    });
+  }
+
   filterPatients() {
     if (this.searchQuery.trim() === "") {
-      this.filteredPacienteData = [...this.pacienteData];
+      this.isSearching = false;
+      this.loadPacientes();
       return;
     }
+    this.isSearching = true;
+    this.loadAllPacientes();
+  }
+
+  applyFilter() {
     this.filteredPacienteData = this.pacienteData.filter(
       (patient) =>
         patient.fullName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
@@ -88,7 +102,11 @@ export class ProntuariosComponent implements OnInit {
 
   onPageChange(page: number) {
     this.currentPage = page;
-    this.loadPacientes();
+    if (this.isSearching) {
+      this.applyFilter();
+    } else {
+      this.loadPacientes();
+    }
   }
 
   get totalPages(): number {
