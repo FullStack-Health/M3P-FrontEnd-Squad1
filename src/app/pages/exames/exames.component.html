@@ -27,7 +27,7 @@
   >
     <div class="patient-result" *ngFor="let patient of filteredPacienteData">
       <div class="patient-data">
-        <p class="patient-name">{{ patient.name }}</p>
+        <p class="patient-name">{{ patient.fullName }}</p>
         <button
           class="select-button"
           *ngIf="selectedPatientId !== patient.id"

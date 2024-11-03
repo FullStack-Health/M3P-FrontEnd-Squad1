@@ -85,21 +85,21 @@
       }
     }
 
-    .consulta-list {
+    .appointment-list {
       gap: 10px;
 
-      .consulta-row {
+      .appointment-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
 
-        .consulta-name {
+        .appointment-name {
           flex: 1;
           font-size: 12px;
         }
 
-        .consulta-buttons {
+        .appointment-buttons {
           display: flex;
           gap: 10px;
 
@@ -267,6 +267,27 @@ select {
   .disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+.button-go-back {
+  background-color: $main-color;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+
+  &:hover {
+      background-color: darken($main-color, 10%);
+  }
+
+  &:disabled {
+      background-color: $color-500;
+      cursor: not-allowed;
   }
 }
 
