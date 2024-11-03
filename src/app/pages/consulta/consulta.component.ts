@@ -76,21 +76,25 @@ export class ConsultaComponent implements OnInit {
             if (this.selectedAppointmentId) {
                 this.consultaService.getConsultaById(this.selectedAppointmentId).subscribe(
                     (response) => {
-                        const appointment = response.appointment;
-                        this.form.patchValue({
-                            appointmentReason: appointment.appointmentReason,
-                            appointmentDate: appointment.appointmentDate,
-                            appointmentTime: appointment.appointmentTime,
-                            problemDescription: appointment.problemDescription,
-                            prescribedMedication: appointment.prescribedMedication,
-                            observations: appointment.observations,
-                            id: appointment.id,
-                            patientId: appointment.patientId
-                        });
-                        this.isEdit = true;
-                        this.selectedPatientId = appointment.patientId;
-                        this.isFormVisible = true;
-                        this.loadPatientData(appointment.patientId);
+                        if (response && response.appointment) {
+                            const appointment = response.appointment;
+                            this.form.patchValue({
+                                appointmentReason: appointment.appointmentReason,
+                                appointmentDate: appointment.appointmentDate,
+                                appointmentTime: appointment.appointmentTime,
+                                problemDescription: appointment.problemDescription,
+                                prescribedMedication: appointment.prescribedMedication,
+                                observations: appointment.observations,
+                                id: appointment.id,
+                                patientId: appointment.patientId
+                            });
+                            this.isEdit = true;
+                            this.selectedPatientId = appointment.patientId;
+                            this.isFormVisible = true;
+                            this.loadPatientData(appointment.patientId);
+                        } else {
+                            console.error("Resposta da API não contém o objeto 'appointment'", response);
+                        }
                     },
                     (error) => {
                         console.error("Erro ao carregar consulta", error);
@@ -269,7 +273,6 @@ export class ConsultaComponent implements OnInit {
             );
         }
     }
-
     cadastrar(): void {
         if (this.form.valid) {
             const appointment = {
@@ -283,16 +286,20 @@ export class ConsultaComponent implements OnInit {
             };
             if (this.isEdit) {
                 this.consultaService.updateConsulta(this.selectedAppointmentId, appointment).subscribe(
-                    () => {
-                        Swal.fire({
-                            text: "Consulta atualizada com sucesso!",
-                            icon: "success",
-                            confirmButtonColor: "#0A7B73",
-                            confirmButtonText: "OK",
-                        }).then(() => {
-                            this.loadpatientAppointments();
-                            this.resetForm();
-                        });
+                    (response) => {
+                        if (response && response.appointment) {
+                            Swal.fire({
+                                text: "Consulta atualizada com sucesso!",
+                                icon: "success",
+                                confirmButtonColor: "#0A7B73",
+                                confirmButtonText: "OK",
+                            }).then(() => {
+                                this.loadpatientAppointments();
+                                this.resetForm();
+                            });
+                        } else {
+                            console.error("Resposta da API não contém o objeto 'appointment'", response);
+                        }
                     },
                     (error) => {
                         console.error("Erro ao atualizar consulta", error);
@@ -300,16 +307,20 @@ export class ConsultaComponent implements OnInit {
                 );
             } else {
                 this.consultaService.addConsulta(appointment).subscribe(
-                    () => {
-                        Swal.fire({
-                            text: "Consulta salva com sucesso!",
-                            icon: "success",
-                            confirmButtonColor: "#0A7B73",
-                            confirmButtonText: "OK",
-                        }).then(() => {
-                            this.loadpatientAppointments();
-                            this.resetForm();
-                        });
+                    (response) => {
+                        if (response && response.appointment) {
+                            Swal.fire({
+                                text: "Consulta salva com sucesso!",
+                                icon: "success",
+                                confirmButtonColor: "#0A7B73",
+                                confirmButtonText: "OK",
+                            }).then(() => {
+                                this.loadpatientAppointments();
+                                this.resetForm();
+                            });
+                        } else {
+                            console.error("Resposta da API não contém o objeto 'appointment'", response);
+                        }
                     },
                     (error) => {
                         console.error("Erro ao salvar consulta", error);
@@ -323,20 +334,24 @@ export class ConsultaComponent implements OnInit {
         this.router.navigate(["/consulta", appointmentId]);
         this.consultaService.getConsultaById(appointmentId).subscribe(
             (response) => {
-                const appointment = response.consulta;
-                this.form.patchValue({
-                    appointmentReason: appointment.appointmentReason,
-                    appointmentDate: appointment.appointmentDate,
-                    appointmentTime: appointment.appointmentTime,
-                    problemDescription: appointment.problemDescription,
-                    prescribedMedication: appointment.prescribedMedication,
-                    observations: appointment.observations,
-                    id: appointment.id,
-                    patientId: appointment.patientId
-                });
-                this.isEdit = true;
-                this.selectedAppointmentId = appointment.id;
-                this.isFormVisible = true;
+                if (response && response.appointment) {
+                    const appointment = response.appointment;
+                    this.form.patchValue({
+                        appointmentReason: appointment.appointmentReason,
+                        appointmentDate: appointment.appointmentDate,
+                        appointmentTime: appointment.appointmentTime,
+                        problemDescription: appointment.problemDescription,
+                        prescribedMedication: appointment.prescribedMedication,
+                        observations: appointment.observations,
+                        id: appointment.id,
+                        patientId: appointment.patientId
+                    });
+                    this.isEdit = true;
+                    this.selectedAppointmentId = appointment.id;
+                    this.isFormVisible = true;
+                } else {
+                    console.error("Resposta da API não contém o objeto 'appointment'", response);
+                }
             },
             (error) => {
                 console.error("Erro ao carregar consulta", error);
