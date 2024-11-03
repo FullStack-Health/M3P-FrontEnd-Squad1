@@ -17,6 +17,9 @@
     />
     <button (click)="searchPatients()">Buscar</button>
   </div>
+  <div *ngIf="isEdit && isFromEditRoute">
+    <button class="button-go-back" (click)="goBack()">Voltar</button>
+</div>
 
   <div class="search-result" *ngIf="filteredPacienteData.length > 0 && searchPerformed">
     <div class="patient-result" *ngFor="let patient of filteredPacienteData">

@@ -52,6 +52,8 @@ export class ExamesComponent implements OnInit {
   currentPage: number = 0;
   pageSize: number = 10;
   totalPages: number = 0;
+  isFromEditRoute: boolean = false;
+
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -70,11 +72,13 @@ export class ExamesComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.selectedExamId = params["examId"];
+      this.selectedExamId = params["id"];
       this.containerSearch = !this.selectedExamId;
+      this.isFromEditRoute = this.route.snapshot.url.some(segment => segment.path === 'edit');
       if (this.selectedExamId) {
         this.exameService.getExameById(this.selectedExamId).subscribe(
-          (exam) => {
+          (response) => {
+            const exam = response.exam;
             this.form.patchValue({
               name: exam.name,
               date: exam.examDate,
@@ -86,6 +90,7 @@ export class ExamesComponent implements OnInit {
               id: exam.id,
               patientId: exam.patientId 
             });
+            this.selectedPatientId = exam.patientId;
             this.isEdit = true;
             this.isFormVisible = true;
             this.loadPatientData(exam.patientId);
@@ -96,6 +101,10 @@ export class ExamesComponent implements OnInit {
         );
       }
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
   
   loadPatientData(patientId: string): void {
