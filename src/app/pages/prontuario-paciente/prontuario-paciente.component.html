@@ -88,11 +88,15 @@
               <p>Resultado:</p>
               <p>{{ exam.results }}</p>
             </div>
+            <div class="lab">
+              <p>URL:</p>
+              <p>{{ exam.documentUrl }}</p>
+          </div>
           </div>
         </div>
         <div class="btn">
           <button (click)="editarExame(exam.id)">Editar exame</button>
-          <button>Ver anexo</button>
+          <button (click)="abrirNovaAba(exam.documentUrl)">Ver anexo</button>
         </div>
       </div>
     </div>
