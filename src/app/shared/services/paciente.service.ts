@@ -88,6 +88,15 @@ export class PacienteService {
       catchError(this.handleError)
     );
   }
+  
+  searchPacientes(query: string): Observable<any> {
+    return this.apiService.get(`${this.pacienteUrl}/search?query=${query}`).pipe(
+      tap((response: any) => {
+        // console.log(response);
+      }),
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = "Ocorreu um erro inesperado.";
