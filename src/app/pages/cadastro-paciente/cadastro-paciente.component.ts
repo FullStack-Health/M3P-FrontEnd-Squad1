@@ -202,7 +202,6 @@ export class CadastroPacienteComponent implements OnInit {
   }
 
   hasConsultasOrExams(patientId: string): boolean {
-    // Implementar lógica para verificar consultas ou exames
     return false;
   }
 
