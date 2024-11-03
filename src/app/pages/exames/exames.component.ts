@@ -17,6 +17,7 @@ import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.compon
 import { ExameService } from "../../shared/services/exame.service";
 import { PacienteService } from "../../shared/services/paciente.service";
 import { Observable } from "rxjs";
+import { Location } from '@angular/common';
 
 @Component({
   selector: "app-exames",
@@ -51,6 +52,8 @@ export class ExamesComponent implements OnInit {
   currentPage: number = 0;
   pageSize: number = 10;
   totalPages: number = 0;
+  isFromEditRoute: boolean = false;
+
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -69,18 +72,28 @@ export class ExamesComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.selectedExamId = params["examId"];
+      this.selectedExamId = params["id"];
       this.containerSearch = !this.selectedExamId;
+      this.isFromEditRoute = this.route.snapshot.url.some(segment => segment.path === 'edit');
       if (this.selectedExamId) {
         this.exameService.getExameById(this.selectedExamId).subscribe(
-          (exam) => {
-            const patient = this.pacienteData.find((patient) =>
-              patient.exams.some((e: { id: string }) => e.id === this.selectedExamId)
-            );
-            if (patient) {
-              this.selectPatient(patient.id);
-              this.editar(exam);
-            }
+          (response) => {
+            const exam = response.exam;
+            this.form.patchValue({
+              name: exam.name,
+              date: exam.examDate,
+              time: exam.examTime,
+              type: exam.type,
+              url: exam.documentUrl,
+              lab: exam.laboratory,
+              results: exam.results,
+              id: exam.id,
+              patientId: exam.patientId 
+            });
+            this.selectedPatientId = exam.patientId;
+            this.isEdit = true;
+            this.isFormVisible = true;
+            this.loadPatientData(exam.patientId);
           },
           (error) => {
             console.error("Erro ao carregar exame", error);
@@ -90,11 +103,28 @@ export class ExamesComponent implements OnInit {
     });
   }
 
+  goBack(): void {
+    this.location.back();
+  }
+  
+  loadPatientData(patientId: string): void {
+    this.pacienteService.getPacienteById(patientId).subscribe(
+      (patient) => {
+        this.selectedPatientId = patient.id;
+        this.filteredPacienteData = [patient];
+      },
+      (error) => {
+        console.error("Erro ao carregar dados do paciente", error);
+      }
+    );
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private pacienteService: PacienteService,
-    private exameService: ExameService
+    private exameService: ExameService,
+    private location: Location
   ) {
     this.detectScreenSize();
     this.loadPacientes();
@@ -306,6 +336,7 @@ cleanString(value: string): string {
             }).then(() => {
               this.loadPatientExams(); 
               this.resetForm();
+              this.location.go('/exames'); // Atualiza a URL
             });
           },
           (error) => {
@@ -323,6 +354,7 @@ cleanString(value: string): string {
             }).then(() => {
               this.loadPatientExams(); 
               this.resetForm();
+              this.location.go('/exames');
             });
           },
           (error) => {
@@ -334,6 +366,7 @@ cleanString(value: string): string {
   }
 
   editar(examId: string): void {
+    this.router.navigate(['/exame', examId]);
     this.exameService.getExameById(examId).subscribe(
       (response) => {
         const exam = response.exam;

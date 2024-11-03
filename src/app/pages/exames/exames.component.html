@@ -17,8 +17,14 @@
     />
     <button (click)="searchPatients()">Buscar</button>
   </div>
+  <div *ngIf="isEdit && isFromEditRoute">
+    <button class="button-go-back" (click)="goBack()">Voltar</button>
+  </div>
 
-  <div class="search-result" *ngIf="filteredPacienteData.length > 0 && searchPerformed">
+  <div
+    class="search-result"
+    *ngIf="filteredPacienteData.length > 0 && searchPerformed"
+  >
     <div class="patient-result" *ngFor="let patient of filteredPacienteData">
       <div class="patient-data">
         <p class="patient-name">{{ patient.name }}</p>
@@ -45,9 +51,16 @@
           </div>
         </div>
         <div class="pagination-controls">
-          <button (click)="goToPreviousPage()" [disabled]="currentPage === 0">Anterior</button>
+          <button (click)="goToPreviousPage()" [disabled]="currentPage === 0">
+            Anterior
+          </button>
           <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
-          <button (click)="goToNextPage()" [disabled]="currentPage === totalPages - 1">Próxima</button>
+          <button
+            (click)="goToNextPage()"
+            [disabled]="currentPage === totalPages - 1"
+          >
+            Próxima
+          </button>
         </div>
       </div>
     </div>

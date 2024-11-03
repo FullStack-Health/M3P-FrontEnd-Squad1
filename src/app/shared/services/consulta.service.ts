@@ -1,60 +1,78 @@
-import { inject, Injectable } from "@angular/core";
-import { ApiService } from "../../core/services/api.service";
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from "rxjs";
-import { HttpErrorResponse } from "@angular/common/http";
+import { ApiService } from '../../core/services/api.service';
 
 @Injectable({
-  providedIn: "root",
+    providedIn: 'root'
 })
 export class ConsultaService {
-  private apiService = inject(ApiService);
-  private consultaUrl = "consultas";
-  private consultaList: any[] = [];
-  constructor() {}
+    private apiService = inject(ApiService);
+    private consultaUrl = 'consultas';
 
-  getAllConsultas(): Observable<any> {
-    return this.apiService.get(this.consultaUrl).pipe(
-      tap((response: any) => {
-        // isolar lista de consultas da resposta paginada
-        // console.log(response);
-      })
-    );
-  }
+    constructor() { }
 
-  getConsultaById(consultaId: string): Observable<any> {
-    return this.apiService.get(`${this.consultaUrl}/${consultaId}`).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
-  }
+    getAllConsultas(page: number = 0, size: number = 10): Observable<any> {
+        return this.apiService.get(`${this.consultaUrl}?page=${page}&size=${size}`).pipe(
+            tap((response: any) => {
+                // console.log(response);
+            }),
+        );
+    }
 
-  addConsulta(newConsulta: any): Observable<any> {
-    return this.apiService.post(this.consultaUrl, newConsulta).pipe(
-      tap((response: any) => {
-        // console.log(response);
-      })
-    );
-  }
+    getConsultaById(consultaId: string): Observable<any> {
+        return this.apiService.get(`${this.consultaUrl}/${consultaId}`).pipe(
+            tap((response: any) => {
+                // console.log(response);
+            }),
+        );
+    }
 
-  updateConsulta(updatedConsulta: any): Observable<any> {
-    return this.apiService
-      .put(this.consultaUrl, updatedConsulta.id, updatedConsulta)
-      // .pipe(
-      //   tap((response: any) => {
-      //     // console.log(response);
-      //   })
-      // )
-      ;
-  }
+    addConsulta(newConsulta: any): Observable<any> {
+        return this.apiService.post(this.consultaUrl, newConsulta).pipe(
+            tap((response: any) => {
+                // console.log(response);
+            }),
+        );
+    }
 
-  deleteConsulta(consultaId: string): Observable<any> {
-    return this.apiService.delete(this.consultaUrl, consultaId)
-    // .pipe(
-    //   tap((response: any) => {
-    //     // console.log(response);
-    //   })
-    // )
-    ;
-  }
+    updateConsulta(consultaId: string, updatedConsulta: any): Observable<any> {
+        return this.apiService.put(this.consultaUrl, consultaId, updatedConsulta).pipe(
+            tap((response: any) => {
+                // console.log(response);
+            }),
+        );
+    }
+
+    deleteConsulta(consultaId: string): Observable<any> {
+        return this.apiService.delete(this.consultaUrl, consultaId).pipe(
+            tap((response: any) => {
+                // console.log(response);
+            }),
+        );
+    }
+
+    getConsultasByPatientId(patientId: string, page: number = 0, size: number = 10): Observable<any> {
+        return this.apiService.get(`${this.consultaUrl}?patientId=${patientId}&page=${page}&size=${size}`).pipe(
+            tap((response: any) => {
+                // console.log(response);
+            }),
+        );
+    }
+
+    private handleError(error: any): Observable<never> {
+        let errorMessage = 'Ocorreu um erro inesperado.';
+        if (error.status === 400) {
+            errorMessage = 'Dados ausentes ou incorretos';
+        } else if (error.status === 401) {
+            errorMessage = 'Falha de autenticação.';
+        } else if (error.status === 404) {
+            errorMessage = 'Consulta não encontrada.';
+        } else if (error.status === 409) {
+            errorMessage = `${error.message}`;
+        } else {
+            errorMessage = `${error.message}`;
+        }
+        return throwError(() => new Error(errorMessage));
+    }
 }
