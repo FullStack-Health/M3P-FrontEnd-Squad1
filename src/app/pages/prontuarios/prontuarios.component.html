@@ -24,7 +24,8 @@
           </div>
           <div class="phone-plan">
             <div class="phone">
-              <p>TELEFONE: <span class="phone-number"> {{ patient.phone }}</span></p>
+              <fa-icon icon="phone"></fa-icon>
+              <p class="phone-number">{{ patient.phone | mask: '(00) 0 0000-0000' }}</p>
             </div>
             <div class="plan">
               <fa-icon icon="id-card"></fa-icon>
@@ -41,8 +42,15 @@
   </div>
 
   <div class="pagination-controls">
-    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">Anterior</button>
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">
+        <fa-icon icon="chevron-left"></fa-icon> 
+        Anterior
+    </button>
     <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
-    <button (click)="onPageChange(currentPage + 1)" [disabled]="(currentPage + 1) * pageSize >= totalElements">Próxima</button>
-  </div>
+    <button (click)="onPageChange(currentPage + 1)"
+        [disabled]="(currentPage + 1) * pageSize >= totalElements">
+        Próxima
+        <fa-icon icon="chevron-right"></fa-icon> 
+    </button>
+</div>
 </div>

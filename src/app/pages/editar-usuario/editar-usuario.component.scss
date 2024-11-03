@@ -1,0 +1,158 @@
+@import "../../../assets/styles/variables";
+
+.container {
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  padding-left: 400px;
+  padding-top: 130px;
+  padding-right: 2%;
+}
+
+.elemento-formulario {
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 30px;
+  color: $color-950;
+}
+
+input {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  height: 42px;
+  border: 2px solid $color-500;
+  border-radius: 8px;
+  outline: none;
+  box-shadow: none;
+  padding-left: 20px;
+  color: #777779;
+}
+
+input[type="date"],
+input[type="time"] {
+  color: #777779;
+  font-size: 16px;
+  line-height: 34px;
+  padding-right: 20px;
+}
+
+textarea {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  border: 2px solid $color-500;
+  border-radius: 8px;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  resize: vertical;
+  color: #777779;
+
+  &:focus {
+    border-color: $main-color;
+  }
+}
+
+select {
+  display: flex;
+  flex-direction: column;
+  color: #777779;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  height: 42px;
+  border: 2px solid $color-500;
+  border-radius: 8px;
+  padding-top: 10px;
+  padding-left: 15px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+
+  .save {
+    background: $main-color;
+    color: #fff;
+    margin: 20px 0 60px 0;
+    width: 161px;
+    height: 42px;
+    border-radius: 8px;
+    border: none;
+  }
+
+  .delete {
+    margin: 20px 0 60px 0;
+    width: 161px;
+    height: 42px;
+    border-radius: 8px;
+    border: none;
+    background-color: #f04444;
+    color: #fff;
+  }
+
+  .disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.row {
+  display: grid;
+  grid-gap: 20px;
+}
+
+.erro-formulario {
+  label,
+  span {
+    color: red;
+  }
+  input,
+  select {
+    border-color: red;
+  }
+}
+
+.custom-confirm-button-class {
+  background-color: $main-color;
+  color: #ffffff;
+}
+
+.retracted {
+  padding-left: 150px;
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .buttons {
+    margin-top: 30px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+
+    .delete,
+    .save {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+  }
+}

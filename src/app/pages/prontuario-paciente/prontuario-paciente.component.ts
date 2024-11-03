@@ -7,6 +7,8 @@ import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.compon
 import { ProntuarioService } from "../../shared/services/prontuario.service";
 import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
 import { DatePipe } from "@angular/common";
+import { DateFormatPipe } from "../../shared/pipes/date-format.pipe";
+import { LoggedUserService } from "../../core/services/logged-user.service";
 
 @Component({
   selector: "app-prontuario-paciente",
@@ -18,7 +20,8 @@ import { DatePipe } from "@angular/common";
     FontAwesomeModule,
     CommonModule,
     GenderPicturePipe,
-  ],
+    DateFormatPipe
+],
   templateUrl: "./prontuario-paciente.component.html",
   styleUrls: ["./prontuario-paciente.component.scss"],
 })
@@ -26,6 +29,7 @@ export class ProntuarioPacienteComponent implements OnInit {
   isMenuRetracted = false;
   pageTitle: string = "Prontuário do Paciente";
   patient: any;
+  userRole: string | null = null;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -49,13 +53,14 @@ export class ProntuarioPacienteComponent implements OnInit {
         this.loadProntuario(pacienteId);
       }
     });
+    this.userRole = this.loggedUserService.getUserRole();
   }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private prontuarioService: ProntuarioService
-  ) {
+    private prontuarioService: ProntuarioService,
+    private loggedUserService: LoggedUserService  ) {
     this.detectScreenSize();
   }
 
@@ -73,10 +78,14 @@ export class ProntuarioPacienteComponent implements OnInit {
   }
 
   editarExame(examId: string): void {
-    this.router.navigate(["/exame", examId]);
+    this.router.navigate(["/exame/edit", examId]);
   }
 
   editarConsulta(consultaId: string): void {
-    this.router.navigate(["/consulta", consultaId]);
+    this.router.navigate(["/consulta/edit", consultaId]);
+  }
+
+  abrirNovaAba(url: string) {
+    window.open(url, '_blank');
   }
 }

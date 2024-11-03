@@ -12,13 +12,11 @@ export class UsuarioService {
 
   constructor() {}
 
-  // usuario pré-registro
   addPreRegistro(newUser: any): Observable<any> {
     return this.apiService
       .post(`${this.usuarioUrl}/pre-registro`, newUser)
       .pipe(
         tap((response: any) => {
-          // console.log(response);
         })
       );
   }
@@ -32,33 +30,31 @@ export class UsuarioService {
       .put(`${this.usuarioUrl}/email/${email}/redefinir-senha`, null, body)
       .pipe(
         tap((response: any) => {
-          // console.log(response);
         })
       );
   }
 
-  getAllUsuarios(): Observable<any> {
-    return this.apiService.get(this.usuarioUrl).pipe(
+  getAllUsuarios(page: number = 0, size: number = 10): Observable<any> {
+    return this.apiService.get(`${this.usuarioUrl}?page=${page}&size=${size}`).pipe(
       tap((response: any) => {
-        // isolar lista de usuarios da resposta paginada
-        // console.log(response);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error("Falha ao buscar usuários."));
       })
     );
-  }
+}
 
   getUsuarioById(usuarioId: string): Observable<any> {
     return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`).pipe(
       tap((response: any) => {
-        // console.log(response);
+        console.log(response);
       })
     );
   }
 
-  // usuario completo
   addUsuario(newUsuario: any): Observable<any> {
     return this.apiService.post(this.usuarioUrl, newUsuario).pipe(
       tap((response: any) => {
-        // console.log(response);
       })
     );
   }
@@ -68,15 +64,13 @@ export class UsuarioService {
       .put(this.usuarioUrl, updatedUsuario.id, updatedUsuario)
       .pipe(
         tap((response: any) => {
-          // console.log(response);
         })
       );
   }
 
   deleteUsuario(usuarioId: string): Observable<any> {
-    return this.apiService.post(this.usuarioUrl, usuarioId).pipe(
+    return this.apiService.delete(this.usuarioUrl, usuarioId).pipe(
       tap((response: any) => {
-        // console.log(response);
       })
     );
   }

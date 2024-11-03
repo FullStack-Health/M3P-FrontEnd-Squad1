@@ -7,6 +7,8 @@ import { PacienteService } from "../../shared/services/paciente.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
+import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
+
 
 @Component({
   selector: "app-prontuarios",
@@ -19,6 +21,8 @@ import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
     ToolbarComponent,
     FontAwesomeModule,
     GenderPicturePipe,
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
   templateUrl: "./prontuarios.component.html",
   styleUrl: "./prontuarios.component.scss",
@@ -30,8 +34,12 @@ export class ProntuariosComponent implements OnInit {
   filteredPacienteData: any[] = [];
   searchQuery: string = "";
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 12;
   totalElements: number = 0;
+  isSearching: boolean = false;
+  userRole: string | null = null;
+  patientId: string | null = null; 
+  loggedUserService: any;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -50,6 +58,12 @@ export class ProntuariosComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPacientes();
+    this.userRole = this.loggedUserService.getUserRole(); 
+    this.patientId = this.loggedUserService.getPacienteId(); 
+  }
+
+  isPaciente(): boolean {
+    return this.userRole === 'PACIENTE'; 
   }
 
   constructor(
@@ -66,11 +80,24 @@ export class ProntuariosComponent implements OnInit {
     });
   }
 
+  loadAllPacientes() {
+    this.pacienteService.getAllPacientes(0, this.totalElements).subscribe((response: any) => {
+      this.pacienteData = response.patients;
+      this.applyFilter();
+    });
+  }
+
   filterPatients() {
     if (this.searchQuery.trim() === "") {
-      this.filteredPacienteData = [...this.pacienteData];
+      this.isSearching = false;
+      this.loadPacientes();
       return;
     }
+    this.isSearching = true;
+    this.loadAllPacientes();
+  }
+
+  applyFilter() {
     this.filteredPacienteData = this.pacienteData.filter(
       (patient) =>
         patient.fullName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
@@ -88,7 +115,11 @@ export class ProntuariosComponent implements OnInit {
 
   onPageChange(page: number) {
     this.currentPage = page;
-    this.loadPacientes();
+    if (this.isSearching) {
+      this.applyFilter();
+    } else {
+      this.loadPacientes();
+    }
   }
 
   get totalPages(): number {
