@@ -73,7 +73,7 @@ export class ProntuarioPacienteComponent implements OnInit {
   }
 
   editarExame(examId: string): void {
-    this.router.navigate(["/exame", examId]);
+    this.router.navigate(["/exame/edit", examId]);
   }
 
   editarConsulta(consultaId: string): void {

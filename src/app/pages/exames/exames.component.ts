@@ -70,11 +70,12 @@ export class ExamesComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.selectedExamId = params["examId"];
+      this.selectedExamId = params["id"];
       this.containerSearch = !this.selectedExamId;
       if (this.selectedExamId) {
         this.exameService.getExameById(this.selectedExamId).subscribe(
-          (exam) => {
+          (response) => {
+            const exam = response.exam;
             this.form.patchValue({
               name: exam.name,
               date: exam.examDate,
@@ -86,6 +87,7 @@ export class ExamesComponent implements OnInit {
               id: exam.id,
               patientId: exam.patientId 
             });
+            this.selectedPatientId = exam.patientId;
             this.isEdit = true;
             this.isFormVisible = true;
             this.loadPatientData(exam.patientId);
