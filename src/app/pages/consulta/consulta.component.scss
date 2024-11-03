@@ -85,21 +85,21 @@
       }
     }
 
-    .consulta-list {
+    .appointment-list {
       gap: 10px;
 
-      .consulta-row {
+      .appointment-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
 
-        .consulta-name {
+        .appointment-name {
           flex: 1;
           font-size: 12px;
         }
 
-        .consulta-buttons {
+        .appointment-buttons {
           display: flex;
           gap: 10px;
 

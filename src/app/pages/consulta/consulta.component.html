@@ -40,16 +40,19 @@
           Selecionar
         </button>
       </div>
-      <div class="consulta-list" *ngIf="selectedPatientId === patient.id">
-        <div *ngFor="let consulta of patientAppointments" class="consulta-row">
-          <div class="consulta-name">
-            <p>{{ consulta.appointmentReason }}</p>
+      <div class="appointment-list" *ngIf="selectedPatientId === patient.id">
+        <div
+          *ngFor="let appointment of patientAppointments"
+          class="appointment-row"
+        >
+          <div class="appointment-name">
+            <p>{{ appointment.appointmentReason }}</p>
           </div>
-          <div class="consulta-buttons">
-            <button class="button-edit" (click)="editar(consulta.id)">
+          <div class="appointment-buttons">
+            <button class="button-edit" (click)="editar(appointment.id)">
               Editar
             </button>
-            <button class="button-delete" (click)="deletar(consulta.id)">
+            <button class="button-delete" (click)="deletar(appointment.id)">
               Deletar
             </button>
           </div>
