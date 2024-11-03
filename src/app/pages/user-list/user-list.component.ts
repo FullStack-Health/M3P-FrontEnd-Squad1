@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { Component, HostListener, OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SidebarComponent } from "../../../shared/components/sidebar/sidebar.component";
-import { ToolbarComponent } from "../../../shared/components/toolbar/toolbar.component";
-import { UsuarioService } from "../../../shared/services/usuario.service";
+import { SidebarComponent } from "../../shared/components/sidebar/sidebar.component";
+import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
+import { UsuarioService } from "../../shared/services/usuario.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { PasswordMaskPipe } from "../../../shared/pipes/password-mask.pipe";
+import { PasswordMaskPipe } from "../../shared/pipes/password-mask.pipe";
 
 @Component({
   selector: 'app-user-list',
@@ -102,7 +102,7 @@ export class UserListComponent implements OnInit {
   
 
   navigateToEdit(usuarioId: string) {
-    this.router.navigate(["/usuarios/edit", usuarioId]);
+    this.router.navigate(["admin/editar-usuario/", usuarioId]);
   }
 
   onPageChange(page: number) {

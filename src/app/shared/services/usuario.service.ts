@@ -53,7 +53,7 @@ export class UsuarioService {
   getUsuarioById(usuarioId: string): Observable<any> {
     return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`).pipe(
       tap((response: any) => {
-        // console.log(response);
+        console.log(response);
       })
     );
   }
@@ -78,7 +78,7 @@ export class UsuarioService {
   }
 
   deleteUsuario(usuarioId: string): Observable<any> {
-    return this.apiService.post(this.usuarioUrl, usuarioId).pipe(
+    return this.apiService.delete(this.usuarioUrl, usuarioId).pipe(
       tap((response: any) => {
         // console.log(response);
       })
