@@ -71,12 +71,20 @@ export const routes: Routes = [
     component: ConsultaComponent,
     canActivate: [authGuard],
     data: { roles: ["ADMIN", "MEDICO"] },
-  },
-  {
-    path: "consulta/:consultaId",
-    component: ConsultaComponent,
-    canActivate: [authGuard],
-    data: { roles: ["ADMIN", "MEDICO"] },
+    children: [
+      {
+        path: ":consultaId",
+        component: ConsultaComponent,
+        canActivate: [authGuard],
+        data: { roles: ["ADMIN", "MEDICO"] },
+      },
+      {
+        path: "edit/:id",
+        component: ConsultaComponent,
+        canActivate: [authGuard],
+        data: { roles: ["ADMIN", "MEDICO"] },
+      },
+    ],
   },
   {
     path: "prontuarios",
