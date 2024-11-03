@@ -16,6 +16,7 @@ import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.compon
 import { ConsultaService } from "../../shared/services/consulta.service";
 import { PacienteService } from "../../shared/services/paciente.service";
 import { Observable } from "rxjs";
+import { Location } from '@angular/common';
 
 @Component({
     selector: "app-consultas",
@@ -43,13 +44,14 @@ export class ConsultaComponent implements OnInit {
     filteredPacienteData: any[] = [];
     searchQuery: string = "";
     selectedPatientId: string | null = null;
-    selectedConsultaId: string = "";
+    selectedAppointmentId: string = "";
     isFormVisible: boolean = false;
-    patientConsultas: any[] = [];
+    patientAppointments: any[] = [];
     searchPerformed: boolean = false;
     currentPage: number = 0;
     pageSize: number = 10;
     totalPages: number = 0;
+    isFromEditRoute: boolean = false;
 
     @HostListener("window:resize", ["$event"])
     onResize(event: any) {
@@ -68,18 +70,27 @@ export class ConsultaComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.subscribe((params) => {
-            this.selectedConsultaId = params["consultaId"];
-            this.containerSearch = !this.selectedConsultaId;
-            if (this.selectedConsultaId) {
-                this.consultaService.getConsultaById(this.selectedConsultaId).subscribe(
-                    (consulta) => {
-                        const patient = this.pacienteData.find((patient) =>
-                            patient.consultas.some((c: { id: string }) => c.id === this.selectedConsultaId)
-                        );
-                        if (patient) {
-                            this.selectPatient(patient.id);
-                            this.editar(consulta);
-                        }
+            this.selectedAppointmentId = params["id"];
+            this.containerSearch = !this.selectedAppointmentId;
+            this.isFromEditRoute = this.route.snapshot.url.some(segment => segment.path === 'edit');
+            if (this.selectedAppointmentId) {
+                this.consultaService.getConsultaById(this.selectedAppointmentId).subscribe(
+                    (response) => {
+                        const appointment = response.appointment;
+                        this.form.patchValue({
+                            appointmentReason: appointment.appointmentReason,
+                            appointmentDate: appointment.appointmentDate,
+                            appointmentTime: appointment.appointmentTime,
+                            problemDescription: appointment.problemDescription,
+                            prescribedMedication: appointment.prescribedMedication,
+                            observations: appointment.observations,
+                            id: appointment.id,
+                            patientId: appointment.patientId
+                        });
+                        this.isEdit = true;
+                        this.selectedPatientId = appointment.patientId;
+                        this.isFormVisible = true;
+                        this.loadPatientData(appointment.patientId);
                     },
                     (error) => {
                         console.error("Erro ao carregar consulta", error);
@@ -93,7 +104,8 @@ export class ConsultaComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private pacienteService: PacienteService,
-        private consultaService: ConsultaService
+        private consultaService: ConsultaService,
+        private location: Location
     ) {
         this.detectScreenSize();
         this.loadPacientes();
@@ -122,12 +134,11 @@ export class ConsultaComponent implements OnInit {
     }
 
     loadPacientes(): void {
-        this.pacienteService.getAllPacientes(this.currentPage, this.pageSize).subscribe(
+        this.pacienteService.getAllPacientes().subscribe(
             (data) => {
                 if (data && Array.isArray(data.patients)) {
                     this.pacienteData = data.patients;
                     this.filteredPacienteData = [...this.pacienteData];
-                    this.totalPages = data.totalPages;
                 } else {
                     console.error("Formato de resposta inesperado", data);
                     this.pacienteData = [];
@@ -173,13 +184,6 @@ export class ConsultaComponent implements OnInit {
                 (data) => {
                     if (data && Array.isArray(data.patients)) {
                         this.filteredPacienteData = data.patients;
-    
-                        this.filteredPacienteData.forEach(patient => {
-                            this.consultaService.getConsultasByPatientId(patient.id).subscribe(consultasData => {
-                                patient.consultas = consultasData.consultas; 
-                            });
-                        });
-    
                         if (this.filteredPacienteData.length === 1) {
                             const patientId = this.filteredPacienteData[0].id;
                             this.selectPatient(patientId);
@@ -247,20 +251,20 @@ export class ConsultaComponent implements OnInit {
         this.filterPatients();
     }
 
-    loadPatientConsultas(): void {
+    loadpatientAppointments(): void {
         if (this.selectedPatientId) {
-            this.consultaService.getConsultasByPatientId(this.selectedPatientId).subscribe(
+            this.consultaService.getConsultasByPatientId(this.selectedPatientId, this.currentPage, this.pageSize).subscribe(
                 (response) => {
-                    if (response && Array.isArray(response.consultas)) {
-                        this.patientConsultas = response.consultas.filter((consulta: { patientId: string | null; }) => consulta.patientId === this.selectedPatientId);
+                    if (response && Array.isArray(response.appointments)) {
+                        this.patientAppointments = response.appointments.filter((appointment: { patientId: string | null; }) => appointment.patientId === this.selectedPatientId);
                     } else {
                         console.error("Formato de resposta inesperado", response);
-                        this.patientConsultas = [];
+                        this.patientAppointments = [];
                     }
                 },
                 (error) => {
                     console.error("Erro ao carregar consultas do paciente", error);
-                    this.patientConsultas = [];
+                    this.patientAppointments = [];
                 }
             );
         }
@@ -268,7 +272,7 @@ export class ConsultaComponent implements OnInit {
 
     cadastrar(): void {
         if (this.form.valid) {
-            const consulta = {
+            const appointment = {
                 appointmentReason: this.form.get('appointmentReason')?.value,
                 appointmentDate: this.form.get('appointmentDate')?.value,
                 appointmentTime: this.form.get('appointmentTime')?.value,
@@ -278,7 +282,7 @@ export class ConsultaComponent implements OnInit {
                 patientId: this.form.get('patientId')?.value
             };
             if (this.isEdit) {
-                this.consultaService.updateConsulta(consulta).subscribe(
+                this.consultaService.updateConsulta(this.selectedAppointmentId, appointment).subscribe(
                     () => {
                         Swal.fire({
                             text: "Consulta atualizada com sucesso!",
@@ -286,7 +290,7 @@ export class ConsultaComponent implements OnInit {
                             confirmButtonColor: "#0A7B73",
                             confirmButtonText: "OK",
                         }).then(() => {
-                            this.loadPatientConsultas();
+                            this.loadpatientAppointments();
                             this.resetForm();
                         });
                     },
@@ -295,7 +299,7 @@ export class ConsultaComponent implements OnInit {
                     }
                 );
             } else {
-                this.consultaService.addConsulta(consulta).subscribe(
+                this.consultaService.addConsulta(appointment).subscribe(
                     () => {
                         Swal.fire({
                             text: "Consulta salva com sucesso!",
@@ -303,7 +307,7 @@ export class ConsultaComponent implements OnInit {
                             confirmButtonColor: "#0A7B73",
                             confirmButtonText: "OK",
                         }).then(() => {
-                            this.loadPatientConsultas();
+                            this.loadpatientAppointments();
                             this.resetForm();
                         });
                     },
@@ -315,22 +319,23 @@ export class ConsultaComponent implements OnInit {
         }
     }
 
-    editar(consultaId: string): void {
-        this.consultaService.getConsultaById(consultaId).subscribe(
+    editar(appointmentId: string): void {
+        this.router.navigate(["/consulta", appointmentId]);
+        this.consultaService.getConsultaById(appointmentId).subscribe(
             (response) => {
-                const consulta = response.consulta;
+                const appointment = response.consulta;
                 this.form.patchValue({
-                    appointmentReason: consulta.appointmentReason,
-                    appointmentDate: consulta.appointmentDate,
-                    appointmentTime: consulta.appointmentTime,
-                    problemDescription: consulta.problemDescription,
-                    prescribedMedication: consulta.prescribedMedication,
-                    observations: consulta.observations,
-                    id: consulta.id,
-                    patientId: consulta.patientId
+                    appointmentReason: appointment.appointmentReason,
+                    appointmentDate: appointment.appointmentDate,
+                    appointmentTime: appointment.appointmentTime,
+                    problemDescription: appointment.problemDescription,
+                    prescribedMedication: appointment.prescribedMedication,
+                    observations: appointment.observations,
+                    id: appointment.id,
+                    patientId: appointment.patientId
                 });
                 this.isEdit = true;
-                this.selectedConsultaId = consulta.id;
+                this.selectedAppointmentId = appointment.id;
                 this.isFormVisible = true;
             },
             (error) => {
@@ -339,8 +344,8 @@ export class ConsultaComponent implements OnInit {
         );
     }
 
-    deletar(consultaId: string): void {
-        this.consultaService.deleteConsulta(consultaId).subscribe(
+    deletar(appointmentId: string): void {
+        this.consultaService.deleteConsulta(appointmentId).subscribe(
             () => {
                 Swal.fire({
                     text: "Consulta excluída com sucesso!",
@@ -348,7 +353,7 @@ export class ConsultaComponent implements OnInit {
                     confirmButtonColor: "#0A7B73",
                     confirmButtonText: "OK",
                 }).then(() => {
-                    this.patientConsultas = this.patientConsultas.filter(consulta => consulta.id !== consultaId);
+                    this.patientAppointments = this.patientAppointments.filter(appointment => appointment.id !== appointmentId);
                 });
             },
             (error) => {
@@ -359,66 +364,48 @@ export class ConsultaComponent implements OnInit {
 
     resetForm(): void {
         this.form.reset({
-            appointmentDate: formatDate(new Date(), "yyyy-MM-dd", "en"),
-            appointmentTime: formatDate(new Date(), "HH:mm", "en")
+          date: formatDate(new Date(), "yyyy-MM-dd", "en"),
+          time: formatDate(new Date(), "HH:mm", "en")
         });
         this.isEdit = false;
-        this.selectedConsultaId = "";
-    }
+        this.selectedAppointmentId = "";
+      }
 
     selectPatient(patientId: string): void {
         this.resetForm();
         this.selectedPatientId = patientId;
         this.form.patchValue({ patientId: patientId });
         this.isFormVisible = true;
-        this.loadPatientConsultas();
+        this.loadpatientAppointments();
     }
 
     goToNextPage(): void {
         if (this.currentPage < this.totalPages - 1) {
             this.currentPage++;
-            this.loadPacientes();
+            this.loadpatientAppointments();
         }
     }
 
-<<<<<<< HEAD
-  resetForm(): void {
-    this.form.reset();
-    this.isEdit = false;
-    this.selectedConsultaId = "";
-  }
-
-
-
-  mensagemSucesso(mensagem: string, reload: boolean): void {
-    Swal.fire({
-      text: mensagem,
-      icon: "success",
-      confirmButtonColor: "#0A7B73",
-      confirmButtonText: "OK",
-    }).then((result) => {
-    if (reload) {
-      window.location.reload();
-    } 
-  });
-  }
-
-  mensagemErro(mensagem: string): void {
-    Swal.fire({
-      text: mensagem,
-      icon: "error",
-      confirmButtonColor: "#0A7B73",
-      confirmButtonText: "OK",
-    });
-    console.error("Erro:", mensagem);
-  }
-}
-=======
     goToPreviousPage(): void {
         if (this.currentPage > 0) {
             this.currentPage--;
-            this.loadPacientes();
+            this.loadpatientAppointments();
         }
     }
+
+    goBack(): void {
+        this.location.back();
+    }
+
+    loadPatientData(patientId: string): void {
+        this.pacienteService.getPacienteById(patientId).subscribe(
+            (patient) => {
+                this.selectedPatientId = patient.id;
+                this.filteredPacienteData = [patient];
+            },
+            (error) => {
+                console.error("Erro ao carregar dados do paciente", error);
+            }
+        );
+    }
 }
->>>>>>> 4fd8422fd3ea4617446b8c538fe207f41de8bcc6
