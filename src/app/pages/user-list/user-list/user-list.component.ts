@@ -24,9 +24,9 @@ import { PasswordMaskPipe } from "../../../shared/pipes/password-mask.pipe";
 export class UserListComponent implements OnInit {
   isMenuRetracted = false;
   pageTitle: string = "Lista de Usuários";
-  userData: any[] = []; // Inicializado como array vazio para evitar undefined
+  userData: any[] = [];
   filteredUsuarioData: any[] = [];
-  searchQuery: string = ""; // Inicializado para evitar problemas de leitura
+  searchQuery: string = "";
   currentPage: number = 0;
   pageSize: number = 10;
   totalElements: number = 0;
@@ -47,19 +47,19 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadUsuarios(); // Função para carregar os usuários
+    this.loadUsuarios();
   }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private usuarioService: UsuarioService // Service de usuários
+    private usuarioService: UsuarioService
   ) {}
 
   loadUsuarios() {
     this.usuarioService.getAllUsuarios().subscribe(
       (response: any) => {
-        console.log('Resposta da API:', response); // Verifica o que a API está retornando
+        console.log('Resposta da API:', response);
   
         if (Array.isArray(response.users)) {
           this.userData = response.users;
@@ -79,25 +79,27 @@ export class UserListComponent implements OnInit {
 
 
   filterUsuarios() {
-    // Verifica se userData é um array válido
     if (!Array.isArray(this.userData)) {
       console.error("userData is not an array");
       return;
     }
-
-    // Se a pesquisa estiver vazia, retorna todos os usuários
+  
+    
     if (this.searchQuery.trim() === "") {
       this.filteredUsuarioData = [...this.userData];
       return;
     }
-
-    // Filtra os dados de usuários
-    this.filteredUsuarioData = this.userData.filter(
-      (usuario) =>
-        usuario.login.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        usuario.id.toString().includes(this.searchQuery)
-    );
+  
+    this.filteredUsuarioData = this.userData.filter((usuario) => {
+      const loginMatches = usuario.login?.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const idMatches = usuario.id?.toString().includes(this.searchQuery);
+      const emailMatches = usuario.email?.toLowerCase().includes(this.searchQuery.toLowerCase());
+  
+      return loginMatches || idMatches || emailMatches;
+    });
   }
+  
+  
 
   navigateToEdit(usuarioId: string) {
     this.router.navigate(["/usuarios/edit", usuarioId]);
