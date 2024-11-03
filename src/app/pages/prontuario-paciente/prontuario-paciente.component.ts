@@ -79,7 +79,7 @@ export class ProntuarioPacienteComponent implements OnInit {
   }
 
   editarConsulta(consultaId: string): void {
-    this.router.navigate(["/consulta", consultaId]);
+    this.router.navigate(["/consulta/edit", consultaId]);
   }
 
   abrirNovaAba(url: string) {
