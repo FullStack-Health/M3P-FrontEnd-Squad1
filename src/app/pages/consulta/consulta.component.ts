@@ -280,7 +280,4 @@ isValidPhone(phone: string): boolean {
     });
     console.error("Erro:", mensagem);
   }
-
 }
-
-

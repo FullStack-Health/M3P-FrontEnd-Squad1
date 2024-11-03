@@ -11,7 +11,7 @@ export class ConsultaService {
   private consultaList: any[] = [];
   constructor() {}
 
-  getAllConsultas(page: number = 0, size: number = 1000000): Observable<any> {
+  getAllConsultas(): Observable<any> {
     return this.apiService.get(this.consultaUrl);
   }
 

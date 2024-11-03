@@ -29,19 +29,39 @@ export class TesteApiServiceComponent {
       email: "admin@example.com",
       newPassword: "123123123",
     };
-    this.prontuarioService.getAllProntuarios().subscribe({
+    this.consultaService.getConsultaById("1").subscribe({
       next: (response) => {
         console.log("resposta:", response);
+        this.mensagemSucesso(response.message);
       },
       error: (error: Error) => {
-        Swal.fire({
-          text: error.message,
-          icon: "error",
-          confirmButtonColor: "#0A7B73",
-          confirmButtonText: "OK",
-        });
-        console.error("Erro de autenticação:", error.message);
+
+        this.mensagemErro(error.message);
       },
     });
+
+
+    
   }
+
+mensagemSucesso(mensagem: string): void {
+  Swal.fire({
+    text: mensagem,
+    icon: "success",
+    confirmButtonColor: "#0A7B73",
+    confirmButtonText: "OK",
+  }).then((result) => {
+   
+  });
+}
+mensagemErro(mensagem: string): void {
+  Swal.fire({
+    text: mensagem,
+    icon: "error",
+    confirmButtonColor: "#0A7B73",
+    confirmButtonText: "OK",
+  });
+  console.error("Erro de autenticação:", mensagem);
+}
+
 }
