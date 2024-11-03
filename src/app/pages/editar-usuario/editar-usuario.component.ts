@@ -49,10 +49,6 @@ export class EditarUsuarioComponent implements OnInit {
         const usuario = response.user; // Acessa a propriedade "user"
         console.log(usuario); // Verificar os dados recebidos
 
-        // Armazena a senha (mascarada) e a role
-        this.password = usuario.maskedPassword; // Aqui você captura a senha mascarada
-        this.role = usuario.role; // Aqui você captura a role
-
         // Atualiza o formulário com os dados do usuário
         this.editarUsuarioForm.patchValue({
           name: usuario.name,
@@ -74,21 +70,16 @@ export class EditarUsuarioComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.editarUsuarioForm.value);
-    console.log(this.editarUsuarioForm.valid);
-    console.log(this.editarUsuarioForm.errors);
-    
     if (this.editarUsuarioForm.valid) {
       const usuarioAtualizado = {
-        ...this.editarUsuarioForm.value,
-        id: this.usuarioId,  // Atribuindo o ID corretamente
-        role: this.role, // Mantém a role existente
-        password: this.password, // Incluindo a senha armazenada
-      };      
+        ...this.editarUsuarioForm.value,  // Coleta os dados do formulário
+        id: this.usuarioId  // Atribui o ID do usuário
+      };
   
       // Verifique a estrutura do objeto antes de enviar
       console.log('Dados a serem enviados:', usuarioAtualizado);
   
+      // Chama o serviço para atualizar o usuário
       this.usuarioService.updateUsuario(usuarioAtualizado).subscribe({
         next: () => {
           Swal.fire({
@@ -101,7 +92,7 @@ export class EditarUsuarioComponent implements OnInit {
           });
         },
         error: (err) => {
-          console.error('Erro ao atualizar o usuário:', err); // Mostre o erro no console
+          console.error('Erro ao atualizar o usuário:', err);
           Swal.fire({
             text: 'Erro ao atualizar o usuário.',
             icon: 'error',
@@ -119,6 +110,7 @@ export class EditarUsuarioComponent implements OnInit {
       });
     }
   }
+  
 
   onDelete(): void {
     // Confirmação de exclusão
