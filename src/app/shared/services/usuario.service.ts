@@ -37,11 +37,15 @@ export class UsuarioService {
       );
   }
 
+  // Listar todos os usuários
   getAllUsuarios(): Observable<any> {
     return this.apiService.get(this.usuarioUrl).pipe(
       tap((response: any) => {
         // isolar lista de usuarios da resposta paginada
         // console.log(response);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => new Error("Falha ao buscar usuários."));
       })
     );
   }
@@ -49,7 +53,7 @@ export class UsuarioService {
   getUsuarioById(usuarioId: string): Observable<any> {
     return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`).pipe(
       tap((response: any) => {
-        // console.log(response);
+        console.log(response);
       })
     );
   }
@@ -74,7 +78,7 @@ export class UsuarioService {
   }
 
   deleteUsuario(usuarioId: string): Observable<any> {
-    return this.apiService.post(this.usuarioUrl, usuarioId).pipe(
+    return this.apiService.delete(this.usuarioUrl, usuarioId).pipe(
       tap((response: any) => {
         // console.log(response);
       })
