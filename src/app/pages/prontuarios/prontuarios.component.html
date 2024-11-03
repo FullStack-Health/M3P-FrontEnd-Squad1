@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="btn">
-          <button (click)="navigateToEdit(patient.id)">Editar</button>
+          <button *ngIf="!isPaciente()" (click)="navigateToEdit(patient.id)">Editar</button>
           <button (click)="navigateToProntuario(patient.id)">Acessar prontuário</button>
         </div>
       </div>

@@ -33,6 +33,9 @@ export class ProntuariosComponent implements OnInit {
   pageSize: number = 10;
   totalElements: number = 0;
   isSearching: boolean = false;
+  userRole: string | null = null;
+  patientId: string | null = null; 
+  loggedUserService: any;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -51,6 +54,12 @@ export class ProntuariosComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPacientes();
+    this.userRole = this.loggedUserService.getUserRole(); 
+    this.patientId = this.loggedUserService.getPacienteId(); 
+  }
+
+  isPaciente(): boolean {
+    return this.userRole === 'PACIENTE'; 
   }
 
   constructor(

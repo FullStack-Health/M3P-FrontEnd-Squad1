@@ -8,6 +8,7 @@ import { ProntuarioService } from "../../shared/services/prontuario.service";
 import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
 import { DatePipe } from "@angular/common";
 import { DateFormatPipe } from "../../shared/pipes/date-format.pipe";
+import { LoggedUserService } from "../../core/services/logged-user.service";
 
 @Component({
   selector: "app-prontuario-paciente",
@@ -28,6 +29,7 @@ export class ProntuarioPacienteComponent implements OnInit {
   isMenuRetracted = false;
   pageTitle: string = "Prontuário do Paciente";
   patient: any;
+  userRole: string | null = null;
 
   @HostListener("window:resize", ["$event"])
   onResize(event: any) {
@@ -51,13 +53,14 @@ export class ProntuarioPacienteComponent implements OnInit {
         this.loadProntuario(pacienteId);
       }
     });
+    this.userRole = this.loggedUserService.getUserRole();
   }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private prontuarioService: ProntuarioService
-  ) {
+    private prontuarioService: ProntuarioService,
+    private loggedUserService: LoggedUserService  ) {
     this.detectScreenSize();
   }
 
