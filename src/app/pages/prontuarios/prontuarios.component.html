@@ -42,8 +42,15 @@
   </div>
 
   <div class="pagination-controls">
-    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">Anterior</button>
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">
+        <fa-icon icon="chevron-left"></fa-icon> 
+        Anterior
+    </button>
     <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
-    <button (click)="onPageChange(currentPage + 1)" [disabled]="(currentPage + 1) * pageSize >= totalElements">Próxima</button>
-  </div>
+    <button (click)="onPageChange(currentPage + 1)"
+        [disabled]="(currentPage + 1) * pageSize >= totalElements">
+        Próxima
+        <fa-icon icon="chevron-right"></fa-icon> 
+    </button>
+</div>
 </div>
