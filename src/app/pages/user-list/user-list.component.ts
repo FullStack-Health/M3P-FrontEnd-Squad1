@@ -6,6 +6,8 @@ import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.compon
 import { UsuarioService } from "../../shared/services/usuario.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PasswordMaskPipe } from "../../shared/pipes/password-mask.pipe";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+
 
 @Component({
   selector: 'app-user-list',
@@ -16,7 +18,8 @@ import { PasswordMaskPipe } from "../../shared/pipes/password-mask.pipe";
     SidebarComponent,
     FormsModule,
     ToolbarComponent,
-    PasswordMaskPipe
+    PasswordMaskPipe,
+    FontAwesomeModule
   ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
@@ -57,10 +60,10 @@ export class UserListComponent implements OnInit {
   ) { }
 
   loadUsuarios() {
-    this.usuarioService.getAllUsuarios().subscribe(
+    this.usuarioService.getAllUsuarios(this.currentPage, this.pageSize).subscribe(
       (response: any) => {
         console.log('Resposta da API:', response);
-
+        
         if (Array.isArray(response.users)) {
           this.userData = response.users;
           this.filteredUsuarioData = [...this.userData];
@@ -73,10 +76,7 @@ export class UserListComponent implements OnInit {
         console.error('Erro ao carregar os usuários', error);
       }
     );
-  }
-
-
-
+}
 
   filterUsuarios() {
     if (!Array.isArray(this.userData)) {
@@ -104,8 +104,11 @@ export class UserListComponent implements OnInit {
   }
 
   onPageChange(page: number) {
-    this.loadUsuarios();
-  }
+    if (page >= 0 && page < this.totalPages) {
+        this.currentPage = page;
+        this.loadUsuarios(); 
+    }
+}
 
   get totalPages(): number {
     return Math.ceil(this.totalElements / this.pageSize);
