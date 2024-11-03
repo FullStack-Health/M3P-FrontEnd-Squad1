@@ -85,21 +85,21 @@
       }
     }
 
-    .consulta-list {
+    .appointment-list {
       gap: 10px;
 
-      .consulta-row {
+      .appointment-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 10px;
 
-        .consulta-name {
+        .appointment-name {
           flex: 1;
           font-size: 12px;
         }
 
-        .consulta-buttons {
+        .appointment-buttons {
           display: flex;
           gap: 10px;
 
@@ -120,6 +120,33 @@
             background-color: #f09a9a;
             border: 1px solid #f04444;
           }
+        }
+      }
+
+      .pagination-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+
+        button {
+          background-color: $main-color;
+          color: #fff;
+          border: none;
+          border-radius: 8px;
+          padding: 10px 20px;
+          cursor: pointer;
+
+          &:disabled {
+            background-color: $color-500;
+            cursor: not-allowed;
+          }
+        }
+
+        span {
+          font-size: 14px;
+          color: $color-950;
         }
       }
     }
@@ -243,6 +270,27 @@ select {
   }
 }
 
+.button-go-back {
+  background-color: $main-color;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+
+  &:hover {
+      background-color: darken($main-color, 10%);
+  }
+
+  &:disabled {
+      background-color: $color-500;
+      cursor: not-allowed;
+  }
+}
+
 .row {
   display: grid;
   grid-gap: 20px;
@@ -254,10 +302,12 @@ select {
 }
 
 .erro-formulario {
+
   label,
   span {
     color: red;
   }
+
   input,
   select {
     border-color: red;
