@@ -61,6 +61,12 @@ export const routes: Routes = [
     ],
   },
   {
+    path: "exame/edit/:id",
+    component: ExamesComponent,
+    canActivate: [authGuard],
+    data: { roles: ["ADMIN", "MEDICO"] },
+  },
+  {
     path: "consulta",
     component: ConsultaComponent,
     canActivate: [authGuard],

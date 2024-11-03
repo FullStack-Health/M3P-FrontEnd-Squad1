@@ -13,6 +13,9 @@
       <p>Contato de emergência: <span>{{ patient.emergencyContact }}</span></p>
       <p>Alergias: <span>{{ patient.allergies.join(', ') }}</span></p>
       <p>Cuidados específicos: <span>{{ patient.specificCare.join(', ') }}</span></p>
+      <p>Telefone: <span>{{patient.phone}}</span></p>
+      <p>CPF: <span>{{patient.cpf}}</span></p>
+      <p>Data de nascimento: <span>{{patient.birthDate | dateFormat}}</span></p>
     </div>
   </div>
 
@@ -85,11 +88,15 @@
               <p>Resultado:</p>
               <p>{{ exam.results }}</p>
             </div>
+            <div class="lab">
+              <p>URL:</p>
+              <p>{{ exam.documentUrl }}</p>
+          </div>
           </div>
         </div>
         <div class="btn">
           <button (click)="editarExame(exam.id)">Editar exame</button>
-          <button>Ver anexo</button>
+          <button (click)="abrirNovaAba(exam.documentUrl)">Ver anexo</button>
         </div>
       </div>
     </div>
