@@ -24,7 +24,8 @@
           </div>
           <div class="phone-plan">
             <div class="phone">
-              <p>TELEFONE: <span class="phone-number"> {{ patient.phone }}</span></p>
+              <fa-icon icon="phone"></fa-icon>
+              <p class="phone-number">{{ patient.phone | mask: '(00) 0 0000-0000' }}</p>
             </div>
             <div class="plan">
               <fa-icon icon="id-card"></fa-icon>
@@ -33,7 +34,7 @@
           </div>
         </div>
         <div class="btn">
-          <button *ngIf="!isPaciente()" (click)="navigateToEdit(patient.id)">Editar</button>
+          <button (click)="navigateToEdit(patient.id)">Editar</button>
           <button (click)="navigateToProntuario(patient.id)">Acessar prontuário</button>
         </div>
       </div>

@@ -7,6 +7,8 @@ import { PacienteService } from "../../shared/services/paciente.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
+import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
+
 
 @Component({
   selector: "app-prontuarios",
@@ -19,6 +21,8 @@ import { GenderPicturePipe } from "../../shared/pipes/gender-picture.pipe";
     ToolbarComponent,
     FontAwesomeModule,
     GenderPicturePipe,
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
   templateUrl: "./prontuarios.component.html",
   styleUrl: "./prontuarios.component.scss",
@@ -30,7 +34,7 @@ export class ProntuariosComponent implements OnInit {
   filteredPacienteData: any[] = [];
   searchQuery: string = "";
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 12;
   totalElements: number = 0;
   isSearching: boolean = false;
   userRole: string | null = null;
