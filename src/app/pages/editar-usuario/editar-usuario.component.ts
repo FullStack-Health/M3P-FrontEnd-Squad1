@@ -21,8 +21,8 @@ export class EditarUsuarioComponent implements OnInit {
   usuarioId!: string;
   password!: string;
   role!: string; 
-  isMenuRetracted = false; // Adicione esta linha
-  pageTitle: string = "Editar Usuário"; // Adicione esta linha
+  isMenuRetracted = false; 
+  pageTitle: string = "Editar Usuário"; 
 
   constructor(
     private fb: FormBuilder,
@@ -34,7 +34,6 @@ export class EditarUsuarioComponent implements OnInit {
   ngOnInit(): void {
     this.usuarioId = this.route.snapshot.paramMap.get('id')!;
 
-    // Inicializa o formulário
     this.editarUsuarioForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(64)]],
       phone: ['', [Validators.required]],
@@ -43,13 +42,12 @@ export class EditarUsuarioComponent implements OnInit {
       birthDate: ['', Validators.required],
     });
 
-    // Buscar os dados do usuário
+  
     this.usuarioService.getUsuarioById(this.usuarioId).subscribe({
       next: (response) => {
-        const usuario = response.user; // Acessa a propriedade "user"
-        console.log(usuario); // Verificar os dados recebidos
+        const usuario = response.user;
+        console.log(usuario); 
 
-        // Atualiza o formulário com os dados do usuário
         this.editarUsuarioForm.patchValue({
           name: usuario.name,
           phone: usuario.phone,
@@ -72,14 +70,10 @@ export class EditarUsuarioComponent implements OnInit {
   onSubmit(): void {
     if (this.editarUsuarioForm.valid) {
       const usuarioAtualizado = {
-        ...this.editarUsuarioForm.value,  // Coleta os dados do formulário
-        id: this.usuarioId  // Atribui o ID do usuário
+        ...this.editarUsuarioForm.value,  
+        id: this.usuarioId  
       };
   
-      // Verifique a estrutura do objeto antes de enviar
-      console.log('Dados a serem enviados:', usuarioAtualizado);
-  
-      // Chama o serviço para atualizar o usuário
       this.usuarioService.updateUsuario(usuarioAtualizado).subscribe({
         next: () => {
           Swal.fire({
@@ -88,7 +82,7 @@ export class EditarUsuarioComponent implements OnInit {
             confirmButtonColor: '#0A7B73',
             confirmButtonText: 'OK'
           }).then(() => {
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/usuarios']);
           });
         },
         error: (err) => {
@@ -113,7 +107,7 @@ export class EditarUsuarioComponent implements OnInit {
   
 
   onDelete(): void {
-    // Confirmação de exclusão
+
     Swal.fire({
       title: 'Tem certeza?',
       text: 'Deseja realmente deletar este usuário?',
@@ -125,7 +119,7 @@ export class EditarUsuarioComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Chama o serviço para deletar o usuário
+        
         this.usuarioService.deleteUsuario(this.usuarioId).subscribe({
           next: () => {
             Swal.fire({
@@ -134,7 +128,7 @@ export class EditarUsuarioComponent implements OnInit {
               confirmButtonColor: '#0A7B73',
               confirmButtonText: 'OK'
             }).then(() => {
-              this.router.navigate(['/admin']); // Redireciona após a exclusão
+              this.router.navigate(['/usuarios']); 
             });
           },
           error: () => {
@@ -150,7 +144,6 @@ export class EditarUsuarioComponent implements OnInit {
     });
   }
 
-  // Método para alternar a visibilidade do menu
   onSidebarRetracted() {
     this.isMenuRetracted = !this.isMenuRetracted;
   }

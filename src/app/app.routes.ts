@@ -79,14 +79,14 @@ export const routes: Routes = [
         component: ConsultaComponent,
         canActivate: [authGuard],
         data: { roles: ["ADMIN", "MEDICO"] },
-      },
-      {
-        path: "edit/:id",
-        component: ConsultaComponent,
-        canActivate: [authGuard],
-        data: { roles: ["ADMIN", "MEDICO"] },
-      },
+      }
     ],
+  },
+  {
+  path: "consulta/edit/:id",
+  component: ConsultaComponent,
+  canActivate: [authGuard],
+  data: { roles: ["ADMIN", "MEDICO"] },
   },
   {
     path: "prontuarios",
@@ -101,13 +101,13 @@ export const routes: Routes = [
     data: { roles: ["ADMIN", "MEDICO", "PACIENTE"] },
   },
   {
-    path: "admin",
+    path: "usuarios",
     component: UserListComponent,
     canActivate: [authGuard],
     data: { roles: ["ADMIN"] },
   },
   {
-    path: "admin/editar-usuario/:id",
+    path: "usuarios/editar-usuario/:id",
     component: EditarUsuarioComponent,
     canActivate: [authGuard],
     data: { roles: ["ADMIN"] },

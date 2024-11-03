@@ -102,7 +102,7 @@ export class UserListComponent implements OnInit {
   
 
   navigateToEdit(usuarioId: string) {
-    this.router.navigate(["admin/editar-usuario/", usuarioId]);
+    this.router.navigate(["usuarios/editar-usuario/", usuarioId]);
   }
 
   onPageChange(page: number) {
