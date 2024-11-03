@@ -2,22 +2,48 @@
 <app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
 <div class="container" id="editar-usuario" [ngClass]="{'retracted': isMenuRetracted}">
   <form [formGroup]="editarUsuarioForm" (ngSubmit)="onSubmit()">
-    <label for="name">Nome Completo:</label>
-    <input id="name" formControlName="name" type="text" required />
-  
-    <label for="phone">Telefone:</label>
-    <input placeholder="Ex.: (99) 9 9999-9999" mask="(00) 0 0000-0000" type="text" id="phone" formControlName="phone" required />
-  
-    <label for="email">E-mail:</label>
-    <input id="email" formControlName="email" type="email" required />
-  
-    <label for="cpf">CPF:</label>
-    <input mask="000.000.000-00" placeholder="Ex.: 000.000.000-00" type="text" id="cpf" formControlName="cpf" required />
-  
-    <label for="birthDate">Data de Nascimento:</label>
-    <input id="birthDate" formControlName="birthDate" type="date" required />
-  
-    <button type="submit">Salvar</button>
-    <button type="button" id="delete-btn" (click)="onDelete()">Deletar Usuário</button>
+    <div id="name" class="elemento-formulario" [ngClass]="{'erro-formulario': editarUsuarioForm.get('name')?.invalid && editarUsuarioForm.get('name')?.touched}">
+      <label for="name">Nome Completo:</label>
+      <input id="name" formControlName="name" type="text" placeholder="Nome completo" required />
+      <span *ngIf="editarUsuarioForm.get('name')?.invalid && editarUsuarioForm.get('name')?.touched">
+        Nome completo é obrigatório.
+      </span>
+    </div>
+    <div class="row">
+      <div id="phone" class="elemento-formulario" [ngClass]="{'erro-formulario': editarUsuarioForm.get('phone')?.invalid && editarUsuarioForm.get('phone')?.touched}">
+        <label for="phone">Telefone:</label>
+        <input placeholder="Ex.: (99) 9 9999-9999" mask="(00) 0 0000-0000" type="text" id="phone" formControlName="phone" required />
+        <span *ngIf="editarUsuarioForm.get('phone')?.invalid && editarUsuarioForm.get('phone')?.touched">
+          Telefone é obrigatório.
+        </span>
+      </div>
+      <div id="email" class="elemento-formulario" [ngClass]="{'erro-formulario': editarUsuarioForm.get('email')?.invalid && editarUsuarioForm.get('email')?.touched}">
+        <label for="email">E-mail:</label>
+        <input id="email" formControlName="email" type="email" placeholder="E-mail" required />
+        <span *ngIf="editarUsuarioForm.get('email')?.invalid && editarUsuarioForm.get('email')?.touched">
+          E-mail é obrigatório.
+        </span>
+      </div>
+    </div>
+    <div class="row">
+      <div id="cpf" class="elemento-formulario" [ngClass]="{'erro-formulario': editarUsuarioForm.get('cpf')?.invalid && editarUsuarioForm.get('cpf')?.touched}">
+        <label for="cpf">CPF:</label>
+        <input mask="000.000.000-00" placeholder="Ex.: 000.000.000-00" type="text" id="cpf" formControlName="cpf" required />
+        <span *ngIf="editarUsuarioForm.get('cpf')?.invalid && editarUsuarioForm.get('cpf')?.touched">
+          CPF é obrigatório.
+        </span>
+      </div>
+      <div id="birthDate" class="elemento-formulario" [ngClass]="{'erro-formulario': editarUsuarioForm.get('birthDate')?.invalid && editarUsuarioForm.get('birthDate')?.touched}">
+        <label for="birthDate">Data de Nascimento:</label>
+        <input id="birthDate" formControlName="birthDate" type="date" required />
+        <span *ngIf="editarUsuarioForm.get('birthDate')?.invalid && editarUsuarioForm.get('birthDate')?.touched">
+          Data de nascimento é obrigatória.
+        </span>
+      </div>
+    </div>
+    <div class="buttons">
+      <button class="save" type="submit" [disabled]="!editarUsuarioForm.valid" [class.disabled]="!editarUsuarioForm.valid">Salvar</button>
+      <button class="delete" type="button" id="delete-btn" (click)="onDelete()">Deletar Usuário</button>
+    </div>
   </form>
 </div>
