@@ -285,6 +285,25 @@
   }
 }
 
+.card-consulta .btn {
+  display: flex;
+  justify-content: center; 
+  margin-top: 20px; 
+
+  button {
+    background-color: $color-500;
+    border: none;
+    width: auto; 
+    padding: 0 20px; 
+    height: 27px;
+    border-radius: 100px;
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+    line-height: 27px;
+  }
+}
+
 /* Media queries for different screen sizes */
 @media (min-width: 768px) {
   .container-exames {

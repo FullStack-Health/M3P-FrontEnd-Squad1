@@ -379,8 +379,8 @@ export class ConsultaComponent implements OnInit {
 
     resetForm(): void {
         this.form.reset({
-          date: formatDate(new Date(), "yyyy-MM-dd", "en"),
-          time: formatDate(new Date(), "HH:mm", "en")
+          appointmentDate: formatDate(new Date(), "yyyy-MM-dd", "en"),
+          appointmentTime: formatDate(new Date(), "HH:mm", "en")
         });
         this.isEdit = false;
         this.selectedAppointmentId = "";
