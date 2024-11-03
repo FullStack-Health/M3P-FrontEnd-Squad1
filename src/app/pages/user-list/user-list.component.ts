@@ -28,7 +28,7 @@ export class UserListComponent implements OnInit {
   filteredUsuarioData: any[] = [];
   searchQuery: string = "";
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 12;
   totalElements: number = 0;
 
   @HostListener("window:resize", ["$event"])
@@ -54,13 +54,13 @@ export class UserListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private usuarioService: UsuarioService
-  ) {}
+  ) { }
 
   loadUsuarios() {
     this.usuarioService.getAllUsuarios().subscribe(
       (response: any) => {
         console.log('Resposta da API:', response);
-  
+
         if (Array.isArray(response.users)) {
           this.userData = response.users;
           this.filteredUsuarioData = [...this.userData];
@@ -74,8 +74,8 @@ export class UserListComponent implements OnInit {
       }
     );
   }
-  
-  
+
+
 
 
   filterUsuarios() {
@@ -83,30 +83,27 @@ export class UserListComponent implements OnInit {
       console.error("userData is not an array");
       return;
     }
-  
-    
+
+
     if (this.searchQuery.trim() === "") {
       this.filteredUsuarioData = [...this.userData];
       return;
     }
-  
+
     this.filteredUsuarioData = this.userData.filter((usuario) => {
       const loginMatches = usuario.login?.toLowerCase().includes(this.searchQuery.toLowerCase());
       const idMatches = usuario.id?.toString().includes(this.searchQuery);
       const emailMatches = usuario.email?.toLowerCase().includes(this.searchQuery.toLowerCase());
-  
+
       return loginMatches || idMatches || emailMatches;
     });
   }
-  
-  
 
   navigateToEdit(usuarioId: string) {
     this.router.navigate(["usuarios/editar-usuario/", usuarioId]);
   }
 
   onPageChange(page: number) {
-    this.currentPage = page;
     this.loadUsuarios();
   }
 
