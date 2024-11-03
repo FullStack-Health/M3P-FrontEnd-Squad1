@@ -122,6 +122,33 @@
           }
         }
       }
+
+      .pagination-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+
+        button {
+          background-color: $main-color;
+          color: #fff;
+          border: none;
+          border-radius: 8px;
+          padding: 10px 20px;
+          cursor: pointer;
+
+          &:disabled {
+            background-color: $color-500;
+            cursor: not-allowed;
+          }
+        }
+
+        span {
+          font-size: 14px;
+          color: $color-950;
+        }
+      }
     }
   }
 }
@@ -254,10 +281,12 @@ select {
 }
 
 .erro-formulario {
+
   label,
   span {
     color: red;
   }
+
   input,
   select {
     border-color: red;
