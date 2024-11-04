@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
   filteredPacienteData: any[] = [];
   searchQuery: string = "";
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 12;
   totalElements: number = 0;
   isMenuRetracted = false;
   pageTitle: string = "Página Inicial";

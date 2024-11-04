@@ -7,8 +7,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     "/api/usuarios/email/",
   ];
 
-  console.log(req.url);
-
   const isNoAuthUrl = noAuthUrls.some((url) => req.url.includes(url));
 
   if (isNoAuthUrl) {
@@ -16,8 +14,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const authToken = localStorage.getItem("authToken");
-  // console.log(authToken);
-
   if (authToken) {
     const clonedReq = req.clone({
       setHeaders: {

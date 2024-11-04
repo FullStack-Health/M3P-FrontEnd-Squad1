@@ -31,7 +31,6 @@ export class TesteApiServiceComponent {
     };
     this.consultaService.getConsultaById("1").subscribe({
       next: (response) => {
-        console.log("resposta:", response);
         this.mensagemSucesso(response.message);
       },
       error: (error: Error) => {

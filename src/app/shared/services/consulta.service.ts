@@ -15,7 +15,6 @@ export class ConsultaService {
     getAllConsultas(page: number = 0, size: number = 10): Observable<any> {
         return this.apiService.get(`${this.consultaUrl}?page=${page}&size=${size}`).pipe(
             tap((response: any) => {
-                // console.log(response);
             }),
         );
     }
@@ -23,7 +22,6 @@ export class ConsultaService {
     getConsultaById(consultaId: string): Observable<any> {
         return this.apiService.get(`${this.consultaUrl}/${consultaId}`).pipe(
             tap((response: any) => {
-                // console.log(response);
             }),
         );
     }
@@ -31,7 +29,6 @@ export class ConsultaService {
     addConsulta(newConsulta: any): Observable<any> {
         return this.apiService.post(this.consultaUrl, newConsulta).pipe(
             tap((response: any) => {
-                // console.log(response);
             }),
         );
     }
@@ -39,7 +36,6 @@ export class ConsultaService {
     updateConsulta(consultaId: string, updatedConsulta: any): Observable<any> {
         return this.apiService.put(this.consultaUrl, consultaId, updatedConsulta).pipe(
             tap((response: any) => {
-                // console.log(response);
             }),
         );
     }
@@ -47,7 +43,6 @@ export class ConsultaService {
     deleteConsulta(consultaId: string): Observable<any> {
         return this.apiService.delete(this.consultaUrl, consultaId).pipe(
             tap((response: any) => {
-                // console.log(response);
             }),
         );
     }
@@ -55,7 +50,6 @@ export class ConsultaService {
     getConsultasByPatientId(patientId: string, page: number = 0, size: number = 10): Observable<any> {
         return this.apiService.get(`${this.consultaUrl}?patientId=${patientId}&page=${page}&size=${size}`).pipe(
             tap((response: any) => {
-                // console.log(response);
             }),
         );
     }

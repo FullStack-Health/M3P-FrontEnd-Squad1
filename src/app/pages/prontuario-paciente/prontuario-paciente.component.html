@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="btn">
-                <button (click)="editarConsulta(consulta.id)">Editar consulta</button>
+                <button *ngIf="userRole !== 'PACIENTE'" (click)="editarConsulta(consulta.id)">Editar consulta</button>
             </div>
         </div>
     </div>
@@ -95,7 +95,7 @@
           </div>
         </div>
         <div class="btn">
-          <button (click)="editarExame(exam.id)">Editar exame</button>
+          <button *ngIf="userRole !== 'PACIENTE'" (click)="editarExame(exam.id)">Editar exame</button>
           <button (click)="abrirNovaAba(exam.documentUrl)">Ver anexo</button>
         </div>
       </div>

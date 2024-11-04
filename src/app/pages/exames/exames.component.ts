@@ -336,7 +336,7 @@ cleanString(value: string): string {
             }).then(() => {
               this.loadPatientExams(); 
               this.resetForm();
-              this.location.go('/exames'); // Atualiza a URL
+              this.location.go('/exames'); 
             });
           },
           (error) => {

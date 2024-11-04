@@ -10,12 +10,10 @@ export class ApiService {
   http = inject(HttpClient);
   errorHandlingService = inject(ErrorHandlingService);
 
-  // URL com proxy para evistar erro CORS:
   private apiUrl = "http://localhost:8081/api";
 
   constructor() {}
 
-  //métodos genéricos:
   get<T>(url: string): Observable<T> {
     return this.http
       .get<T>(`${this.apiUrl}/${url}`)
@@ -33,7 +31,6 @@ export class ApiService {
   }
 
   put<T>(url: string, id: string | null, body: any): Observable<T> {
-    // redefinir senha não envia id
     if (!id) {
       return this.http
         .put<T>(`${this.apiUrl}/${url}`, body)
