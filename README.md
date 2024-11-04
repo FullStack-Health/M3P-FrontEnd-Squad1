@@ -101,7 +101,6 @@ Esta aplicação tem funcionamento concomitante com o [servidor backend](https:/
 
 Para criar um ambiente completo com backend, banco de dados e PgAdmin:
 ```bash
-cd docker
 docker-compose up
 ```
 
