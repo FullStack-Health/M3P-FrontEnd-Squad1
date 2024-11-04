@@ -7,20 +7,25 @@ import { SidebarComponent } from "../../shared/components/sidebar/sidebar.compon
 import { ToolbarComponent } from "../../shared/components/toolbar/toolbar.component";
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { LoggedUserService } from '../../core/services/logged-user.service';
 
 @Component({
   selector: 'app-editar-usuario',
   standalone: true,
-  imports: [ReactiveFormsModule, SidebarComponent, ToolbarComponent, CommonModule, NgxMaskDirective,
-    NgxMaskPipe,],
+  imports: [
+    ReactiveFormsModule,
+    SidebarComponent,
+    ToolbarComponent,
+    CommonModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
+  ],
   templateUrl: './editar-usuario.component.html',
   styleUrls: ['./editar-usuario.component.scss']
 })
 export class EditarUsuarioComponent implements OnInit {
   editarUsuarioForm!: FormGroup;
   usuarioId!: string;
-  password!: string;
-  role!: string; 
   isMenuRetracted = false; 
   pageTitle: string = "Editar Usuário"; 
 
@@ -28,7 +33,8 @@ export class EditarUsuarioComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private loggedUserService: LoggedUserService // Injeção do serviço
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +48,6 @@ export class EditarUsuarioComponent implements OnInit {
       birthDate: ['', Validators.required],
     });
 
-  
     this.usuarioService.getUsuarioById(this.usuarioId).subscribe({
       next: (response) => {
         const usuario = response.user;
@@ -70,12 +75,21 @@ export class EditarUsuarioComponent implements OnInit {
   onSubmit(): void {
     if (this.editarUsuarioForm.valid) {
       const usuarioAtualizado = {
-        ...this.editarUsuarioForm.value,  
-        id: this.usuarioId  
+        ...this.editarUsuarioForm.value,
+        id: this.usuarioId,
       };
-  
+
       this.usuarioService.updateUsuario(usuarioAtualizado).subscribe({
         next: () => {
+          // Atualiza o logged user no localStorage
+          const role = this.loggedUserService.getUserRole() || 'DEFAULT_ROLE'; // Defina um valor padrão se a role for null
+          const updatedUser = {
+            name: usuarioAtualizado.name,
+            role: role, // Manter a mesma role
+            exp: this.loggedUserService.getLoggedUser()?.exp, // Manter a mesma expiração
+          };
+          this.loggedUserService.updateUser(updatedUser); // Atualiza o localStorage
+
           Swal.fire({
             text: 'Usuário atualizado com sucesso!',
             icon: 'success',
@@ -104,10 +118,8 @@ export class EditarUsuarioComponent implements OnInit {
       });
     }
   }
-  
 
   onDelete(): void {
-
     Swal.fire({
       title: 'Tem certeza?',
       text: 'Deseja realmente deletar este usuário?',
@@ -119,7 +131,6 @@ export class EditarUsuarioComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        
         this.usuarioService.deleteUsuario(this.usuarioId).subscribe({
           next: () => {
             Swal.fire({
