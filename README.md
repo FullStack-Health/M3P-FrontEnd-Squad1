@@ -4,9 +4,7 @@
 > MedicalOne é um software para gestão de inventário médico, desenvolvido para otimizar o atendimento ao paciente. Através da plataforma, médicos e profissionais de saúde podem cadastrar e gerenciar informações dos pacientes de forma prática e organizada, incluindo dados pessoais, histórico médico e agendamento de consultas. Com uma interface intuitiva e responsiva, o MedicalOne oferece funcionalidades como o registro de consultas e exames, notificações de exames pendentes e relatórios de histórico, facilitando a gestão do consultório e contribuindo para um atendimento de saúde mais eficaz e personalizado.
 
 ### Problema Resolvido
-O sistema foi criado para resolver a dificuldade no gerenciamento de informações de saúde, permitindo uma administração eficiente de pacientes, consultas e exames, com acesso diferenciado para usuários com diferentes perfis.
-
-A aplicação oferece funcionalidades específicas para diferentes perfis de usuários, incluindo administradores, médicos e pacientes, garantindo uma experiência personalizada e intuitiva.
+>O sistema foi criado para resolver a dificuldade no gerenciamento de informações de saúde, permitindo uma administração eficiente de pacientes, consultas e exames, com acesso diferenciado para usuários com diferentes perfis. A aplicação oferece funcionalidades específicas para diferentes perfis de usuários, incluindo administradores, médicos e pacientes, garantindo uma experiência personalizada e intuitiva.
 
 
 ### Tecnologias Utilizadas
