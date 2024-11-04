@@ -1,0 +1,72 @@
+<app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
+<app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
+<div class="container" [ngClass]="{'retracted': isMenuRetracted}">
+    <div class="container-numbers">
+        <div class="estatisticas">
+            <div class="card pacientes" *ngIf="userRole === 'ADMIN' || userRole === 'MEDICO'">
+                <div class="icon-box">
+                    <div class="icon"><fa-icon icon="address-book"></fa-icon></div>
+                </div>
+                <div class="text">
+                    <h1 class="destaque">{{ totalPatients }}</h1>
+                    <p>Pacientes</p>
+                </div>
+            </div>
+            <div class="card consultas" *ngIf="userRole === 'ADMIN' || userRole === 'MEDICO'">
+                <div class="icon-box">
+                    <div class="icon"><fa-icon icon="calendar-alt"></fa-icon></div>
+                </div>
+                <div class="text">
+                    <h1 class="destaque">{{ totalConsultas }}</h1>
+                    <p>Consultas</p>
+                </div>
+            </div>
+            <div class="card exames" *ngIf="userRole === 'ADMIN' || userRole === 'MEDICO'">
+                <div class="icon-box">
+                    <div class="icon"><fa-icon icon="x-ray"></fa-icon></div>
+                </div>
+                <div class="text">
+                    <h1 class="destaque">{{ totalExams }}</h1>
+                    <p>Exames</p>
+                </div>
+            </div>
+            <div class="card usuarios" *ngIf="userRole === 'ADMIN'">
+                <div class="icon-box">
+                    <div class="icon"><fa-icon icon="users"></fa-icon></div> 
+                </div>
+                <div class="text">
+                    <h1 class="destaque">{{ totalUsers }}</h1>
+                    <p>Usuários</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-search">
+        <input type="text" placeholder="Busque um paciente por nome ou número de registro" [(ngModel)]="searchQuery"
+            (input)="filterPatients()">
+        <button>Buscar</button>
+    </div>
+    
+    <div class="container-patients">
+        <app-card *ngFor="let patient of filteredPacienteData" [patient]="patient"
+            (editPatient)="navigateToEdit(patient.id)"></app-card>
+    </div>
+
+    <div class="pagination-controls">
+        <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">
+            <fa-icon icon="chevron-left"></fa-icon> 
+            Anterior
+        </button>
+        <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+        <button (click)="onPageChange(currentPage + 1)"
+            [disabled]="(currentPage + 1) * pageSize >= totalElements">
+            Próxima
+            <fa-icon icon="chevron-right"></fa-icon> 
+        </button>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+        <p>{{ errorMessage }}</p>
+    </div>
+</div>

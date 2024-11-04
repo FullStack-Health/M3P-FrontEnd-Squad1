@@ -1,0 +1,56 @@
+<app-sidebar (sidebarRetracted)="onSidebarRetracted($event)" [isRetracted]="isMenuRetracted"></app-sidebar>
+<app-toolbar [isMenuRetracted]="isMenuRetracted" [pageTitle]="pageTitle"></app-toolbar>
+<div class="container" id="exame" [ngClass]="{'retracted': isMenuRetracted}">
+  <h3 class="encontre">Encontre o paciente:</h3>
+  <div class="container-search">
+    <input type="text" placeholder="Busque um paciente por nome ou número de registro" [(ngModel)]="searchQuery" (input)="filterPatients()">
+    <button>Buscar</button>
+  </div>
+
+  <div class="container-patients">
+    <div class="card-paciente" *ngFor="let patient of filteredPacienteData">
+      <div class="information">
+        <div class="main-info">
+          <div class="name">
+            <h4>{{ patient.fullName }}</h4>
+          </div>
+          <div class="img">
+            <img src="{{ patient.gender | genderPicture}}" alt="">
+          </div>
+        </div>
+        <div class="secondary-info">
+          <div class="id">
+            <p>REGISTRO: <span class="id-number"> {{ patient.id }}</span></p>
+          </div>
+          <div class="phone-plan">
+            <div class="phone">
+              <fa-icon icon="phone"></fa-icon>
+              <p class="phone-number">{{ patient.phone | mask: '(00) 0 0000-0000' }}</p>
+            </div>
+            <div class="plan">
+              <fa-icon icon="id-card"></fa-icon>
+              <p>{{ patient.healthInsurance }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="btn">
+          <button (click)="navigateToEdit(patient.id)">Editar</button>
+          <button (click)="navigateToProntuario(patient.id)">Acessar prontuário</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination-controls">
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0">
+        <fa-icon icon="chevron-left"></fa-icon> 
+        Anterior
+    </button>
+    <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+    <button (click)="onPageChange(currentPage + 1)"
+        [disabled]="(currentPage + 1) * pageSize >= totalElements">
+        Próxima
+        <fa-icon icon="chevron-right"></fa-icon> 
+    </button>
+</div>
+</div>

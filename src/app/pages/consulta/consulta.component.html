@@ -1,0 +1,226 @@
+<app-sidebar
+  (sidebarRetracted)="onSidebarRetracted($event)"
+  [isRetracted]="isMenuRetracted"
+></app-sidebar>
+<app-toolbar
+  [isMenuRetracted]="isMenuRetracted"
+  [pageTitle]="pageTitle"
+></app-toolbar>
+<div
+  class="container"
+  id="consultas"
+  [ngClass]="{ retracted: isMenuRetracted }"
+>
+  <h3 class="encontre" *ngIf="containerSearch">Encontre o paciente:</h3>
+  <div class="container-search" *ngIf="containerSearch">
+    <input
+      type="text"
+      placeholder="Busque um paciente por nome, telefone ou e-mail"
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="searchPatients()"
+    />
+    <button (click)="searchPatients()">Buscar</button>
+  </div>
+  <div *ngIf="isEdit && isFromEditRoute">
+    <button class="button-go-back" (click)="goBack()">Voltar</button>
+  </div>
+
+  <div
+    class="search-result"
+    *ngIf="filteredPacienteData.length > 0 && searchPerformed"
+  >
+    <div class="patient-result" *ngFor="let patient of filteredPacienteData">
+      <div class="patient-data">
+        <p class="patient-name">{{ patient.fullName }}</p>
+        <button
+          class="select-button"
+          *ngIf="selectedPatientId !== patient.id"
+          (click)="selectPatient(patient.id)"
+        >
+          Selecionar
+        </button>
+      </div>
+      <div class="appointment-list" *ngIf="selectedPatientId === patient.id">
+        <div
+          *ngFor="let appointment of patientAppointments"
+          class="appointment-row"
+        >
+          <div class="appointment-name">
+            <p>{{ appointment.appointmentReason }}</p>
+          </div>
+          <div class="appointment-buttons">
+            <button class="button-edit" (click)="editar(appointment.id)">
+              Editar
+            </button>
+            <button class="button-delete" (click)="deletar(appointment.id)">
+              Deletar
+            </button>
+          </div>
+        </div>
+        <div class="pagination-controls">
+          <button (click)="goToPreviousPage()" [disabled]="currentPage === 0">
+            Anterior
+          </button>
+          <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+          <button
+            (click)="goToNextPage()"
+            [disabled]="currentPage === totalPages - 1"
+          >
+            Próxima
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-container" *ngIf="isFormVisible">
+    <form [formGroup]="form" class="fieldset" (ngSubmit)="cadastrar()">
+      <div
+        id="appointmentReason"
+        class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('appointmentReason')?.invalid &&
+            form.get('appointmentReason')?.touched
+        }"
+      >
+        <label for="appointmentReason">Motivo da consulta:</label>
+        <input
+          type="text"
+          name="appointmentReason"
+          formControlName="appointmentReason"
+        />
+        <span
+          *ngIf="
+            form.get('appointmentReason')?.invalid &&
+            form.get('appointmentReason')?.touched
+          "
+        >
+          Motivo da consulta é obrigatório e deve ter entre 8 e 64 caracteres.
+        </span>
+      </div>
+      <div class="row">
+        <div
+          id="appointmentDate"
+          class="elemento-formulario"
+          [ngClass]="{
+            'erro-formulario':
+              form.get('appointmentDate')?.invalid &&
+              form.get('appointmentDate')?.touched
+          }"
+        >
+          <label for="appointmentDate">Data da consulta:</label>
+          <input
+            type="date"
+            name="appointmentDate"
+            formControlName="appointmentDate"
+          />
+          <span
+            *ngIf="
+              form.get('appointmentDate')?.invalid &&
+              form.get('appointmentDate')?.touched
+            "
+            class="erro-formulario"
+          >
+            Data da consulta é obrigatória.
+          </span>
+        </div>
+        <div
+          id="appointmentTime"
+          class="elemento-formulario"
+          [ngClass]="{
+            'erro-formulario':
+              form.get('appointmentTime')?.invalid &&
+              form.get('appointmentTime')?.touched
+          }"
+        >
+          <label for="appointmentTime">Horário da consulta:</label>
+          <input
+            type="time"
+            name="appointmentTime"
+            formControlName="appointmentTime"
+          />
+          <span
+            *ngIf="
+              form.get('appointmentTime')?.invalid &&
+              form.get('appointmentTime')?.touched
+            "
+            class="erro-formulario"
+          >
+            Horário é obrigatório.
+          </span>
+        </div>
+      </div>
+      <div
+        id="problemDescription"
+        class="elemento-formulario"
+        [ngClass]="{
+          'erro-formulario':
+            form.get('problemDescription')?.invalid &&
+            form.get('problemDescription')?.touched
+        }"
+      >
+        <label for="problemDescription">Descrição do problema:</label>
+        <textarea
+          type="text"
+          name="problemDescription"
+          formControlName="problemDescription"
+        ></textarea>
+        <span
+          *ngIf="
+            form.get('problemDescription')?.invalid &&
+            form.get('problemDescription')?.touched
+          "
+          class="erro-formulario"
+        >
+          Descreva o problema em até 1024 caracteres.
+        </span>
+      </div>
+      <div id="prescribedMedication" class="elemento-formulario">
+        <label for="prescribedMedication"
+          >Medicação receitada (se tiver):</label
+        >
+        <input
+          type="text"
+          name="prescribedMedication"
+          formControlName="prescribedMedication"
+        />
+      </div>
+      <div id="observations" class="elemento-formulario">
+        <label for="observations">Observações:</label>
+        <textarea
+          type="text"
+          name="observations"
+          formControlName="observations"
+        ></textarea>
+      </div>
+
+      <div class="buttons">
+        <button
+          class="delete"
+          [disabled]="!isEdit"
+          [class.disabled]="!isEdit"
+          (click)="deletar(selectedAppointmentId)"
+        >
+          Deletar
+        </button>
+        <button
+          class="edit"
+          [disabled]="!isEdit"
+          [class.disabled]="!isEdit"
+          (click)="cadastrar()"
+        >
+          Editar
+        </button>
+        <button
+          class="save"
+          [disabled]="!form.valid"
+          [class.disabled]="!form.valid"
+          type="submit"
+        >
+          Salvar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
