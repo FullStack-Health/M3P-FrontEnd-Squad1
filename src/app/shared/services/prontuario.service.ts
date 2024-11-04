@@ -17,8 +17,6 @@ export class ProntuarioService {
       .get(`${this.pacienteUrl}/${this.prontuarioUrl}`)
       .pipe(
         tap((response: any) => {
-          // isolar listas da resposta paginada
-          // console.log(response);
         })
       );
   }
@@ -28,7 +26,6 @@ export class ProntuarioService {
       .get(`${this.pacienteUrl}/${pacienteId}/${this.prontuarioUrl}`)
       .pipe(
         tap((response: any) => {
-          // console.log(response);
         }),
         catchError(this.handleError)
       );

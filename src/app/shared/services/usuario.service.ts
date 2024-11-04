@@ -47,7 +47,6 @@ export class UsuarioService {
   getUsuarioById(usuarioId: string): Observable<any> {
     return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`).pipe(
       tap((response: any) => {
-        console.log(response);
       })
     );
   }
