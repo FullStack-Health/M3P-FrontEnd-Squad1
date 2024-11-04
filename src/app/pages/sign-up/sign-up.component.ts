@@ -53,7 +53,6 @@ export class SignUpComponent {
 
       this.usuarioService.addPreRegistro(newUser).subscribe({
         next: (response) => {
-          console.log("Pré-cadastro bem-sucedido!", response);
           Swal.fire({
             text: "Cadastro efetuado com sucesso!",
             icon: "success",

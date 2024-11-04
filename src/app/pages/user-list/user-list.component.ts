@@ -61,9 +61,7 @@ export class UserListComponent implements OnInit {
 
   loadUsuarios() {
     this.usuarioService.getAllUsuarios(this.currentPage, this.pageSize).subscribe(
-      (response: any) => {
-        console.log('Resposta da API:', response);
-        
+      (response: any) => {     
         if (Array.isArray(response.users)) {
           this.userData = response.users;
           this.filteredUsuarioData = [...this.userData];

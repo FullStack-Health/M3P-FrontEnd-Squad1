@@ -9,7 +9,6 @@ export class ErrorHandlingService {
   constructor() {}
   handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage: string;
-    // debugger;
     if (error.status === 0) {
       errorMessage = "Falha na conexão com o servidor. Verifique sua conexão.";
     } else if (error.status === 400) {
@@ -28,7 +27,6 @@ export class ErrorHandlingService {
       errorMessage = `Erro inesperado: (${error.status}) ${error.message}`;
     }
 
-    // console.error("Erro:", error);
     return throwError(() => new Error(errorMessage));
   }
 }

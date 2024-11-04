@@ -40,16 +40,13 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    // if (this.loginForm.valid) {
-
-    const credentials = {
+      const credentials = {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password,
     };
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        // console.log("Login bem-sucedido!", response);
         this.router.navigate(["/home"]);
       },
       error: (error: Error) => {
@@ -62,7 +59,6 @@ export class LoginComponent implements OnInit {
         console.error("Erro de autenticação:", error.message);
       },
     });
-    // }
   }
 
   esqueciSenha() {

@@ -16,7 +16,6 @@ export class PacienteService {
   getAllPacientes(page: number = 0, size: number = 10): Observable<any> {
     return this.apiService.get(`${this.pacienteUrl}?page=${page}&size=${size}`).pipe(
       tap((response: any) => {
-        // console.log(response);
       })
     );
   }
@@ -24,7 +23,6 @@ export class PacienteService {
   getPacienteById(pacienteId: string): Observable<any> {
     return this.apiService.get(`${this.pacienteUrl}/${pacienteId}`).pipe(
       tap((response: any) => {
-        // console.log(response);
       })
     );
   }
@@ -32,7 +30,6 @@ export class PacienteService {
   addPaciente(newPaciente: any): Observable<any> {
     return this.apiService.post(this.pacienteUrl, newPaciente).pipe(
       tap((response: any) => {
-        // console.log(response);
       }),
       catchError(this.handleError)
     );
@@ -41,7 +38,6 @@ export class PacienteService {
   updatePaciente(updatedPaciente: any): Observable<any> {
     return this.apiService.put(this.pacienteUrl, updatedPaciente.id, updatedPaciente).pipe(
       tap((response: any) => {
-        // console.log(response);
       }),
       catchError(this.handleError)
     );
@@ -50,7 +46,6 @@ export class PacienteService {
   deletePaciente(pacienteId: string): Observable<any> {
     return this.apiService.delete(this.pacienteUrl, pacienteId).pipe(
       tap((response: any) => {
-        // console.log(response);
       }),
       catchError(this.handleError)
     );
@@ -60,7 +55,6 @@ export class PacienteService {
     const cleanedPhone = this.cleanString(phone);
     return this.apiService.get(`${this.pacienteUrl}/telefone/${cleanedPhone}`).pipe(
       tap((response: any) => {
-        // console.log(response);
       }),
       catchError(this.handleError)
     );
@@ -74,7 +68,6 @@ export class PacienteService {
     const encodedName = encodeURIComponent(name.trim());
     return this.apiService.get(`${this.pacienteUrl}/nome/${encodedName}`).pipe(
       tap((response: any) => {
-        // console.log(response);
       }),
       catchError(this.handleError)
     );
@@ -83,7 +76,6 @@ export class PacienteService {
   getPacientesByEmail(email: string): Observable<any> {
     return this.apiService.get(`${this.pacienteUrl}/email/${email}`).pipe(
       tap((response: any) => {
-        // console.log(response);
       }),
       catchError(this.handleError)
     );
@@ -92,7 +84,6 @@ export class PacienteService {
   searchPacientes(query: string): Observable<any> {
     return this.apiService.get(`${this.pacienteUrl}/search?query=${query}`).pipe(
       tap((response: any) => {
-        // console.log(response);
       }),
       catchError(this.handleError)
     );

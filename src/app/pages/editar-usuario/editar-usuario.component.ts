@@ -51,9 +51,7 @@ export class EditarUsuarioComponent implements OnInit {
     this.usuarioService.getUsuarioById(this.usuarioId).subscribe({
       next: (response) => {
         const usuario = response.user;
-        console.log(usuario); 
-
-        this.editarUsuarioForm.patchValue({
+          this.editarUsuarioForm.patchValue({
           name: usuario.name,
           phone: usuario.phone,
           email: usuario.email,
@@ -81,15 +79,13 @@ export class EditarUsuarioComponent implements OnInit {
 
       this.usuarioService.updateUsuario(usuarioAtualizado).subscribe({
         next: () => {
-          // Atualiza o logged user no localStorage
-          const role = this.loggedUserService.getUserRole() || 'DEFAULT_ROLE'; // Defina um valor padrão se a role for null
+          const role = this.loggedUserService.getUserRole() || 'DEFAULT_ROLE'; 
           const updatedUser = {
             name: usuarioAtualizado.name,
             role: role, // Manter a mesma role
-            exp: this.loggedUserService.getLoggedUser()?.exp, // Manter a mesma expiração
+            exp: this.loggedUserService.getLoggedUser()?.exp, 
           };
-          this.loggedUserService.updateUser(updatedUser); // Atualiza o localStorage
-
+          this.loggedUserService.updateUser(updatedUser); 
           Swal.fire({
             text: 'Usuário atualizado com sucesso!',
             icon: 'success',
