@@ -21,6 +21,10 @@ export class LoggedUserService {
     return user ? JSON.parse(user) : null;
   }
 
+  updateUser(user: { name: string; role: string; exp: number }) {
+    localStorage.setItem(this.loggedUserKey, JSON.stringify(user));
+  }
+
   getUserRole(): string | null {
     const user = this.getLoggedUser();
     return user?.role || null;

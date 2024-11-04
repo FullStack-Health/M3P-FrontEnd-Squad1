@@ -40,10 +40,11 @@ export class AuthService {
       sub: string;
       exp: number;
       patientId: number;
+      name: string;
     } = this.decodeToken(token);
 
     const loggedUser = {
-      name: decodedToken.sub,
+      name: decodedToken.name,
       role: decodedToken.role.replace("ROLE_", ""),
       exp: decodedToken.exp,
       patientId: decodedToken.patientId,
