@@ -42,8 +42,10 @@
       <div id="cpf" class="elemento-formulario" [ngClass]="{'erro-formulario': form.get('cpf')?.invalid && form.get('cpf')?.touched}">
         <label for="cpf">CPF:</label>
         <input mask="000.000.000-00" placeholder="Ex.: 000.000.000-00" type="text" name="cpf" formControlName="cpf" />
-        <span *ngIf="form.get('cpf')?.invalid && form.get('cpf')?.touched" class="erro-formulario">CPF é obrigatório e deve seguir o formato 000.000.000-00.</span>
+        <span *ngIf="form.get('cpf')?.errors?.['required'] && form.get('cpf')?.touched" class="erro-formulario">CPF é obrigatório.</span>
+        <span *ngIf="form.get('cpf')?.errors?.['invalidCpf'] && form.get('cpf')?.touched" class="erro-formulario">CPF inválido</span>
       </div>
+      
   
       <div id="rg" class="elemento-formulario" [ngClass]="{'erro-formulario': form.get('rg')?.invalid && form.get('rg')?.touched}">
         <label for="rg">RG:</label>
