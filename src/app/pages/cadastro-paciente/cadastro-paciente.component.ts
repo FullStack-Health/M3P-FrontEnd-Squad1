@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { NgxMaskDirective, NgxMaskPipe } from "ngx-mask";
 import { ViaCepService } from "../../shared/services/via-cep.service";
 import { DateFormatPipe } from "../../shared/pipes/date-format.pipe";
+import { cpfValidator } from "../../core/functions/validatorCPF";
 
 @Component({
   selector: "app-cadastro-paciente",
@@ -67,7 +68,7 @@ export class CadastroPacienteComponent implements OnInit {
       fullName: new FormControl("", [Validators.required, Validators.minLength(8), Validators.maxLength(64)]),
       gender: new FormControl("", Validators.required),
       birthDate: new FormControl("", Validators.required),
-      cpf: new FormControl("", Validators.required),
+      cpf: new FormControl("", [Validators.required, cpfValidator()]), // Adicionando o validador de CPF aqui
       rg: new FormControl("", [Validators.required, Validators.maxLength(20)]),
       rgIssuer: new FormControl("", Validators.required),
       maritalStatus: new FormControl("", Validators.required),
@@ -90,6 +91,7 @@ export class CadastroPacienteComponent implements OnInit {
       referencePoint: new FormControl("")
     });
   }
+  
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
