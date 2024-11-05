@@ -138,9 +138,9 @@ export class EditarUsuarioComponent implements OnInit {
               this.router.navigate(['/usuarios']); 
             });
           },
-          error: () => {
+          error: (err) => {
             Swal.fire({
-              text: 'Erro ao deletar o usuário.',
+              text: err.message,
               icon: 'error',
               confirmButtonColor: '#FF0000',
               confirmButtonText: 'OK'
