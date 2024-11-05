@@ -10,7 +10,7 @@ export class ApiService {
   http = inject(HttpClient);
   errorHandlingService = inject(ErrorHandlingService);
 
-  private apiUrl = "http://localhost:8081/api";
+  private apiUrl = "https://medicalone-api-a08febf8c2e1.herokuapp.com/api";
 
   constructor() {}
 
