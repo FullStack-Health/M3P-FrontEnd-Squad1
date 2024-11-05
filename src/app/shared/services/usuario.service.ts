@@ -38,23 +38,23 @@ export class UsuarioService {
     return this.apiService.get(`${this.usuarioUrl}?page=${page}&size=${size}`).pipe(
       tap((response: any) => {
       }),
-      catchError((error: HttpErrorResponse) => {
-        return throwError(() => new Error("Falha ao buscar usuários."));
-      })
+      catchError(this.handleError)
     );
-}
+  }
 
   getUsuarioById(usuarioId: string): Observable<any> {
     return this.apiService.get(`${this.usuarioUrl}/${usuarioId}`).pipe(
       tap((response: any) => {
-      })
+      }),
+      catchError(this.handleError)
     );
   }
 
   addUsuario(newUsuario: any): Observable<any> {
     return this.apiService.post(this.usuarioUrl, newUsuario).pipe(
       tap((response: any) => {
-      })
+      }),
+      catchError(this.handleError)
     );
   }
 
@@ -63,14 +63,36 @@ export class UsuarioService {
       .put(this.usuarioUrl, updatedUsuario.id, updatedUsuario)
       .pipe(
         tap((response: any) => {
-        })
+        }),
+        catchError(this.handleError)
       );
   }
 
   deleteUsuario(usuarioId: string): Observable<any> {
     return this.apiService.delete(this.usuarioUrl, usuarioId).pipe(
       tap((response: any) => {
-      })
+      }),
+      catchError(this.handleError)
     );
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = "Ocorreu um erro inesperado.";
+    if (error.error && error.error.message) {
+      errorMessage = error.error.message;
+    } else {
+      if (error.status === 400) {
+        errorMessage = "Dados ausentes ou incorretos";
+      } else if (error.status === 401) {
+        errorMessage = "Falha de autenticação.";
+      } else if (error.status === 404) {
+        errorMessage = "Usuário não encontrado.";
+      } else if (error.status === 409) {
+        errorMessage = "Usuário já cadastrado";
+      } else {
+        errorMessage = `${error.message}`;
+      }
+    }
+    return throwError(() => new Error(errorMessage));
   }
 }
